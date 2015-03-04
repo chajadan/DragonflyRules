@@ -1,8 +1,17 @@
 from dragonfly import *
 from _decorators import *
+import inspect
 
 ruleList = []
 
+#decorator
+def ExportedRule(Rule):
+    if inspect.isclass(Rule):
+        ruleList.append(Rule())
+    else:
+        ruleList.append(Rule)
+
+@ExportedRule
 @BombRule
 class CapFirstRule(CompoundRule):
     spec = "capital <wordOrPhrase>" 
@@ -10,16 +19,16 @@ class CapFirstRule(CompoundRule):
     def _process_recognition(self, node, extras):
         wordOrPhrase = extras["wordOrPhrase"].format().capitalize()
         Text(wordOrPhrase).execute()
-ruleList.append(CapFirstRule())
 
+@ExportedRule
 @BombRule
 class LowercaseJoined(CompoundRule):
     spec = "joined <words>"
     extras = Dictation("words"),
     def _process_recognition(self, node, extras):
         Text("".join(extras["words"].words)).execute()
-ruleList.append(LowercaseJoined())
-         
+
+@ExportedRule
 @BombRule
 class CamelCaseRule(CompoundRule):
     spec = "camel <text>"
@@ -34,8 +43,8 @@ class CamelCaseRule(CompoundRule):
                 else:
                     wrds[i] = word.upper()
         Text("".join(wrds)).execute()
-ruleList.append(CamelCaseRule()) 
 
+@ExportedRule
 @BombRule
 class TitleCaseRule(CompoundRule):
     spec = "title <text>"
@@ -49,8 +58,8 @@ class TitleCaseRule(CompoundRule):
             else:
                 wrds[i] = word.upper()
         Text(" ".join(wrds)).execute()
-ruleList.append(TitleCaseRule())
 
+@ExportedRule
 @BombRule
 class ConstCaseRule(CompoundRule):
     spec = "constant <text>"
@@ -61,8 +70,8 @@ class ConstCaseRule(CompoundRule):
         for i, word in enumerate(wrds):
             wrds[i] = word.upper()
         Text("_".join(wrds)).execute()
-ruleList.append(ConstCaseRule())
 
+@ExportedRule
 @BombRule
 class CapCamelCaseRule(CompoundRule):
     spec = "(studly|Studley) <text>"
@@ -76,12 +85,11 @@ class CapCamelCaseRule(CompoundRule):
             else:
                 wrds[i] = word.upper()
         Text("".join(wrds)).execute()
-ruleList.append(CapCamelCaseRule())
 
+@ExportedRule
 @BombRule
 class ScupRule(CompoundRule):
     spec = "scup <text>"
     extras = (Dictation("text"), Dictation("chain"))
     def _process_recognition(self, node, extras):
         Text("_".join(extras["text"].words)).execute()
-ruleList.append(ScupRule())
