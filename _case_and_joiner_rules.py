@@ -74,7 +74,7 @@ class ConstCaseRule(CompoundRule):
 @ExportedRule
 @BombRule
 class CapCamelCaseRule(CompoundRule):
-    spec = "(studly|Studley) <text>"
+    spec = "capital camel <text>"
     extras = Dictation("text"),
     def _process_recognition(self, node, extras):
         msg = extras["text"].format()
