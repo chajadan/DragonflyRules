@@ -6,8 +6,6 @@ from _decorators import *
 import _keyboard as kb
 import inspect
 
-engine = get_engine()
-
 # Imported Rules - imported from other files for better file structure
 
 imported_rules = []
@@ -57,7 +55,7 @@ class DisableDragonfly(CompoundRule):
     spec = "(disable|unload) dragonfly"
     def _process_recognition(self, node, extras):
         grammar.disable()
-        engine.speak("dragonfly darts off")
+        get_engine().speak("dragonfly darts off")
   
 for imported_rule in imported_rules:
     grammar.add_rule(imported_rule)
@@ -537,7 +535,7 @@ class SpaceDelimitedWordRule(CompoundRule):
 grammar.load()
 #grammar.set_exclusiveness(True)
 print "grammar loaded"
-#engine.speak("loaded")
+#get_engine().speak("loaded")
 
 # Listener grammar
 listener = Grammar("wake up grammar")
@@ -546,7 +544,7 @@ class EnableDragonfly(CompoundRule):
     spec = "(enable|load) dragonfly"
     def _process_recognition(self, node, extras):
         grammar.enable()
-        engine.speak("dragonfly alive")
+        get_engine().speak("dragonfly alive")
 listener.add_rule(EnableDragonfly())
 listener.load()
     

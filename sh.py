@@ -11,7 +11,12 @@ GitBashRules = MappingRule(
              "add all with deletes": Text("git add -A") + Key("enter"),
              "status": Text("git status") + Key("enter"),
              "diff": Text("git diff") + Key("enter"),
+             "commit": Text("git commit"),
+             "commit [[with] message] <text>": Text('git commit -m "%(text)s"'),
             },
+    extras = [
+        Dictation("text"),
+    ]
     )
 
 
