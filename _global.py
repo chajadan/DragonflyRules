@@ -5,11 +5,6 @@ from _support import *
 from _decorators import *
 import _keyboard as kb
 import inspect
-import pyHook
-
-#import wxversion
-#wxversion.select("2.8")
-#import wx
 
 engine = get_engine()
 
@@ -22,6 +17,9 @@ imported_rules += _case_and_joiner_rules.ruleList
 
 import _keyboard_keys
 imported_rules += _keyboard_keys.ruleList
+
+import _byKeys
+imported_rules += _byKeys.ruleList
 
 # Lang Rules - similar to imported rules, but intended to be turned on and off
 
@@ -36,13 +34,8 @@ lang_rules[_python_lang_rules.langName] = _python_lang_rules.langRuleList
 import _html_lang_rules
 imported_rules += _html_lang_rules.langRuleList
 lang_names += [_html_lang_rules.langName]
-lang_rules[_html_lang_rules.langName] = _html_lang_rules.langRuleList 
+lang_rules[_html_lang_rules.langName] = _html_lang_rules.langRuleList
 
-print lang_rules
-
-# import _eclipse
-# imported_rules += _eclipse.langRuleList
-# lang_rules[_eclipse.langName] = _eclipse.langRuleList
 
 # Clipboard support
 
@@ -97,27 +90,6 @@ class DisableLangRule(CompoundRule):
         for rule in lang_rules[lang]:
             rule.disable()
 
-byKeysCommandBuffer = ""
-pyHookManager = pyHook.HookManager()
-
-def startByKeysCommandHook():
-    pyHookManager.HookKeyboard()
-
-def OnKeyDown(event):
-    global byKeysCommandBuffer
-    if len(event.Key) == 1:
-        byKeysCommandBuffer += event.Key
-    elif event.Key == "Space":
-        byKeysCommandBuffer += " "
-    elif event.Key == "Return":
-        pyHookManager.UnhookKeyboard()
-        words = byKeysCommandBuffer.lower().split()
-        byKeysCommandBuffer = ""
-        Mimic(*words).execute()
-    return False
-
-pyHookManager.KeyDown = OnKeyDown
-
 @GrammarRule
 class GoToLineRule(CompoundRule):
     spec = "numb <n>"
@@ -142,13 +114,20 @@ class LowercaseDictationRule(CompoundRule):
     spec = "words <dictation>"
     extras = (Dictation("dictation"), )
     def _process_recognition(self, node, extras):
-        Text(extras["dictation"].format()).execute() 
+        Text(extras["dictation"].format()).execute()
+        
+@GrammarRule
+@BombRule
+class LowercaseDictationRule_PrependSpace(CompoundRule):
+    spec = "tack <dictation>"
+    extras = (Dictation("dictation"), )
+    def _process_recognition(self, node, extras):
+        Text(" " + extras["dictation"].format()).execute()
 
 @GrammarRule
 class GlobalRule(MappingRule):
     name="global_rule"
-    mapping={
-             "by keys": Function(startByKeysCommandHook),            
+    mapping={      
              "click [<clickCount> [times]]": Mouse("left:1") * Repeat(extra="clickCount"),
              "trick [<clickCount> [times]]": (Key("ctrl:down") + Mouse("left:1") + Key("ctrl:up")) * Repeat(extra="clickCount"),
              "rick [<clickCount> [times]]": Mouse("right:1") * Repeat(extra="clickCount"),
@@ -165,7 +144,7 @@ class GlobalRule(MappingRule):
              "rown": Mouse("right:down"),
              "rup": Mouse("right:up"),
              "[toggle] flux": Key("a-end"),
-             "importer": FocusWindow(title="auto-importer"),
+             "importer": FocusWindow(title="AciCompiler"),
              "launch explorer": StartApp(r"C:\Windows\Explorer.exe"),
              "sketch": FocusWindow(title="ACI Sketch"),
              "task manager": Key("cs-escape"),
@@ -192,12 +171,12 @@ class GlobalRule(MappingRule):
 class LunchAndFocusRule(MappingRule):
     name="launch_and_focus_rule"
     mapping={
-        "launch chrome":         StartApp(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
-        "launch eclipse": StartApp(r"C:\eclipse\eclipse.exe"),
+        "launch chrome": StartApp(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
+        "launch eclipse": StartApp(r"C:\Program Files\eclipse\eclipse.exe"),
         "launch ACI": StartApp(r"C:\Program Files (x86)\ACI32\Applications\Report32.exe"),
         "ACI": FocusWindow(executable="Report32"),
         "chrome": FocusWindow(executable="chrome"),
-        "eclipse": FocusWindow(executable="javaw", title="eclipse"),
+        "eclipse": FocusWindow(executable="javaw", title="Eclipse"),
     }
 
 @GrammarRule
@@ -244,6 +223,8 @@ QuickCompoundRules = {
     "assign": Text(" = "),
     "dref": Text("->"),
     "(monk|upon)": Key("dot"),
+    "trim left": Key("cs-home, delete"),
+    "trim right": Key("cs-end, delete"),
 }
 
 for voicedAs, action in QuickCompoundRules.items():

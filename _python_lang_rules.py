@@ -1,4 +1,5 @@
 from dragonfly import *
+from _decorators import *
 
 langName = "python"
 langRuleList = []
@@ -69,6 +70,17 @@ python_keywords_rule = MappingRule(
     extras=[],
     defaults={})
 langRuleList.append(python_keywords_rule)
+
+python_ops_rule = MappingRule(
+    name = "python_ops_rule",
+    mapping = {
+        "plus": Text(" + "),
+        "minus": Text(" - "),
+        "times": Text(" * "),
+        },
+    extras=[],
+    defaults={})
+langRuleList.append(python_ops_rule)
 
 python_docnav_rule = MappingRule(
     name = "python_docnav_rule",

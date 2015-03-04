@@ -1,5 +1,4 @@
-from dragonfly import (Grammar, AppContext, MappingRule, Dictation,
-                       Key, Text, FocusWindow)
+from dragonfly import *
 
 grammar = Grammar("cmd")
 
