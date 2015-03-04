@@ -27,6 +27,9 @@ def import_external_rules():
     import _byKeys
     imported_rules += _byKeys.ruleList
     
+    import _namedStrings
+    imported_rules += _namedStrings.ruleList
+    
     # lang rules - intended to be turned on and off
     import _python_lang_rules
     imported_rules += _python_lang_rules.langRuleList
