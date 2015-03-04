@@ -13,6 +13,7 @@ GitBashRules = MappingRule(
              "diff": Text("git diff") + Key("enter"),
              "commit": Text("git commit"),
              "commit [[with] message] <text>": Text('git commit -m "%(text)s"'),
+             "push": Text("git push") + Key("enter"),
             },
     extras = [
         Dictation("text"),
