@@ -6,33 +6,37 @@ from _decorators import *
 import _keyboard as kb
 import inspect
 
-# Imported Rules - imported from other files for better file structure
 
-imported_rules = []
+imported_rules = [] # list of rules imported from other files for better file structure
+lang_rules = {} # keys are "language names", values are list of rules
+lang_names = [] # list of imported language names
 
-import _case_and_joiner_rules
-imported_rules += _case_and_joiner_rules.ruleList
-
-import _keyboard_keys
-imported_rules += _keyboard_keys.ruleList
-
-import _byKeys
-imported_rules += _byKeys.ruleList
-
-# Lang Rules - similar to imported rules, but intended to be turned on and off
-
-lang_rules = {}
-lang_names = []
-
-import _python_lang_rules
-imported_rules += _python_lang_rules.langRuleList
-lang_names += [_python_lang_rules.langName]
-lang_rules[_python_lang_rules.langName] = _python_lang_rules.langRuleList
-
-import _html_lang_rules
-imported_rules += _html_lang_rules.langRuleList
-lang_names += [_html_lang_rules.langName]
-lang_rules[_html_lang_rules.langName] = _html_lang_rules.langRuleList
+@CallInPlace
+def import_external_rules():
+    global imported_rules
+    global lang_rules
+    global lang_names
+    
+    # external rules
+    import _case_and_joiner_rules
+    imported_rules += _case_and_joiner_rules.ruleList
+    
+    import _keyboard_keys
+    imported_rules += _keyboard_keys.ruleList
+    
+    import _byKeys
+    imported_rules += _byKeys.ruleList
+    
+    # lang rules - intended to be turned on and off
+    import _python_lang_rules
+    imported_rules += _python_lang_rules.langRuleList
+    lang_names += [_python_lang_rules.langName]
+    lang_rules[_python_lang_rules.langName] = _python_lang_rules.langRuleList
+    
+    import _html_lang_rules
+    imported_rules += _html_lang_rules.langRuleList
+    lang_names += [_html_lang_rules.langName]
+    lang_rules[_html_lang_rules.langName] = _html_lang_rules.langRuleList
 
 
 # Clipboard support
@@ -40,7 +44,6 @@ lang_rules[_html_lang_rules.langName] = _html_lang_rules.langRuleList
 clip = Clipboard()
 
 # master grammar
-
 grammar = Grammar("master grammar")
 
 #decorator
@@ -72,10 +75,9 @@ class EnableLangRule(CompoundRule):
     extras = Alternative(children = children, name="language"),
     def _process_recognition(self, node, extras):
         lang = extras["language"]
-        print lang
         for rule in lang_rules[lang]:
-            print rule.name
             rule.enable()
+        print "lanuage " + lang + " enabled"
 
 @GrammarRule
 class DisableLangRule(CompoundRule):
@@ -161,8 +163,6 @@ class GlobalRule(MappingRule):
              "clickCount": 1,
              "lineCount": 1,
              }
-    #)
-#grammar.add_rule(global_rule)
  
 # launch_and_focus_rule is system specific and should be customized for each user's need
 @GrammarRule
@@ -533,9 +533,7 @@ class SpaceDelimitedWordRule(CompoundRule):
 
 
 grammar.load()
-#grammar.set_exclusiveness(True)
 print "grammar loaded"
-#get_engine().speak("loaded")
 
 # Listener grammar
 listener = Grammar("wake up grammar")

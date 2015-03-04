@@ -44,6 +44,9 @@ def BombChain(CompoundRuleClass):
     CompoundRuleClass._process_recognition = _new_process_recognition
     return CompoundRuleClass
 
+def CallInPlace(function):
+    function()
+
 
 # string camel many people bomb space three say people = "manyPeople"   people
 # string camel many people then space three say people = "manyPeople   people"
