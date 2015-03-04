@@ -221,8 +221,8 @@ QuickCompoundRules = {
     "assign": Text(" = "),
     "dref": Text("->"),
     "(monk|upon)": Key("dot"),
-    "trim left": Key("cs-home, delete"),
-    "trim right": Key("cs-end, delete"),
+    "trim left": Key("s-home, delete"),
+    "trim right": Key("s-end, delete"),
 }
 
 for voicedAs, action in QuickCompoundRules.items():
