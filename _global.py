@@ -122,14 +122,14 @@ class LowercaseDictationRule(CompoundRule):
     extras = (Dictation("dictation"), )
     def _process_recognition(self, node, extras):
         Text(extras["dictation"].format()).execute()
-        
+
 @GrammarRule
 @BombRule
-class LowercaseDictationRule_PrependSpace(CompoundRule):
+class PrependSpaceRule(CompoundRule):
     spec = "tack <dictation>"
     extras = (Dictation("dictation"), )
     def _process_recognition(self, node, extras):
-        Text(" " + extras["dictation"].format()).execute()
+        (Text(" ") + Mimic(*extras["dictation"].words)).execute()
 
 @GrammarRule
 class GlobalRule(MappingRule):
