@@ -3,6 +3,7 @@
 from dragonfly import *
 from _support import *
 from _decorators import *
+from _quickRules import *
 import _keyboard as kb
 import inspect
 
@@ -200,17 +201,7 @@ class InvokeWithArgumentsRule(CompoundRule):
         if extras.has_key("argMimic"):
             Mimic(*extras["argMimic"].words).execute()
 
-@ChainedRule
-class QuickCompoundRule(CompoundRule):
-    spec = " "
-    extras = ()
-    def __init__(self, voicedAs, action):
-        CompoundRule.__init__(self, name = "qcr_" + voicedAs + action.__str__(), spec = voicedAs + self.spec)
-        self.action = action
-    def _process_recognition(self, node, extras):
-        self.action.execute()
-
-QuickCompoundRules = {
+QuickChainedRules = {
     "strung": Text("\"\"") + Key("left"),
     "brack": Text("[]") + Key("left"),
     "brake": Text("{}") + Key("left"),
@@ -228,8 +219,8 @@ QuickCompoundRules = {
     "trim right": Key("s-end, delete"),
 }
 
-for voicedAs, action in QuickCompoundRules.items():
-    grammar.add_rule(QuickCompoundRule(voicedAs, action))
+for voicedAs, action in QuickChainedRules.items():
+    grammar.add_rule(QuickChainedRule(voicedAs, action))
 
 def JumpRight(jumpTo, sensitive = False):
     copied = ReadLineEnd()
