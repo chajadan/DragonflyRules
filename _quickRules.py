@@ -10,3 +10,8 @@ class QuickChainedRule(CompoundRule):
         self.action = action
     def _process_recognition(self, node, extras):
         self.action.execute()
+        
+class QuickChainedRules():
+    def __init__(self, grammar):
+        for voicedAs, action in self.mapping.items():
+            grammar.add_rule(QuickChainedRule(voicedAs, action))
