@@ -53,7 +53,10 @@ grammar = Grammar("master grammar")
 #decorator
 def GrammarRule(Rule):
     if inspect.isclass(Rule):
-        grammar.add_rule(Rule())
+        if issubclass(Rule, QuickChainedRules):
+            Rule(grammar)
+        else:
+            grammar.add_rule(Rule())
     else:
         grammar.add_rule(Rule)
 
@@ -201,26 +204,28 @@ class InvokeWithArgumentsRule(CompoundRule):
         if extras.has_key("argMimic"):
             Mimic(*extras["argMimic"].words).execute()
 
-QuickChainedRules = {
-    "strung": Text("\"\"") + Key("left"),
-    "brack": Text("[]") + Key("left"),
-    "brake": Text("{}") + Key("left"),
-    "ankle": Text("<>") + Key("left"),
-    "park": Text("()") + Key("left"),
-    "pens": Text("()"),
-    "quip": Text("(\"\")") + Key("left, left"),
-    "spinster": Mimic("pens") + Key("enter"),
-    "item": Text(", "),
-    "commend": Key("end, comma, enter"),
-    "assign": Text(" = "),
-    "dref": Text("->"),
-    "(monk|upon)": Key("dot"),
-    "trim left": Key("s-home, delete"),
-    "trim right": Key("s-end, delete"),
-}
-
-for voicedAs, action in QuickChainedRules.items():
-    grammar.add_rule(QuickChainedRule(voicedAs, action))
+@GrammarRule
+class QuickRules(QuickChainedRules):
+    mapping = {
+        "strung": Text("\"\"") + Key("left"),
+        "brack": Text("[]") + Key("left"),
+        "brake": Text("{}") + Key("left"),
+        "ankle": Text("<>") + Key("left"),
+        "park": Text("()") + Key("left"),
+        "pens": Text("()"),
+        "quip": Text("(\"\")") + Key("left, left"),
+        "spinster": Mimic("pens") + Key("enter"),
+        "item": Text(", "),
+        "commend": Key("end, comma, enter"),
+        "assign": Text(" = "),
+        "dref": Text("->"),
+        "(monk|upon)": Key("dot"),
+        "trim left": Key("s-home, delete"),
+        "trim right": Key("s-end, delete"),
+    }
+ 
+# for voicedAs, action in QuickChainedRules.items():
+#     grammar.add_rule(QuickChainedRule(voicedAs, action))
 
 def JumpRight(jumpTo, sensitive = False):
     copied = ReadLineEnd()
