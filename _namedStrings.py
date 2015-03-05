@@ -57,9 +57,10 @@ def OnKeyUp(event):
     global isShifted
     if event.Key in ["Lshift", "Rshift"]:
         isShifted = False
+    return False
 
-pyHookManager.KeyDown = OnKeyDown
-pyHookManager.KeyDown = OnKeyUp
+pyHookManager.SubscribeKeyDown(OnKeyDown)
+pyHookManager.SubscribeKeyUp(OnKeyUp)
 
 @ExportedRule
 class CreateNamedString(CompoundRule):
