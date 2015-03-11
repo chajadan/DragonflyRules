@@ -1,40 +1,31 @@
 from dragonfly import *
-from _decorators import *
+from _ruleExport import *
 import inspect
+from _baseRules import ContinuousRule
 
-ruleList = []
+exports = ExportedRules()
 
-#decorator
-def ExportedRule(Rule):
-    if inspect.isclass(Rule):
-        ruleList.append(Rule())
-    else:
-        ruleList.append(Rule)
-
-@ExportedRule
-@BombRule
-class CapFirstRule(CompoundRule):
-    spec = "capital <wordOrPhrase>" 
-    extras = (Dictation("wordOrPhrase"),)
+@ExportedRule(exports)
+class CapFirstRule(ContinuousRule):
+    spec = "capital <RunOn>" 
+    extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
-        wordOrPhrase = extras["wordOrPhrase"].format().capitalize()
+        wordOrPhrase = extras["RunOn"].format().capitalize()
         Text(wordOrPhrase).execute()
 
-@ExportedRule
-@BombRule
-class LowercaseJoined(CompoundRule):
-    spec = "joined <words>"
-    extras = Dictation("words"),
+@ExportedRule(exports)
+class LowercaseJoined(ContinuousRule):
+    spec = "joined <RunOn>"
+    extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
-        Text("".join(extras["words"].words)).execute()
+        Text("".join(extras["RunOn"].words)).execute()
 
-@ExportedRule
-@BombRule
-class CamelCaseRule(CompoundRule):
-    spec = "camel <text>"
-    extras = Dictation("text"),
+@ExportedRule(exports)
+class CamelCaseRule(ContinuousRule):
+    spec = "camel <RunOn>"
+    extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
-        msg = extras["text"].format()
+        msg = extras["RunOn"].format()
         wrds = msg.split(" ")
         for i, word in enumerate(wrds):
             if i > 0:
@@ -44,13 +35,12 @@ class CamelCaseRule(CompoundRule):
                     wrds[i] = word.upper()
         Text("".join(wrds)).execute()
 
-@ExportedRule
-@BombRule
-class TitleCaseRule(CompoundRule):
-    spec = "title <text>"
-    extras = Dictation("text"),
+@ExportedRule(exports)
+class TitleCaseRule(ContinuousRule):
+    spec = "title <RunOn>"
+    extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
-        msg = extras["text"].format()
+        msg = extras["RunOn"].format()
         wrds = msg.split(" ")
         for i, word in enumerate(wrds):
             if len(word) > 1:
@@ -59,25 +49,23 @@ class TitleCaseRule(CompoundRule):
                 wrds[i] = word.upper()
         Text(" ".join(wrds)).execute()
 
-@ExportedRule
-@BombRule
-class ConstCaseRule(CompoundRule):
-    spec = "constant <text>"
-    extras = Dictation("text"),
+@ExportedRule(exports)
+class ClassicConstantVariableCaseRule(ContinuousRule):
+    spec = "constant <RunOn>"
+    extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
-        msg = extras["text"].format()
+        msg = extras["RunOn"].format()
         wrds = msg.split(" ")
         for i, word in enumerate(wrds):
             wrds[i] = word.upper()
         Text("_".join(wrds)).execute()
 
-@ExportedRule
-@BombRule
-class CapCamelCaseRule(CompoundRule):
-    spec = "capital camel <text>"
-    extras = Dictation("text"),
+@ExportedRule(exports)
+class CapitalCamelCaseRule(ContinuousRule):
+    spec = "capital camel <RunOn>"
+    extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
-        msg = extras["text"].format()
+        msg = extras["RunOn"].format()
         wrds = msg.split(" ")
         for i, word in enumerate(wrds):
             if len(word) > 1:
@@ -86,10 +74,9 @@ class CapCamelCaseRule(CompoundRule):
                 wrds[i] = word.upper()
         Text("".join(wrds)).execute()
 
-@ExportedRule
-@BombRule
-class ScupRule(CompoundRule):
-    spec = "scup <text>"
-    extras = (Dictation("text"), Dictation("chain"))
+@ExportedRule(exports)
+class UnderscoreJoinedTextRule(ContinuousRule):
+    spec = "scored <RunOn>"
+    extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
-        Text("_".join(extras["text"].words)).execute()
+        Text("_".join(extras["RunOn"].words)).execute()

@@ -8,17 +8,11 @@
 # clear named strings           -- forgets all named strings
 
 from dragonfly import *
+from _ruleExport import *
 import pyHook # http://sourceforge.net/projects/pyhook/
 import inspect
 
-ruleList = []
-
-#decorator
-def ExportedRule(Rule):
-    if inspect.isclass(Rule):
-        ruleList.append(Rule())
-    else:
-        ruleList.append(Rule)
+exports = ExportedRules()
 
 NamedStrings = {}
 namedStringBuffer = ""
@@ -62,15 +56,16 @@ def OnKeyUp(event):
 pyHookManager.SubscribeKeyDown(OnKeyDown)
 pyHookManager.SubscribeKeyUp(OnKeyUp)
 
-@ExportedRule
+@ExportedRule(exports)
 class CreateNamedString(CompoundRule):
     spec = "remember string [as] <NamedString>"
+    intro = ["remember string", "remember string as"]
     extras = Dictation("NamedString"),
     def _process_recognition(self, node, extras):
         stringName = " ".join(extras["NamedString"].words)
         Function(startNamedStringsHook).execute({"stringName": stringName})
         
-@ExportedRule
+@ExportedRule(exports)
 class RetrieveNamedString(CompoundRule):
     spec = "by name <NamedString>"
     extras = Dictation("NamedString"),
@@ -81,7 +76,7 @@ class RetrieveNamedString(CompoundRule):
         except:
             print "No string named " + stringName
             
-@ExportedRule
+@ExportedRule(exports)
 class ClearNamedString(CompoundRule):
     spec = "clear named strings"
     def _process_recognition(self, node, extras):

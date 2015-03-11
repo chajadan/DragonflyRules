@@ -3,6 +3,7 @@
 #    ??.add_rule(RuleClass())
 
 from dragonfly import *
+import inspect
 from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
 
 #decorator
@@ -64,7 +65,3 @@ def BombChain(CompoundRuleClass):
 
 def CallInPlace(function):
     function()
-
-
-# string camel many people bomb space three say people = "manyPeople"   people
-# string camel many people then space three say people = "manyPeople   people"

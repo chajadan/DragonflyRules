@@ -2,17 +2,12 @@
 # Implements the ability to capture a command typed from the keyboard, rather than by voice 
 
 from dragonfly import (Function, MappingRule, Mimic)
+import _quickRules
+from _ruleExport import *
 import pyHook # http://sourceforge.net/projects/pyhook/
 import inspect
 
-ruleList = []
-
-#decorator
-def ExportedRule(Rule):
-    if inspect.isclass(Rule):
-        ruleList.append(Rule())
-    else:
-        ruleList.append(Rule)
+exports = ExportedRules()
 
 byKeysCommandBuffer = ""
 pyHookManager = pyHook.HookManager()
@@ -36,9 +31,9 @@ def OnKeyDown(event):
 pyHookManager.KeyDown = OnKeyDown
 
 
-@ExportedRule
-class ByKeysRule(MappingRule):
+@ExportedRule(exports)
+class ByKeysRule(_quickRules.QuickRules):
     name="ByKeysRule"
-    mapping= {
+    mapping = {
         "by keys": Function(startByKeysCommandHook),
     }
