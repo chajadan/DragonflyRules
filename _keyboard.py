@@ -1,3 +1,4 @@
+print "import _keyboard"
 import ctypes
 import string
 import time
@@ -93,7 +94,7 @@ VK_RETURN = 0x0D                # ENTER key
 VK_SHIFT = 0x10                 # SHIFT key
 VK_CONTROL = 0x11               # CTRL key
 VK_MENU = 0x12                  # ALT key
-VK_ALT = 0x12        #ALT alias
+VK_ALT = 0x12                   #ALT alias
 VK_PAUSE = 0x13                 # PAUSE key
 VK_CAPITAL = 0x14               # CAPS LOCK key
 VK_KANA = 0x15                  # IME Kana mode
@@ -388,6 +389,12 @@ def sendHome(times = 1, extended = False):
     
 def sendLeft(times = 1, extended = False, delay = GLOBAL_DEFAULT_SENDKEYS_TIMEOUT):
     sendKey(VK_LEFT, times = times, extended = extended, delay = delay)
+
+def sendPrintScreen():
+    sendKey(VK_SNAPSHOT)
+    
+def sendAltPrintScreen():
+    sendAltKey(VK_SNAPSHOT)    
             
 def sendRight(times = 1, extended = False, delay = GLOBAL_DEFAULT_SENDKEYS_TIMEOUT):
     sendKey(VK_RIGHT, times = times, extended = extended, delay = delay)

@@ -1,0 +1,25 @@
+from dragonfly import *
+from _ContinuousGrammar import *
+from _quickRules import *
+import inspect
+
+context = AppContext(executable = , title = )
+grammar = ContinuousGrammar("", context = context)
+
+#decorator
+def GrammarRule(rule):
+    if inspect.isclass(rule):
+        if issubclass(rule, BaseQuickRules):
+            rule(grammar)
+        else:
+            grammar.add_rule(rule())
+    else:
+        grammar.add_rule(rule)
+
+grammar.load()
+
+def unload():
+    global grammar
+    if grammar:
+        grammar.unload()
+    grammar = None

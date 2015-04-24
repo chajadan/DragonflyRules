@@ -1,10 +1,19 @@
+print "import cPlusPlus_lang_rules"
 from dragonfly import *
-from _decorators import *
-from _baseRules import *
-import _quickRules as qr
+import _BaseGrammars
+from _BaseRules import *
 
-langName = "C++"
-langRuleList = []
+grammar = _BaseGrammars.ContinuousGrammar("c++ grammar", enableCommand='load language see plus plus', disableCommand='unload language see plus plus', initiallyDisabled=True)
+
+#decorator
+def GrammarRule(rule):
+    if inspect.isclass(rule):
+        if issubclass(rule, BaseQuickRules):
+            rule(grammar)
+        else:
+            grammar.add_rule(rule())
+    else:
+        grammar.add_rule(rule) 
 
 class KeywordRule(ContinuousRule):
     def __init__(self, keyword, voicedAs, alwaysFollowed = False):
@@ -51,48 +60,36 @@ keywords = [
 ]
 
 for entry in keywords:
-    langRuleList.append(KeywordRule(entry[0], entry[1], alwaysFollowed = entry[2]))
+    grammar.add_rule(KeywordRule(entry[0], entry[1], alwaysFollowed = entry[2]))
 
-class OperatorRules(qr.QuickContinuousRules):
+@GrammarRule
+class OperatorRules(QuickContinuousRules):
     mapping = {
         "plus": Text(" + "),
         "minus": Text(" - "),
         "times": Text(" * "),
         "not equal": Text(" != "),
-        "[is] less than": {
-            "action": Text(" < "),
-            "intro": ["less than", "is less than"]},
-        "[is] greater than": {
-            "action": Text(" > "),
-            "intro": ["less greater", "is less greater"]},               
+        "[is] less than": Text(" < "),
+        "[is] greater than": Text(" > "),               
         "compares": Text(" == "),
     }
-# python_keywords_rule = MappingRule(
-#     name = "python_keywords_rule",
-#     mapping = {
-#         "pass": Text("pass") + Key("enter"),
-#         "then": Text("then:") + Key("enter"),
-#         },
-#     extras=[],
-#     defaults={})
-# langRuleList.append(python_keywords_rule)
-# 
-# python_ops_rule = MappingRule(
-#     name = "python_ops_rule",
-#     mapping = {
-#         "plus": Text(" + "),
-#         "minus": Text(" - "),
-#         "times": Text(" * "),
-#         },
-#     extras=[],
-#     defaults={})
-# langRuleList.append(python_ops_rule)
-# 
-# python_docnav_rule = MappingRule(
-#     name = "python_docnav_rule",
-#     mapping = {
-#         "indent": Key("end, colon, enter"),
-#         },
-#     extras=[],
-#     defaults={})
-# langRuleList.append(python_docnav_rule)
+
+@GrammarRule
+class PreprocessorRules(QuickContinuousRules):
+    mapping = {
+        "include": Text("#include"),
+    }
+
+grammar.load()
+listener = grammar.listener()
+listener.load()
+         
+def unload():
+    global grammar
+    if grammar:
+        grammar.unload()
+    grammar = None
+    global listener
+    if listener is not None:
+        listener.unload()
+    listener = None

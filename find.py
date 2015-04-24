@@ -1,12 +1,12 @@
-from dragonfly import (Grammar, AppContext, MappingRule, Dictation,
-                       Key, Text, FocusWindow, Mouse, StartApp, Repeat, IntegerRef, Text, CompoundRule, Mimic, Pause)
+from dragonfly import *
+from _BaseRules import *
 
 grammar = Grammar("global")
 
 def selectUpThrough(beginning):
+    pass
 
-
-class SelectToWordRule(CompoundRule):
+class SelectToWordRule(CorrectableRule):
 	spec = "select up to <word>"
 	extras = Dictation("word"),
 	def _process_recognition(self, node, extras):

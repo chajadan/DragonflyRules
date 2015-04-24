@@ -8,11 +8,22 @@
 # clear named strings           -- forgets all named strings
 
 from dragonfly import *
-from _ruleExport import *
+import _BaseGrammars
 import pyHook # http://sourceforge.net/projects/pyhook/
 import inspect
+from _BaseRules import *
 
-exports = ExportedRules()
+grammar = _BaseGrammars.ContinuousGrammar("named strings grammar")
+
+#decorator
+def GrammarRule(rule):
+    if inspect.isclass(rule):
+        if issubclass(rule, BaseQuickRules):
+            rule(grammar)
+        else:
+            grammar.add_rule(rule())
+    else:
+        grammar.add_rule(rule)
 
 NamedStrings = {}
 namedStringBuffer = ""
@@ -56,8 +67,8 @@ def OnKeyUp(event):
 pyHookManager.SubscribeKeyDown(OnKeyDown)
 pyHookManager.SubscribeKeyUp(OnKeyUp)
 
-@ExportedRule(exports)
-class CreateNamedString(CompoundRule):
+@GrammarRule
+class CreateNamedString(CorrectableRule):
     spec = "remember string [as] <NamedString>"
     intro = ["remember string", "remember string as"]
     extras = Dictation("NamedString"),
@@ -65,8 +76,8 @@ class CreateNamedString(CompoundRule):
         stringName = " ".join(extras["NamedString"].words)
         Function(startNamedStringsHook).execute({"stringName": stringName})
         
-@ExportedRule(exports)
-class RetrieveNamedString(CompoundRule):
+@GrammarRule
+class RetrieveNamedString(CorrectableRule):
     spec = "by name <NamedString>"
     extras = Dictation("NamedString"),
     def _process_recognition(self, node, extras):
@@ -76,8 +87,14 @@ class RetrieveNamedString(CompoundRule):
         except:
             print "No string named " + stringName
             
-@ExportedRule(exports)
-class ClearNamedString(CompoundRule):
+@GrammarRule
+class ClearNamedString(CorrectableRule):
     spec = "clear named strings"
     def _process_recognition(self, node, extras):
         NamedStrings = {}
+        
+grammar.load()
+def unload():
+    global grammar
+    if grammar: grammar.unload()
+    grammar = None

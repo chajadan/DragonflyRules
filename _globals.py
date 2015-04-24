@@ -1,0 +1,3 @@
+
+saveResults = True
+lastSavedResults = None

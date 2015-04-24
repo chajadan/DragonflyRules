@@ -1,26 +1,48 @@
+print "import _case_and_joiner_rules"
 from dragonfly import *
-from _ruleExport import *
+import _BaseGrammars
+from _BaseRules import *
 import inspect
-from _baseRules import ContinuousRule
 
-exports = ExportedRules()
+grammar = _BaseGrammars.ContinuousGrammar("case and joiner rules")
 
-@ExportedRule(exports)
+#decorator
+def GrammarRule(rule):
+    if inspect.isclass(rule):
+        if issubclass(rule, BaseQuickRules):
+            rule(grammar)
+        else:
+            grammar.add_rule(rule())
+    else:
+        grammar.add_rule(rule)
+
+@GrammarRule
 class CapFirstRule(ContinuousRule):
     spec = "capital <RunOn>" 
     extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
+        print extras 
         wordOrPhrase = extras["RunOn"].format().capitalize()
         Text(wordOrPhrase).execute()
 
-@ExportedRule(exports)
+@GrammarRule
+class LowerCaseFirstRule(ContinuousRule):
+    spec = "low case <RunOn>" 
+    extras = (Dictation("RunOn"),)
+    def _process_recognition(self, node, extras):
+        wordOrPhrase = extras["RunOn"].format()
+        if len(wordOrPhrase) > 0:
+            wordOrPhrase = wordOrPhrase[0].lower() + wordOrPhrase[1:]
+            Text(wordOrPhrase).execute()
+
+@GrammarRule
 class LowercaseJoined(ContinuousRule):
     spec = "joined <RunOn>"
     extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
         Text("".join(extras["RunOn"].words)).execute()
 
-@ExportedRule(exports)
+@GrammarRule
 class CamelCaseRule(ContinuousRule):
     spec = "camel <RunOn>"
     extras = Dictation("RunOn"),
@@ -35,7 +57,7 @@ class CamelCaseRule(ContinuousRule):
                     wrds[i] = word.upper()
         Text("".join(wrds)).execute()
 
-@ExportedRule(exports)
+@GrammarRule
 class TitleCaseRule(ContinuousRule):
     spec = "title <RunOn>"
     extras = Dictation("RunOn"),
@@ -49,7 +71,7 @@ class TitleCaseRule(ContinuousRule):
                 wrds[i] = word.upper()
         Text(" ".join(wrds)).execute()
 
-@ExportedRule(exports)
+@GrammarRule
 class ClassicConstantVariableCaseRule(ContinuousRule):
     spec = "constant <RunOn>"
     extras = Dictation("RunOn"),
@@ -60,7 +82,7 @@ class ClassicConstantVariableCaseRule(ContinuousRule):
             wrds[i] = word.upper()
         Text("_".join(wrds)).execute()
 
-@ExportedRule(exports)
+@GrammarRule
 class CapitalCamelCaseRule(ContinuousRule):
     spec = "capital camel <RunOn>"
     extras = Dictation("RunOn"),
@@ -74,9 +96,17 @@ class CapitalCamelCaseRule(ContinuousRule):
                 wrds[i] = word.upper()
         Text("".join(wrds)).execute()
 
-@ExportedRule(exports)
+@GrammarRule
 class UnderscoreJoinedTextRule(ContinuousRule):
     spec = "scored <RunOn>"
     extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
         Text("_".join(extras["RunOn"].words)).execute()
+
+grammar.load()
+
+def unload():
+    global grammar
+    if grammar:
+        grammar.unload()
+    grammar = None        

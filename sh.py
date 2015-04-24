@@ -1,9 +1,9 @@
 from dragonfly import *
-from _global import GlobalGrammar
-from _quickRules import QuickRules
+import _BaseGrammars
+from _BaseRules  import *
 
 grammar_context = AppContext(executable = "sh")
-grammar = GlobalGrammar("sh", context = grammar_context)
+grammar = _BaseGrammars.GlobalGrammar("sh", context = grammar_context)
 
 
 class GitBashRules(QuickRules):

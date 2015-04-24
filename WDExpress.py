@@ -1,31 +1,57 @@
-import dragonfly as dfly
-from _baseRules import *
+from dragonfly import *
 import inspect
-import _global
-import _quickRules as qr
+import _BaseGrammars
+from _BaseRules import *
+
+grammar_context = AppContext(executable="WDExpress")        
+grammar = _BaseGrammars.ContinuousGrammar("Visual Studio express grammar", grammar_context)
 
 #decorator
 def GrammarRule(rule):
     if inspect.isclass(rule):
-        if issubclass(rule, (qr.BaseQuickRules,)):
-            rule(visual_studio_express_grammar)
+        if issubclass(rule, (BaseQuickRules,)):
+            rule(grammar)
         elif issubclass(rule, ContinuousGrammarRule):
-            visual_studio_express_grammar.add_rule(rule())
+            grammar.add_rule(rule())
+            print "cgr", rule.__name__
         elif issubclass(rule, (Rule, MappingRule, CompoundRule)):
-            visual_studio_express_grammar.add_rule(rule())
+            print "rmc", rule.__name__
+            grammar.add_rule(rule())
         else:
-            raise TypeError("Unexpected rule type added to visual_studio_express_grammar: " + str(inspect.getmro(rule)))
+            raise TypeError("Unexpected rule type added to grammar: " + str(inspect.getmro(rule)))
     else:
-        visual_studio_express_grammar.add_rule(rule)
-        
-visual_studio_express_grammar = _global.GlobalGrammar("Visual Studio express grammar")
+        grammar.add_rule(rule)
+
+# @GrammarRule
+# class RecentProjectsRule(ContinuousRule):
+#     spec = "recent projects"
+#     def _process_recognition(self, node, extras):
+#         Key("c-f, j").execute()
 
 @GrammarRule
-class ShortcutRules(qr.QuickContinuousRules):
+class ShortcutRules(QuickContinuousRules):
     mapping = {
         "build solution": Key("f7"),
         "comment selection": Key("c-e, c-c"),
-        "uncommon selection": Key("c-e, c-u"),
+        "uncomment selection": Key("c-e, c-u"),
         "go to definition": Key("f12"),
         "toggle file": Key("c-m, c-o"),
+        "recent projects": Key("a-f, j"),
+        "save all": Key("cs-s"),
+        "build this project only": Key("a-b, j, b"),
+        "rebuild this project only": Key("a-b, j, r"),
+        "clean this project only": Key("a-b, j, c"),
+        "pragma once": Text("#pragma once"),
+        "recent projects": Key("a-f, j"),
+        "go to last project": Key("a-f, j, down, enter"),
+        "go to line <n>": Key("c-g") + Text("%(n)s") + Key("enter"),
     }
+    extrasDict = {"n": IntegerRef("n", 1, 100000)}
+    defaultsDict = {"n": 1}
+    
+grammar.load()
+
+def unload():
+    global grammar
+    if grammar: grammar.unload()
+    grammar = None    

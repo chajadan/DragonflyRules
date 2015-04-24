@@ -1,4 +1,5 @@
-import _quickRules
+print "import _ruleExport"
+from _BaseRules import *
 import inspect
 
 
@@ -14,7 +15,7 @@ class ExportedRules():
     
     def add(self, ruleInstanceOrClass):
         if inspect.isclass(ruleInstanceOrClass):
-            if issubclass(ruleInstanceOrClass, (_quickRules.QuickRules, _quickRules.QuickContinuousRules)):
+            if issubclass(ruleInstanceOrClass, (BaseQuickRules)):
                 self.ruleList.append(ruleInstanceOrClass)
             else:
                 self.ruleList.append(ruleInstanceOrClass())

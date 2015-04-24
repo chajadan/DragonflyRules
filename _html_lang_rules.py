@@ -1,3 +1,4 @@
+print "import _html_lang_rules"
 # The bulk of this file was obtained from here: https://github.com/dictation-toolbox/dragonfly-scripts/tree/master/dynamics
 # it was the starting point
 # several edits have been made
@@ -7,10 +8,22 @@
 # https://www.gnu.org/licenses/lgpl.html
 
 from dragonfly import *
-from _ruleExport import *
-from _quickRules import QuickContinuousRules
+import _BaseGrammars
+import _BaseRules as br
+import _ruleExport as rex
+import inspect
 
-lang = ExportedLang("html")
+grammar = _BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language html', disableCommand='unload language html', initiallyDisabled=True)
+
+#decorator
+def GrammarRule(rule):
+    if inspect.isclass(rule):
+        if issubclass(rule, br.BaseQuickRules):
+            rule(grammar)
+        else:
+            grammar.add_rule(rule())
+    else:
+        grammar.add_rule(rule) 
 
 SCText = Text # SCText can be found here: https://github.com/chajadan/dragonfly-scripts/blob/master/lib/text.py
 
@@ -281,8 +294,8 @@ def attribute_with_content(attribute, text):
     SCText(str(text)).execute()
 
 
-@ExportedRule(lang)
-class rules(QuickContinuousRules):
+@GrammarRule
+class rules(br.QuickContinuousRules):
     mapping={
         # Commands and keywords.
         "[start] tag": {

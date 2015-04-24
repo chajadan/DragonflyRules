@@ -1,10 +1,21 @@
 from dragonfly import *
-from _decorators import *
-from _baseRules import ContinuousRule, RegisteredRule
-from _ruleExport import *
-from _xmlplus.dom import Node
+#import _ruleExport as rex
+import  _BaseGrammars
+from _BaseRules import *
 
-exports = ExportedRules()
+#exports = rex.ExportedRules()
+
+grammar = _BaseGrammars.ContinuousGrammar("keypress grammar")
+
+#decorator
+def GrammarRule(rule):
+    if inspect.isclass(rule):
+        if issubclass(rule, BaseQuickRules):
+            rule(grammar)
+        else:
+            grammar.add_rule(rule())
+    else:
+        grammar.add_rule(rule)
 
 class KeypressRule(ContinuousRule): 
     extras = (IntegerRef("keyCount", 0, 50000),)
@@ -13,7 +24,7 @@ class KeypressRule(ContinuousRule):
         self.intro = voicedAs
         ContinuousRule.__init__(self, name = "keypress_rule_" + keyName + "_" + voicedAs, spec = voicedAs + " [<keyCount> [times]]", )          
         self.keyName = keyName
-    def _process_recognition(self, node, extras):
+    def _process_recognition(self, node, extras):          
         (Key(self.keyName) * Repeat(extras["keyCount"])).execute()
 
 lower_alpha_names = [
@@ -38,7 +49,7 @@ lower_alpha_names = [
     ['s', 'essence'],
     ['t', 'team'],
     ['u', 'unit'],
-    ['v', 'visa'],
+    ['v', 'venus'],
     ['w', 'wish'],
     ['x', 'extra'],
     ['y', 'wise'],
@@ -84,7 +95,7 @@ keyboard_keys = [
     ['exclamation', '!', 'exclamation'],
     ['hash', '#', 'hash'],
     ['home', None, 'home'],
-    ['hyphen', '-', 'short stroke'],
+    ['hyphen', '-', 'stroke'],
     ['insert', None, 'insert'],
     ['langle', '<', 'languid'],
     ['lbrace', '{', 'lace'],
@@ -120,21 +131,26 @@ alpha_names = lower_alpha_names + upper_alpha_names
 
 all_keys = alpha_names + [[graph, voicedAs] for name, graph, voicedAs in keyboard_keys if graph is not None]
 
-@ExportedRule(exports)
+@GrammarRule
 class PrefixedKeypressRule(ContinuousRule):
-    spec = "letter <RunOn>"
-    extras = (Choice("RunOn", {voicedAs: letter for letter, voicedAs in alpha_names}),)
+    spec = "letter <Chr>"
+    extras = (Choice("Chr", {voicedAs: letter for letter, voicedAs in alpha_names}),)
     def _process_recognition(self, node, extras):
-        Text(extras["RunOn"]).execute()
+        Text(extras["Chr"]).execute()
 
-@ExportedRule(exports)
-class SpellByWordsRule(RegisteredRule):
+@GrammarRule
+class SpellByWordsRule(ContinuousRule):
     spec = "letters <LetterWords>"
     extras = (Repetition(Choice("letter", {voicedAs: letter for letter, voicedAs in all_keys}), name="LetterWords", min=1, max=20),)
     def _process_recognition(self, node, extras):
-        print extras
         letters = extras["LetterWords"]
         Text("".join(letters)).execute()
 
 for keyName, graph, voicedAs in keyboard_keys:
-    exports.add(KeypressRule(keyName, voicedAs))
+    grammar.add_rule(KeypressRule(keyName, voicedAs))
+    
+grammar.load()
+def unload():
+    global grammar
+    if grammar: grammar.unload()
+    grammar = None
