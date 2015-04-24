@@ -1,9 +1,11 @@
+print "importing chrome"
 from dragonfly import *
-import  _BaseGrammars
+import BaseGrammars
+print "chrome, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 
 grammar_context = AppContext(executable="chrome")
-grammar = _BaseGrammars.ContinuousGrammar("chrome", context=grammar_context)
+grammar = BaseGrammars.ContinuousGrammar("chrome", context=grammar_context)
 
 #decorator
 def GrammarRule(rule):

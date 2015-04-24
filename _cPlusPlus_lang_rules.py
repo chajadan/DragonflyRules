@@ -1,9 +1,10 @@
-print "import cPlusPlus_lang_rules"
+print "importing cPlusPlus_lang_rules"
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
+print "_cPlusPlus_lang_rules, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 
-grammar = _BaseGrammars.ContinuousGrammar("c++ grammar", enableCommand='load language see plus plus', disableCommand='unload language see plus plus', initiallyDisabled=True)
+grammar = BaseGrammars.ContinuousGrammar("c++ grammar", enableCommand='load language see plus plus', disableCommand='unload language see plus plus', initiallyDisabled=True)
 
 #decorator
 def GrammarRule(rule):

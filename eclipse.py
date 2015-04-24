@@ -1,9 +1,11 @@
+print "importing eclipse"
 from dragonfly import *
-import  _BaseGrammars
+import BaseGrammars
+print "eclipse, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 
 eclipse_context = AppContext(executable = "eclipse", title = "Eclipse")
-grammar = _BaseGrammars.ContinuousGrammar("eclipse grammar", context = eclipse_context)
+grammar = BaseGrammars.ContinuousGrammar("eclipse grammar", context = eclipse_context)
 
 #decorator
 def GrammarRule(rule):

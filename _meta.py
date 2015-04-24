@@ -1,5 +1,7 @@
+print "importing _meta"
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
+print "_meta, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 import inspect
 import time
@@ -8,7 +10,7 @@ import os
 import win32ui
 import win32gui
  
-grammar = _BaseGrammars.ContinuousGrammar("meta grammar")
+grammar = BaseGrammars.ContinuousGrammar("meta grammar")
  
 #decorator
 def GrammarRule(rule):
@@ -69,8 +71,8 @@ def DeployDragonfly_Refresh():
 class ListRegisteredIntros(ContinuousRule):
     spec = "list registered rules"
     def _process_recognition(self, node, extras):
-        print "id", id(_BaseGrammars.GlobalGrammar)
-        print _BaseGrammars.GlobalGrammar._commandWords
+        print "id", id(BaseGrammars.GlobalGrammar)
+        print BaseGrammars.GlobalGrammar._commandWords
     
 @GrammarRule
 class CloseDragonRule(RegisteredRule):

@@ -1,11 +1,13 @@
+print "importing _keyboard_keys"
 from dragonfly import *
 #import _ruleExport as rex
-import  _BaseGrammars
+import BaseGrammars
+print "_keyboard_keys, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 
 #exports = rex.ExportedRules()
 
-grammar = _BaseGrammars.ContinuousGrammar("keypress grammar")
+grammar = BaseGrammars.ContinuousGrammar("keypress grammar")
 
 #decorator
 def GrammarRule(rule):

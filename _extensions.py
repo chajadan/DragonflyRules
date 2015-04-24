@@ -1,8 +1,10 @@
+print "importing _extensions"
 from dragonfly import *
-import  _BaseGrammars
+import BaseGrammars
+print "_extensions, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 
-grammar = _BaseGrammars.ContinuousGrammar("file extensions grammar")
+grammar = BaseGrammars.ContinuousGrammar("file extensions grammar")
 
 #decorator
 def GrammarRule(rule):

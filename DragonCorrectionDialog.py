@@ -1,3 +1,4 @@
+print "importing DragonCorrectionDialog"
 import SimpleXMLRPCServer
 from SimpleXMLRPCServer import *
 import easygui

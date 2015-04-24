@@ -1,12 +1,13 @@
 # Implements the ability to capture a command typed from the keyboard, rather than by voice 
-
+print "importing _byKeys"
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
+print "_byKeys, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 import inspect
 import pyHook # http://sourceforge.net/projects/pyhook/
 
-grammar = _BaseGrammars.ContinuousGrammar("by keys grammar")
+grammar = BaseGrammars.ContinuousGrammar("by keys grammar")
 
 #decorator
 def GrammarRule(rule):

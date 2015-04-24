@@ -6,14 +6,15 @@
 # remember string [as] <name>   -- then type in the string, followed by the return key
 # by name <name>                -- types out the named string
 # clear named strings           -- forgets all named strings
-
+print "importing _namedStrings"
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
+print "_namedStrings, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 import pyHook # http://sourceforge.net/projects/pyhook/
 import inspect
 from _BaseRules import *
 
-grammar = _BaseGrammars.ContinuousGrammar("named strings grammar")
+grammar = BaseGrammars.ContinuousGrammar("named strings grammar")
 
 #decorator
 def GrammarRule(rule):

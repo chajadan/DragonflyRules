@@ -1,9 +1,10 @@
 ﻿  # -*- coding: utf-8 -*-
-print "import _main"
+print "importing _main"
 
 from dragonfly import *
 from dragonfly.timer import _Timer
-import  _BaseGrammars
+import BaseGrammars
+print "_main, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 import _general as glib
 import _decorators as dec
@@ -18,8 +19,8 @@ import easygui
 import chajLib.ui.docnav as docnav
 TIMER_MANAGER = _Timer(1)
 
-masterRunOn = _BaseGrammars.ContinuousGrammar("master run on grammar")
-grammar = _BaseGrammars.GlobalGrammar("master non run on grammar")
+masterRunOn = BaseGrammars.ContinuousGrammar("master run on grammar")
+grammar = BaseGrammars.GlobalGrammar("master non run on grammar")
 
 
 # Clipboard _support

@@ -1,5 +1,5 @@
 # the file for all context that is global to any specific grammar
-
+print "importing _BaseGrammars"
 from dragonfly import *
 import _BaseRules as br
 import _general as glib # general library
@@ -50,27 +50,18 @@ class GlobalGrammar(Grammar):
             return None
     
     def add_rule(self, ruleInstance):
-        if ruleInstance._name == "quickContinuousRule_call withActionSeries(Text('()'), Key('left'))":
-            print "GOT IT!"
-            print ruleInstance
-            print getattr(ruleInstance, "isRegistered", "not! registered")
         if getattr(ruleInstance, "isRegistered", False):
             self._validateRuleIntro(ruleInstance)
         Grammar.add_rule(self, ruleInstance)
     
     def activate_rule(self, rule):
-        if rule._name == "quickContinuousRule_call withActionSeries(Text('()'), Key('left'))":
-            print "rule is activated!!"
         if getattr(rule, "isRegistered", False):
             intros = self.DetermineRuleIntros(rule)
             partials = self.DeterminePartialsFromIntros(intros)
             GlobalGrammar._commandWords.update(intros)
             GlobalGrammar._commandWordPartials.update(partials)
-            if rule._name == "quickContinuousRule_call withActionSeries(Text('()'), Key('left'))":
-                print intros
-                print partials
-                print "id", id(GlobalGrammar)
-                print GlobalGrammar._commandWords
+            #if rule._name == "quickContinuousRule_call withActionSeries(Text('()'), Key('left'))":
+            #    print "GlobalGrammar id", id(GlobalGrammar)
         return Grammar.activate_rule(self, rule)
     
         
@@ -295,3 +286,5 @@ class ContinuousGrammar(GlobalGrammar):
                            
         ruleInstance._process_recognition = _instance_process_recognition
         return ruleInstance
+
+print "_BaseGrammars, GlobalGrammar id", id(GlobalGrammar)

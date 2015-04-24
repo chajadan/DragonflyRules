@@ -1,4 +1,4 @@
-print "import _html_lang_rules"
+print "importing _html_lang_rules"
 # The bulk of this file was obtained from here: https://github.com/dictation-toolbox/dragonfly-scripts/tree/master/dynamics
 # it was the starting point
 # several edits have been made
@@ -8,12 +8,13 @@ print "import _html_lang_rules"
 # https://www.gnu.org/licenses/lgpl.html
 
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
+print "_html_lang_rules, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 import _BaseRules as br
 import _ruleExport as rex
 import inspect
 
-grammar = _BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language html', disableCommand='unload language html', initiallyDisabled=True)
+grammar = BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language html', disableCommand='unload language html', initiallyDisabled=True)
 
 #decorator
 def GrammarRule(rule):

@@ -1,4 +1,4 @@
-print "import _keyboard"
+print "importing _keyboard"
 import ctypes
 import string
 import time

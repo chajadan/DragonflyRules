@@ -1,10 +1,11 @@
-print "import _case_and_joiner_rules"
+print "importing _case_and_joiner_rules"
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
+print "_case_and_joiner_rules, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 import inspect
 
-grammar = _BaseGrammars.ContinuousGrammar("case and joiner rules")
+grammar = BaseGrammars.ContinuousGrammar("case and joiner rules")
 
 #decorator
 def GrammarRule(rule):

@@ -1,12 +1,10 @@
-print "import _quickRules"
+print "importing _BaseRules"
 from dragonfly import *
 import _decorators as dec
 import inspect
 import _general as glib
 import _globals
 
-print "import _baseRules"
-#import _GlobalGrammar
 
 # To contain any custom classes derived ultimately from dragonfly Rule
 

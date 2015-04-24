@@ -1,10 +1,12 @@
+print "importing _docNav_edit"
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
+print "_docNav_edit, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 import chajLib.ui.docnav as docnav
 import chajLib.ui.keyboard as kb
 
-grammar = _BaseGrammars.ContinuousGrammar("document navigation - edit grammar")
+grammar = BaseGrammars.ContinuousGrammar("document navigation - edit grammar")
 
 #decorator
 def GrammarRule(rule):

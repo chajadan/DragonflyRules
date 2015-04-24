@@ -2,7 +2,7 @@
 # purpose library and so at some point should be transferred there
 import inspect
 
-print "import _general"
+print "importing _general"
 
 
 def ListOfString_StripAll(lst):

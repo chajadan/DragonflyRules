@@ -1,11 +1,13 @@
+print "importing Report32"
 from dragonfly import *
 from _BaseRules import *
-import _BaseGrammars
+import BaseGrammars
+print "Report32, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 import inspect
 import ctypes
 AciAware = ctypes.cdll.LoadLibrary(r"C:\Users\chajadan\git\AciImporter\Release\AciAware.dll");
 grammar_context = AppContext(executable="Report32")
-grammar = _BaseGrammars.GlobalGrammar("ACI", context=grammar_context)
+grammar = BaseGrammars.GlobalGrammar("ACI", context=grammar_context)
 
 # decorator
 def GrammarRule(Rule):

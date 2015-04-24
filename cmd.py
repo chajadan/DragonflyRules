@@ -1,8 +1,10 @@
+print "importing cmd"
 from dragonfly import *
-import  _BaseGrammars
+import BaseGrammars
+print "cmd, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 
-grammar = _BaseGrammars.ContinuousGrammar("cmd")
+grammar = BaseGrammars.ContinuousGrammar("cmd")
 
 class CmdRules(QuickContinuousRules):
     mapping={

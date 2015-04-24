@@ -1,4 +1,4 @@
-print "import _decorators"
+print "importing _decorators"
 #decorator
 #def GrammarRule(RuleClass):
 #    ??.add_rule(RuleClass())

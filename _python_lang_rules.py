@@ -1,9 +1,11 @@
+print "importing _python_lang_rules"
 from dragonfly import *
-import  _BaseGrammars
+import BaseGrammars
+print "_python_lang_rules, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 import inspect
 
-grammar = _BaseGrammars.ContinuousGrammar("python grammar", enableCommand="load language python", disableCommand="unload language python", initiallyDisabled=True)
+grammar = BaseGrammars.ContinuousGrammar("python grammar", enableCommand="load language python", disableCommand="unload language python", initiallyDisabled=True)
 
 #decorator
 def GrammarRule(rule):

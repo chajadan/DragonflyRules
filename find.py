@@ -1,3 +1,4 @@
+print "importing find"
 from dragonfly import *
 from _BaseRules import *
 

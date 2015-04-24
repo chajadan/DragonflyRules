@@ -1,12 +1,13 @@
-import  _BaseGrammars
-print "import _myLaunchFocus"
+print "importing _myLaunchFocus"
+import BaseGrammars
+print "_myLaunchFocus, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from dragonfly import *
 from _BaseRules import *
 import os
 import collections
 import inspect
 
-grammar = _BaseGrammars.ContinuousGrammar("launch and focus grammar")
+grammar = BaseGrammars.ContinuousGrammar("launch and focus grammar")
 
 executable_info_field_names = ["name", "path", "window_title"]
 executable_info_list = [
@@ -40,7 +41,6 @@ class LaunchRule(ContinuousRule):
 class FocusRule(ContinuousRule):
     spec = "<program>"
     intro = [exe.name for exe in executable_info]
-    print intro
     program_choices = {exe.name: os.path.basename(exe.path) for exe in executable_info}
     extras = (Choice("program", program_choices),)
     def _process_recognition(self, node, extras):

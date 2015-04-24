@@ -1,10 +1,12 @@
+print "importing WDExpress"
 from dragonfly import *
 import inspect
-import _BaseGrammars
+import BaseGrammars
+print "WDExpress, GlobalGrammar id", id(BaseGrammars.GlobalGrammar)
 from _BaseRules import *
 
 grammar_context = AppContext(executable="WDExpress")        
-grammar = _BaseGrammars.ContinuousGrammar("Visual Studio express grammar", grammar_context)
+grammar = BaseGrammars.ContinuousGrammar("Visual Studio express grammar", grammar_context)
 
 #decorator
 def GrammarRule(rule):
