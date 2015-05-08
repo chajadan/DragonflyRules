@@ -1,0 +1,21 @@
+Welcome to my dragonfly repository.
+
+I'm sharing this in case it is of use to you. This README is meant to get you acquainted with my setup.
+
+All these files are expected to be deployed to your NatLink MacroSystem folder. I installed NatLink 4.1mike, using Python 2.7, from this location: http://qh.antenna.nl/unimacro/installation/installation.html  My installation issues were solved by using the exact versions provided by them in the zip.
+
+There are other dependencies. If you try to this run this whole system, I recommend just getting the import errors, then locating and installing those components, like pyhook, and wxPython. Also, I reference my general python library, which can be located here: https://bitbucket.org/chajadan/pychajlib
+
+My files do contain parts that are specific to my system. For instance, the commands in _meta.py that restart and refresh dragonfly reference my Dragon profile names.
+
+Refer to templates.txt for a quick way to start a new grammar file. Note, I use the decorate @GrammarRule to instantiate classes and add them to the grammar, because I think it looks very clean -- but it's not obvious. If you change the name of the grammar from the default, add additional grammars to the file, or use certain types of rules, you made need to change the decorator, or just avoid it and use the normal add_rule method.
+
+The majority of my grammar is meant to be continuous, meaning you can speak various commands all in one utterance, and it will get chopped up into separate commands. That also means if you want to literally say something that matches a command, you must say "English" before that command to make it literal words. You can add to the list of "literalizers" by appending to ContinuousGrammar.literalTags, found in BaseGrammars.py. The command "list registered commands" will show you phrases that need to be literalized.
+
+The three most basic types of rules in my system are ContinuousRule, RegisteredRule, and ContinuingRule -- these all facilitate continuous commands, otherwise you can just use the basic CompoundRule of dragonfly. A RegisteredRule is a rule that can be heard in the middle of a ContinuingRule. A ContiuousRule is simply both a RegisteredRule and a ContinuingRule -- you can speak ~any~ number of ContinuousRule's in a row and they will all get heard and executed, but once it hit a RegisteredRule, it will not continue, and you can't chain something that's not registered. A good example of something best as a ContinuousRule would be a "type a percent sign" command, because you'd like to just say that at any point and keep right on going after words. If you made that command only a RegisteredRule, you could say it during other ContiuningRules, but afterwards would have to stop giving commands. If you made it a ContinuingRule only, it would let you say other registered things after it, but it wouldn't get heard from the middle of anything else. Sometimes these other types are useful -- I recommend going with ContinuousRule unless you have a reason not to (such as not wanting to needlessly pollute your "must be literalized" namespace).
+
+Something important to know about RegisteredRules is that they rely on having a list of "intros" for the rule. For instance, a spec of "(big|large) explosion" would get heard as either "big explosion" or "large explosion". The RegisteredRule will register both of those intros, so you don't have to literalize "big" or "large" if they come not followed by "explosion". You often don't have to worry about explicitly supplying the intros, but if your spec is rather complicated, I've only done so much automatic parsing. Check out the comments at GlobalGrammar.DetermineRuleIntros for more details, or to look into the particulars.
+
+If you want to use any of the "QuickRules", base them off other examples from my repo.
+
+My code contains many little things here and there I've not mentioned. The bottom line will be, you need to either ask me about my code, or read it. I'm happy to answer any questions.

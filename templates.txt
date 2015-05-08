@@ -15,6 +15,13 @@ def GrammarRule(rule):
     else:
         grammar.add_rule(rule)
 
+### Your Rules Go Here
+# @GrammarRule
+# def ExampleRule(Base.ContinuousRule):
+#    spec = "example rule"
+#    def _process_recognition(self, node, extras):
+#    pass
+
 grammar.load()
 
 def unload():
