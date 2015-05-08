@@ -1,11 +1,11 @@
 from dragonfly import *
-#import _ruleExport as rex
-import  _BaseGrammars
-from _BaseRules import *
+#import ruleExport as rex
+import BaseGrammars
+from BaseRules import *
 
 #exports = rex.ExportedRules()
 
-grammar = _BaseGrammars.ContinuousGrammar("keypress grammar")
+grammar = BaseGrammars.ContinuousGrammar("keypress grammar")
 
 #decorator
 def GrammarRule(rule):

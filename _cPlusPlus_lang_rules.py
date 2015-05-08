@@ -1,9 +1,9 @@
 print "import cPlusPlus_lang_rules"
 from dragonfly import *
-import _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 
-grammar = _BaseGrammars.ContinuousGrammar("c++ grammar", enableCommand='load language see plus plus', disableCommand='unload language see plus plus', initiallyDisabled=True)
+grammar = BaseGrammars.ContinuousGrammar("c++ grammar", enableCommand='load language see plus plus', disableCommand='unload language see plus plus', initiallyDisabled=True)
 
 #decorator
 def GrammarRule(rule):
@@ -40,6 +40,7 @@ class KeywordRule(ContinuousRule):
         
 # keyword format: written form, spoken form, isAlwaysFollowed (and so necessarily a space afterwards), isAlwaysPreceded
 keywords = [
+    ["case", "case", True, False],
     ["catch", "catch", True, False],
     ["class", "class", True, False],
     ["do", "do", True, False],
@@ -72,6 +73,10 @@ class OperatorRules(QuickContinuousRules):
         "[is] less than": Text(" < "),
         "[is] greater than": Text(" > "),               
         "compares": Text(" == "),
+        "resolve": Text("::"),
+        "comment": Text("// "),
+        "start comment": Text("/* "),
+        "end comment": Text(" */"),
     }
 
 @GrammarRule
@@ -79,6 +84,21 @@ class PreprocessorRules(QuickContinuousRules):
     mapping = {
         "include": Text("#include"),
     }
+
+
+@GrammarRule
+class CommonNamesRules(QuickContinuousRules):
+    mapping = {
+        "standard": Text("std::"),
+    }
+
+
+@GrammarRule
+class CodeTemplatesRules(QuickContinuousRules):
+    mapping = {
+        "new block": Text(" {}") + Key("left, enter:2, up, tab"),
+    }
+
 
 grammar.load()
 listener = grammar.listener()

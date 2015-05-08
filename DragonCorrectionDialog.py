@@ -3,6 +3,7 @@ from SimpleXMLRPCServer import *
 import easygui
 import sys
 import signal
+import wx
 from threading import Timer
 
 #     # this file may be executed externally to Dragon
@@ -19,8 +20,9 @@ class DragonCorrectionDialog():
     def __init__(self, heard):
         self.completed = False
         self.setup_XMLRPC_server()
-        self.correction = easygui.enterbox(heard, "Correct with...", default=heard)
-        print "correction is", self.correction
+        dlg = wx.TextEntryDialog(None, "Correct with...", caption="Correction Dialog", defaultValue=heard)
+        dlg.ShowModal()
+        self.correction = dlg.GetValue()        
         self.completed = True        
         
         # start server, tk main loop
@@ -51,5 +53,6 @@ class DragonCorrectionDialog():
 
 if __name__ == "__main__":
     heard = sys.argv[1]
-    print heard
+    app = wx.App()
+    app.MainLoop()
     DragonCorrectionDialog(heard)

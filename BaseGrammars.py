@@ -1,7 +1,7 @@
 # the file for all context that is global to any specific grammar
 
 from dragonfly import *
-import _BaseRules as br
+import BaseRules as br
 import _general as glib # general library
 from collections import Counter
 import inspect
@@ -50,27 +50,16 @@ class GlobalGrammar(Grammar):
             return None
     
     def add_rule(self, ruleInstance):
-        if ruleInstance._name == "quickContinuousRule_call withActionSeries(Text('()'), Key('left'))":
-            print "GOT IT!"
-            print ruleInstance
-            print getattr(ruleInstance, "isRegistered", "not! registered")
         if getattr(ruleInstance, "isRegistered", False):
             self._validateRuleIntro(ruleInstance)
         Grammar.add_rule(self, ruleInstance)
     
     def activate_rule(self, rule):
-        if rule._name == "quickContinuousRule_call withActionSeries(Text('()'), Key('left'))":
-            print "rule is activated!!"
         if getattr(rule, "isRegistered", False):
             intros = self.DetermineRuleIntros(rule)
             partials = self.DeterminePartialsFromIntros(intros)
             GlobalGrammar._commandWords.update(intros)
             GlobalGrammar._commandWordPartials.update(partials)
-            if rule._name == "quickContinuousRule_call withActionSeries(Text('()'), Key('left'))":
-                print intros
-                print partials
-                print "id", id(GlobalGrammar)
-                print GlobalGrammar._commandWords
         return Grammar.activate_rule(self, rule)
     
         
@@ -206,13 +195,13 @@ class GlobalGrammar(Grammar):
         if not intros:
             return []
         for intro in intros:
-            if intro.find(" ") != -1: # determine all subsets of intro that start with first word
-                position = len(intro)
-                while position != -1:
-                    partials.append(intro[:intro.rfind(" ", position)])
-                    position -= 1
-            else:
+            position = intro.rfind(" ")
+            if position == -1:
                 partials.append(intro)
+            else:
+                while position != -1:
+                    partials.append(intro[0:position])
+                    position = intro.rfind(" ", 0, position)
         return partials    
     
     

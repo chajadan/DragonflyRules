@@ -2,8 +2,8 @@ from dragonfly import *
 import Base
 import inspect
 
-context = AppContext(executable= , title= )
-grammar = Base.ContinuousGrammar(grammar", context=context)
+context = AppContext(executable="evernote")
+grammar = Base.ContinuousGrammar("evernote grammar", context=context)
 
 #decorator
 def GrammarRule(rule):
@@ -14,6 +14,13 @@ def GrammarRule(rule):
             grammar.add_rule(rule())
     else:
         grammar.add_rule(rule)
+
+
+@GrammarRule
+class MenuRules(Base.QuickContinuousRules):
+    mapping = {
+        "new note": Key("c-n"),
+    }
 
 grammar.load()
 

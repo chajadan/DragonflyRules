@@ -1,10 +1,10 @@
 from dragonfly import *
-import _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 import chajLib.ui.docnav as docnav
 import chajLib.ui.keyboard as kb
 
-grammar = _BaseGrammars.ContinuousGrammar("document navigation - selection grammar")
+grammar = BaseGrammars.ContinuousGrammar("document navigation - selection grammar")
 
 #decorator
 def GrammarRule(rule):
@@ -33,8 +33,12 @@ class InterDocNavRules(QuickContinuousRules):
     mapping = {
         "select all": Key("c-a"),
         "select top": Key("cs-home"),
-        "select bottom": Key("cs-end"),               
-        "select full left": Key("s-home, s-home"),        
+        "copy top": Key("cs-home, c-c"),
+        "select bottom": Key("cs-end"),
+        "copy bottom": Key("cs-end, c-c"),
+        "select full left": Key("s-home, s-home"),
+        "copy left": Key("s-home, c-c"),
+        "copy right": Key("s-end, c-c"),
         "select line": Key("end, s-home"),
         "select full line": Key("end, s-home, s-home"),
         "select up [<lineCount> [times]]": Key("shift:down, up, shift:up") * Repeat(extra="lineCount"),
@@ -67,7 +71,7 @@ class SelectPhraseLeft(ContinuousRule_EatDictation):
         if not extras.has_key("RunOn"):
             Key("s-home").execute()
         else:
-            words = "before left word".split() + extras["RunOn"].words
+            words = "before left".split() + extras["RunOn"].words
             Mimic(*words).execute()
             kb.shiftDown()
             for _ in range(len(extras["RunOn"].format())):
@@ -81,31 +85,16 @@ class SelectPhraseRight(ContinuousRule_EatDictation):
         if not extras.has_key("RunOn"):
             Key("s-end").execute()   
         else:
-            words = "before right word".split() + extras["RunOn"].words
+            words = "before right".split() + extras["RunOn"].words
             Mimic(*words).execute()
             kb.shiftDown()
             for _ in range(len(extras["RunOn"].format())):
                 kb.sendRight(extended = True, delay = 0)
             kb.shiftUp()
 
-@GrammarRule  
-class SelectThroughLeftRule(ContinuousRule):
-    spec = "select left through <RunOn>"
-    extras = (Dictation("RunOn"),)
-    def _process_recognition(self, node, extras):
-        where = extras["RunOn"].format()
-        print "where",where
-        Function(docnav.SelectThroughLeft).execute({"selectThrough": where})
 
-@GrammarRule
-class SelectThroughRightRule(ContinuousRule):
-    spec = "select right through <RunOn>"
-    extras = (Dictation("RunOn"),)
-    def _process_recognition(self, node, extras):
-        where = extras["RunOn"].format()
-        Function(docnav.SelectThroughRight).execute({"selectThrough": where})
-        
 grammar.load()
+
 def unload():
     global grammar
     if grammar: grammar.unload()

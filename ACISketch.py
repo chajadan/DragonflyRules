@@ -1,11 +1,11 @@
 from dragonfly import *
-from _BaseRules import *
-import  _BaseGrammars
+from BaseRules import *
+import BaseGrammars
 import inspect
 import ctypes
 AciAware = ctypes.cdll.LoadLibrary(r"C:\Users\chajadan\git\AciImporter\Release\AciAware.dll");
 grammar_context = AppContext(executable="ACISketch")
-grammar = _BaseGrammars.GlobalGrammar("ACISketch", context=grammar_context)
+grammar = BaseGrammars.GlobalGrammar("ACISketch", context=grammar_context)
 
 # decorator
 def GrammarRule(Rule):

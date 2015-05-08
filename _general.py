@@ -1,8 +1,8 @@
 # this file is only to contain code that would be appropriate to my general
 # purpose library and so at some point should be transferred there
-import inspect
 
 print "import _general"
+import inspect
 
 
 def ListOfString_StripAll(lst):
@@ -15,13 +15,6 @@ def EnsureInstance(instanceOrClass, *args, **kwargs):
         return instanceOrClass(*args, **kwargs)
     else:
         return instanceOrClass
-
-
-def FirstNotNone(*args):
-    for arg in args:
-        if arg is not None:
-            return arg
-    return None
 
 
 def Single_Spaces_And_Trimmed(some_string):
@@ -46,9 +39,7 @@ def LaunchExeAsyncWithArgList(exePath, argList):
         # sys.executable,
         exePath
     ]
-    print cmd
     cmd += argList
-    print cmd
     p = Popen(cmd, shell=False, stdin=None, stdout=None, stderr=None,
               close_fds=True, creationflags=DETACHED_PROCESS)
 

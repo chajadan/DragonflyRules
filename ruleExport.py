@@ -1,5 +1,5 @@
 print "import _ruleExport"
-from _BaseRules import *
+from BaseRules import *
 import inspect
 
 

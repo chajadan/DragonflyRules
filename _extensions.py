@@ -1,8 +1,8 @@
 from dragonfly import *
-import  _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 
-grammar = _BaseGrammars.ContinuousGrammar("file extensions grammar")
+grammar = BaseGrammars.ContinuousGrammar("file extensions grammar")
 
 #decorator
 def GrammarRule(rule):

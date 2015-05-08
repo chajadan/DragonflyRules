@@ -1,10 +1,10 @@
 from dragonfly import *
 import inspect
-import _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 
 grammar_context = AppContext(executable="WDExpress")        
-grammar = _BaseGrammars.ContinuousGrammar("Visual Studio express grammar", grammar_context)
+grammar = BaseGrammars.ContinuousGrammar("Visual Studio express grammar", grammar_context)
 
 #decorator
 def GrammarRule(rule):
@@ -35,20 +35,33 @@ class ShortcutRules(QuickContinuousRules):
         "comment selection": Key("c-e, c-c"),
         "uncomment selection": Key("c-e, c-u"),
         "go to definition": Key("f12"),
-        "toggle file": Key("c-m, c-o"),
+        "toggle file": Key("c-k, c-o"), # swaps from cpp to h file, and vice versa
         "recent projects": Key("a-f, j"),
         "save all": Key("cs-s"),
         "build this project only": Key("a-b, j, b"),
         "rebuild this project only": Key("a-b, j, r"),
         "clean this project only": Key("a-b, j, c"),
-        "pragma once": Text("#pragma once"),
         "recent projects": Key("a-f, j"),
         "go to last project": Key("a-f, j, down, enter"),
+    }
+
+
+@GrammarRule
+class PreprocessorRules(QuickContinuousRules):
+    mapping = {
+        "pragma once": Text("#pragma once"),
+    }
+
+
+@GrammarRule
+class RulesWithArguments(QuickContinuousRules):
+    mapping = {
         "go to line <n>": Key("c-g") + Text("%(n)s") + Key("enter"),
     }
     extrasDict = {"n": IntegerRef("n", 1, 100000)}
     defaultsDict = {"n": 1}
-    
+
+
 grammar.load()
 
 def unload():

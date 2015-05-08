@@ -1,10 +1,10 @@
 from dragonfly import *
-import _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 import chajLib.ui.docnav as docnav
 import chajLib.ui.keyboard as kb
 
-grammar = _BaseGrammars.ContinuousGrammar("document navigation - edit grammar")
+grammar = BaseGrammars.ContinuousGrammar("document navigation - edit grammar")
 
 #decorator
 def GrammarRule(rule):
@@ -18,10 +18,9 @@ def GrammarRule(rule):
 
 
 @GrammarRule
-class ReplaceLeftCharacters(ContinuousRule_EatDictation):
-    spec = "replace <direction> (character|characters) [<n> [times]]"
-    introspec = "replace (left|right) (character|characters)"
-    #intro = ["replace left character", "replace left characters", "replace right character", "replace right characters"]
+class ReplaceSurroundingCharacters(ContinuousRule_EatDictation):
+    spec = "replace <direction> [<n> [times]] (character|characters)"
+    introspec = "replace (left|right)"
     extras = (IntegerRef("n", 1, 200), Choice("direction", {"left":"left", "right":"right"}))
     defaults = { "n": 1}
     def _process_recognition(self, node, extras):
@@ -32,6 +31,31 @@ class ReplaceLeftCharacters(ContinuousRule_EatDictation):
         else:
             action += Key("delete")
         action.execute()
+
+
+@GrammarRule
+class ReplaceTrim(ContinuousRule_EatDictation):
+    spec = "replace <direction>"
+    introspec = "replace (left|right)"
+    extras = (Choice("direction", {"left":"home", "right":"end"}),)
+    def _process_recognition(self, node, extras):
+        action = Key("s-" + extras["direction"])
+        if "RunOn" in extras:
+            replacement = extras["RunOn"].format()
+            action += Text(replacement)
+        else:
+            action += Key("delete")
+        action.execute()
+
+
+@GrammarRule
+class DocNavEditCalls(QuickContinuousCalls):
+    mapping = [
+        ["paste left", docnav.replace_left_from_clipboard],
+        ["paste right", docnav.replace_right_from_clipboard],
+        ["replace left <RunOn>", docnav.replace_left, "replacement"],
+        ["replace right <RunOn>", docnav.replace_right, "replacement"],
+    ]
 
 
 grammar.load()

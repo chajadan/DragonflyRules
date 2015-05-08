@@ -1,6 +1,6 @@
 from dragonfly import *
-import _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 import inspect
 import time
 import _general as glib
@@ -8,7 +8,7 @@ import os
 import win32ui
 import win32gui
  
-grammar = _BaseGrammars.ContinuousGrammar("meta grammar")
+grammar = BaseGrammars.ContinuousGrammar("meta grammar")
  
 #decorator
 def GrammarRule(rule):
@@ -39,9 +39,6 @@ def LaunchDragon():
      
 def LaunchDragonAsync(profile):
     glib.LaunchExeAsyncWithArgList(r"C:\Program Files (x86)\Nuance\NaturallySpeaking13\Program\natspeak.exe", ["/user", profile])
-    #glib.RunBatchFileAsync(r"C:\Users\chajadan\git\DragonflyRules\DragonflyRules\src\startDragon.bat")
-    #import thread
-    #thread.start_new_thread(LaunchDragon(), ())
               
 def DeployDragonfly_Restart():
     ExitDragon()
@@ -66,11 +63,22 @@ def DeployDragonfly_Refresh():
         pass
 
 @GrammarRule
-class ListRegisteredIntros(ContinuousRule):
-    spec = "list registered rules"
+class ListRegisteredCommands(ContinuousRule):
+    spec = "list registered commands"
     def _process_recognition(self, node, extras):
-        print "id", id(_BaseGrammars.GlobalGrammar)
-        print _BaseGrammars.GlobalGrammar._commandWords
+        commands = list(BaseGrammars.GlobalGrammar._commandWords)
+        commands.sort()
+        print commands
+
+        
+@GrammarRule
+class ListRegisteredCommandIntros(ContinuousRule):
+    spec = "list registered partials"
+    def _process_recognition(self, node, extras):
+        partials = list(BaseGrammars.GlobalGrammar._commandWordPartials)
+        partials.sort()
+        print partials
+
     
 @GrammarRule
 class CloseDragonRule(RegisteredRule):

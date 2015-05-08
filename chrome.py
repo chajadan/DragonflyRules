@@ -1,9 +1,9 @@
 from dragonfly import *
-import  _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 
 grammar_context = AppContext(executable="chrome")
-grammar = _BaseGrammars.ContinuousGrammar("chrome", context=grammar_context)
+grammar = BaseGrammars.ContinuousGrammar("chrome", context=grammar_context)
 
 #decorator
 def GrammarRule(rule):
@@ -66,22 +66,32 @@ class GmailRules(QuickContinuousRules):
 	name="gmail_rule"
 	context = AppContext(title="Gmail")
 	mapping = {
+        "[show] shortcut help": Key("s-slash"),
+        "mark all read": Key("asterisk/20, a/20, s-i/20, asterisk/20, n"),
 		"mark read": Key("s-i"),
 		"mark unread": Key("s-u"),
 		"read it": Key("x/20, s-i") + Pause("20") + Key("x"),
 		"read hover": Mouse("left") + Pause("20") + Key("s-i") + Pause("20") + Mouse("left"),
 		"main window": Key("s-escape"),
-		"inbox": Key("g/20, i"),
-		"go to label <text>": Key("g/20, l") + Pause("20") + Text("%(text)s"),
+		"inbox": Key("escape:2, g/20, i"),
+        "sent box": Key("escape:2, g/20, t"),
+		"go to label <text>": Key("escape:2, g/20, l") + Pause("20") + Text("%(text)s") + Key("escape, enter"),
 		"select all": Key("asterisk/20, a"),
+        "select read": Key("asterisk/20, r"),
+        "select un read": Key("asterisk/20, u"),
+        "(select none|un select all)": Key("asterisk/20, n"),
 		"select read": Key("asterisk/20, r"),
 		"select unread": Key("asterisk/20, u"),
-		"select none": Key("asterisk/20, n"),
 		"(toggle [selection|mark]|mark|un mark)": {
 			"action": Key("x"),
 			"intro": ["mark", "un mark", "toggle", "toggle selection", "toggle mark"]},
-		"search": Text("/"),
-		"new message": Text("c"),      
+		"search [box]": Text("/"),
+		"(compose|new) message": Text("c"),
+        "trash it": Key("s-3"),
+        "show labels": Key("escape:2, l"),
+        "move to": Key("escape:2, v"),
+        "show [more] actions": Text("."),
+        "remove [current] label": Text("y"),
 	}
 	extrasDict = {
         "text": Dictation("text"),

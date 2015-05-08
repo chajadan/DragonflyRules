@@ -1,14 +1,10 @@
-print "import _quickRules"
+print "import _baseRules"
 from dragonfly import *
 import _decorators as dec
 import inspect
 import _general as glib
 import _globals
-
-print "import _baseRules"
-#import _GlobalGrammar
-
-# To contain any custom classes derived ultimately from dragonfly Rule
+from chajLib.ops import first_not_none
 
 class CorrectableRule(CompoundRule):
     def process_recognition(self, node, results):
@@ -25,10 +21,10 @@ class ContinuingRule(ContinuousGrammarRule):
     isContinuing = True
     def __init__(self, name = None, spec = None, extras = None, defaults = None, exported = None, context = None):
         _spec = spec if spec else getattr(self, "spec", None)
-        _defaults = glib.FirstNotNone(defaults, getattr(self, "defaults", None))
-        _exported = glib.FirstNotNone(exported, getattr(self, "exported", None))
-        _context = glib.FirstNotNone(context, getattr(self, "context", None))
-        _extras = glib.FirstNotNone(extras, getattr(self, "extras", None))
+        _defaults = first_not_none(defaults, getattr(self, "defaults", None))
+        _exported = first_not_none(exported, getattr(self, "exported", None))
+        _context = first_not_none(context, getattr(self, "context", None))
+        _extras = first_not_none(extras, getattr(self, "extras", None))
         
         self.runOnAdded = False # so far
         if not _extras:
@@ -80,8 +76,6 @@ class BaseQuickRules():
         self._rules = []
     def add_rule(self, rule):
         self._rules.append(rule)
-        #if self.__class__.__name__ == "QuickCRules":
-            #print rule._name
         self.grammer.add_rule(rule)
 
 @dec.ChainedRule
@@ -99,25 +93,54 @@ class QuickChainedRules(BaseQuickRules):
         BaseQuickRules.__init__(self, grammar)
         for voicedAs, action in self.mapping.items():
             self.add_rule(QuickChainedRule(voicedAs, action))
-        
+
+    
 class QuickContinuousRule(ContinuousRule):
-    def __init__(self, voicedAs, action, name = None, spec = None, extras = None, defaults = None, exported = None, context = None, intro = None):
-        self.intro = intro
-        self.action = action
-        name = name if name else "quickContinuousRule_" + voicedAs + action.__str__()
-        ContinuousRule.__init__(self, name = name, spec = voicedAs, extras = extras, defaults = defaults)
+    def __init__(self, voicedAs, action, name=None, spec=None, extras=None, defaults=None, exported=None, context=None, intro=None, args=None):
+        self.intro = first_not_none(intro, getattr(self, "intro", None))
+        self.action = first_not_none(action, getattr(self, "action", None))
+        self.args = first_not_none(args, getattr(self, "args", None), {}) 
+        name = first_not_none(name, getattr(self, "name", None), "quickContinuousRule_" + voicedAs + action.__str__())
+        ContinuousRule.__init__(self, name=name, spec=voicedAs, extras=extras, defaults=defaults)
     def _process_recognition(self, node, extras):
+        for name, value_callback in self.args.items():
+            extras[name] = value_callback(extras)
         self.action.execute(extras)
-        
+
+
+class QuickContinuousCall(QuickContinuousRule):
+    def __init__(self, voicedAs, callable, pass_runon_as=None, extras=None):
+        if voicedAs.find("<RunOn>") != -1:
+            if extras:
+                extras = [extra for extra in extras if extra.name != "RunOn"]
+            else:
+                extras = [] 
+            extras.append(Dictation("RunOn"))
+        if pass_runon_as:
+            args = {pass_runon_as: lambda extras: extras["RunOn"].format()}
+        else:
+            args = None
+        QuickContinuousRule.__init__(self, voicedAs, Function(callable), args=args, extras=extras, defaults=None)
+
+
+class QuickContinuousCalls(BaseQuickRules):
+    def __init__(self, grammar):
+        BaseQuickRules.__init__(self, grammar)
+        for entries in self.mapping:
+            self.add_rule(QuickContinuousCall(*entries))
+
+
 class QuickContinuousRules(BaseQuickRules):
     def __init__(self, grammar):
         BaseQuickRules.__init__(self, grammar)
         for voicedAs, attributes in self.mapping.items():
             intro = None
+            args = {}
             if type(attributes) == dict:
                 action = attributes["action"]
                 if "intro" in attributes:
                     intro = attributes["intro"]
+                args = attributes.get("args", {})
             else:
                 action = attributes
             defaults = {}
@@ -131,7 +154,7 @@ class QuickContinuousRules(BaseQuickRules):
                 extras += (self.extrasDict[extraName],)
                 if hasattr(self, "defaultsDict") and extraName in self.defaultsDict:
                     defaults[extraName] = self.defaultsDict[extraName]
-            self.add_rule(QuickContinuousRule(voicedAs, action, extras = extras, defaults = defaults, intro = intro))
+            self.add_rule(QuickContinuousRule(voicedAs, action, extras=extras, defaults=defaults, intro=intro, args=args))
 
 class QuickRule(CorrectableRule):
     def __init__(self, voicedAs, action, extras = None, defaults = None, intro = None, context = None):

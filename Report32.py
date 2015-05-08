@@ -1,11 +1,11 @@
 from dragonfly import *
-from _BaseRules import *
-import _BaseGrammars
+from BaseRules import *
+import BaseGrammars
 import inspect
 import ctypes
 AciAware = ctypes.cdll.LoadLibrary(r"C:\Users\chajadan\git\AciImporter\Release\AciAware.dll");
 grammar_context = AppContext(executable="Report32")
-grammar = _BaseGrammars.GlobalGrammar("ACI", context=grammar_context)
+grammar = BaseGrammars.GlobalGrammar("ACI", context=grammar_context)
 
 # decorator
 def GrammarRule(Rule):
@@ -25,6 +25,14 @@ def AciImportPics():
     action += Text("C:\\Program Files\\_imp home\\pics") + Key("enter")
     action += Pause("50") + Key("s-tab, c-a, enter") + Pause("400") + Key("w-up/50, a-v, 3")
     action.execute()
+
+
+@GrammarRule
+class AciChainedRules(QuickContinuousRules):
+    mapping = {
+        "save file as": Key("a-f, a, r"),
+    }
+
 
 @GrammarRule
 class AciChainedRules(QuickContinuousRules):

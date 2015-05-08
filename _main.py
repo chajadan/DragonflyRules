@@ -3,14 +3,14 @@ print "import _main"
 
 from dragonfly import *
 from dragonfly.timer import _Timer
-import  _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 import _general as glib
 import _decorators as dec
 import _keyboard as kb
 import inspect
 import _globals
-from _paths import *
+import paths
 import sys
 sys.argv = [""]
 import subprocess
@@ -18,8 +18,16 @@ import easygui
 import chajLib.ui.docnav as docnav
 TIMER_MANAGER = _Timer(1)
 
-masterRunOn = _BaseGrammars.ContinuousGrammar("master run on grammar")
-grammar = _BaseGrammars.GlobalGrammar("master non run on grammar")
+masterRunOn = BaseGrammars.ContinuousGrammar("master run on grammar")
+grammar = BaseGrammars.GlobalGrammar("master non run on grammar")
+listener = Grammar("wake up grammar")
+ 
+class EnableDragonfly(ContinuousRule):
+    spec = "(enable|load) dragonfly"
+    def _process_recognition(self, node, extras):
+        listener.set_exclusiveness(False)
+        get_engine().speak("dragonfly alive")
+listener.add_rule(EnableDragonfly())
 
 
 # Clipboard _support
@@ -42,12 +50,10 @@ def GrammarRule(rule):
         grammar.add_rule(rule)
 
 @GrammarRule
-class DisableDragonfly(RegisteredRule):
+class DisableDragonfly(ContinuousRule):
     spec = "(disable|unload) dragonfly"
-    intro = ["disable dragonfly", "unload dragonfly"]
     def _process_recognition(self, node, extras):
-        grammar.disable()
-        masterRunOn.disable()
+        listener.set_exclusiveness(True)
         get_engine().speak("dragonfly darts off")
 
 
@@ -129,19 +135,11 @@ class SomeQuickRules(QuickContinuousRules):
         "lineCount": 1,
     }    
     mapping= {      
-        "click [<clickCount> [times]]": {
-            "action": Mouse("left:1") * Repeat(extra="clickCount"),
-            "intro": "click"},
+        "(click|mouse) [<clickCount> [times]]": Mouse("left:1") * Repeat(extra="clickCount"),
         "click paste": Mouse("left:1") + Key("c-v"),
-        "control click [<clickCount> [times]]": {
-            "action": (Key("ctrl:down") + Mouse("left:1") + Key("ctrl:up")) * Repeat(extra="clickCount"),
-            "intro": "control click"},
-        "right click [<clickCount> [times]]": {
-            "action": Mouse("right:1") * Repeat(extra="clickCount"),
-            "intro": "right click"},            
-        "middle click [<clickCount> [times]]": {
-            "action": Mouse("middle:1") * Repeat(extra="clickCount"),
-            "intro": "middle click"},
+        "control click [<clickCount> [times]]": (Key("ctrl:down") + Mouse("left:1") + Key("ctrl:up")) * Repeat(extra="clickCount"),
+        "right click [<clickCount> [times]]": Mouse("right:1") * Repeat(extra="clickCount"),            
+        "middle click [<clickCount> [times]]": Mouse("middle:1") * Repeat(extra="clickCount"),
         "double click": Mouse("left:2"),
         "shift down": Key("shift:down"),
         "shift up": Key("shift:up"),
@@ -151,9 +149,7 @@ class SomeQuickRules(QuickContinuousRules):
         "up click": Mouse("left:up"),
         "down right click": Mouse("right:down"),
         "up right click": Mouse("right:up"),
-        "[toggle] flux": {
-            "action": Key("a-end"),
-            "intro": ["flux", "toggle flux"]},         
+        "[toggle] flux": Key("a-end"),         
     }
 
 
@@ -176,7 +172,6 @@ def SubmitCorrection():
     root.destroy()
     root = None
 
-import DragonCorrectionDialog as corrDlg
 import xmlrpclib
 import natlink
 TRIES = 0
@@ -185,7 +180,7 @@ def check_for_correction_response():
     global TRIES
     correction = "-1"
     try:
-        correction = xmlrpclib.ServerProxy("http://127.0.0.1:" + str(corrDlg.LISTENING_PORT)).get_message()
+        correction = xmlrpclib.ServerProxy("http://127.0.0.1:" + str(1338)).get_message()
         print "xmlprclib correction =", correction
     except:
         print "xmlrpclib exception"
@@ -230,9 +225,7 @@ class CorrectionRule(RegisteredRule):
 @GrammarRule
 class QuickCRules(QuickContinuousRules):
     mapping = {
-        "(in quotes|string it)": {
-            "action": Text("\"\"") + Key("left"),
-            "intro": ["in quotes", "string it"]},
+        "(in quotes|string it)": Text("\"\"") + Key("left"),
         "in brackets": Text("[]") + Key("left"),
         "in apostrophes": Text("''") + Key("left"),
         "brackets": Text("[]"),
@@ -250,41 +243,7 @@ class QuickCRules(QuickContinuousRules):
         "trim left": Key("s-home, delete"),
         "trim right": Key("s-end, delete"),
     }
- 
-def JumpRight(jumpTo, sensitive = False):
-    copied = docnav.read_line_cursor_right()
-    if not sensitive:
-        copied = copied.lower()
-        jumpTo = jumpTo.lower()
-    places = copied.find(jumpTo)
-    if places != -1:
-        kb.sendRight(times = places, delay = 0)
-        
-def JumpLeft(jumpTo, sensitive = False):    
-    copied = docnav.read_line_cursor_left()
-    if not sensitive:
-        copied = copied.lower()
-        jumpTo = jumpTo.lower()
-    places = copied.rfind(jumpTo)
-    if places != -1:
-        places = len(copied) - places
-        kb.sendLeft(times = places, delay = 0)
 
-@GrammarRule
-class JeftRule(ContinuousRule):
-    spec = "before left word <RunOn>"
-    extras = Dictation("RunOn"),
-    def _process_recognition(self, node, extras):
-        where = extras["RunOn"].format()
-        Function(JumpLeft).execute({"jumpTo": where})
- 
-@GrammarRule
-class JightRule(ContinuousRule):
-    spec = "before right word <RunOn>"
-    extras = Dictation("RunOn"),
-    def _process_recognition(self, node, extras):
-        where = extras["RunOn"].format()
-        Function(JumpRight).execute({"jumpTo": where})
           
 def ReplaceAllInSelection(toReplace, replaceWith):
     toReplace = toReplace.lower()
@@ -393,7 +352,7 @@ class FullScreenToIrfanView(ContinuousRule):
     spec = "screen to image"
     def _process_recognition(self, node, extras):
         kb.sendPrintScreen()
-        action = StartApp(IRFANVIEW_PATH) + Pause("50") + Key("c-v")
+        action = StartApp(paths.IRFANVIEW_PATH) + Pause("50") + Key("c-v")
         action.execute()
 
 @GrammarRule
@@ -401,31 +360,37 @@ class WindowToIrfanView(ContinuousRule):
     spec = "window to image"
     def _process_recognition(self, node, extras):
         kb.sendAltPrintScreen()
-        action = StartApp(IRFANVIEW_PATH) + Pause("50") + Key("c-v")
+        action = StartApp(paths.IRFANVIEW_PATH) + Pause("50") + Key("c-v")
         action.execute()
+
+
+@GrammarRule
+class ClipboardToIrfanView(ContinuousRule):
+    spec = "clipboard to image"
+    def _process_recognition(self, node, extras):
+        action = StartApp(paths.IRFANVIEW_PATH) + Pause("50") + Key("c-v")
+        action.execute()
+
 
 @GrammarRule
 class InterDocNavRules(QuickContinuousRules):
     name="inter_doc_nav"
     extrasDict = {
         "keyCount": IntegerRef("keyCount", 1, 1000),
-        "lineCount": IntegerRef("lineCount", 1, 100),
         "n": IntegerRef("n", 1, 1000),
         "text": Dictation("text"),
     }
     defaultsDict = {
         "keyCount": 1,
-        "lineCount": 1,
         "n": 1,
     }    
     mapping = {
-        "renter [<lineCount> [times]]": {
-            "action": Key("end, enter") * Repeat(extra="lineCount"),},
+        "renter [<n> [times]]": Key("end, enter") * Repeat(extra="n"),
+        "renter down [<n> [times]]": (Key("down") * Repeat(extra="n")) + Key("end, enter"),
+        "renter up [<n> [times]]": (Key("up") * Repeat(extra="n")) + Key("end, enter"),
         "crater": Mouse("left:1") + Key("end, enter"),
         "last character but <n>": Key("end") + (Key("left") * Repeat(extra="n")),
         "first character but <n>": Key("home") + (Key("right") * Repeat(extra="n")),             
-        "trend [<n> [times]]": {
-            "action": (Key("down") * Repeat(extra="n")) + Key("end, enter"),},
         "word left [<n> [times]]": {
             "action": Key("c-left") * Repeat(extra="n"),},
         "word right [<n> [times]]": {
@@ -433,13 +398,11 @@ class InterDocNavRules(QuickContinuousRules):
         "inner wedge": Key("enter:2, up"),
         "copy line": Key("end, s-home") + Mimic("copy"),
         "cut line": Key("end, s-home") + Mimic("cut"),
-        "copy left": Key("s-home") + Mimic("copy"),
-        "copy right": Key("s-end") + Mimic("copy"),
         "copy full left": Key("s-home, s-home") + Mimic("copy"),
         "delete last word [<n> [times]]": Key("end") + Key("c-left") * Repeat(extra="n") + Key("s-end, delete"),
         "delete line": Key("end, s-home, s-home") + Mimic("delete"),
         "lineless [<n> [times]]": Key("end, s-home, s-home, delete, backspace") * Repeat(extra="n"),
-        "plaster": Mimic("paste") + Mimic("enter"),
+        "plaster": Key("c-v, enter"),
     }
     
 
@@ -449,7 +412,7 @@ class system_shortcuts_rule(QuickContinuousRules):
     mapping={
              "save": Key("c-s"),
              "copy": Key("c-c"),
-             "paste": Key("c-v"),
+             "(paste|from clip|from clipboard)": Key("c-v"),
              "cut": Key("c-x"),
              "top": Key("c-home"),
              "bottom": Key("c-end"),
@@ -468,7 +431,7 @@ class system_shortcuts_rule(QuickContinuousRules):
                 "intro": ["hide", "hide others", "hide other windows"]},
              "minimize": Key("w-down") * Repeat(2),
              "maximize": Key("w-up"),
-             "close": Key("a-f4"),
+             "close window": Key("a-f4"),
             }
     extrasDict = {
         "keyCount": IntegerRef("keyCount", 1, 1000),
@@ -481,19 +444,8 @@ class system_shortcuts_rule(QuickContinuousRules):
 
 grammar.load()
 masterRunOn.load()
-print "grammar loaded"
-
-# Listener grammar
-listener = Grammar("wake up grammar")
- 
-class EnableDragonfly(CorrectableRule):
-    spec = "(enable|load) dragonfly"
-    def _process_recognition(self, node, extras):
-        grammar.enable()
-        masterRunOn.enable()
-        get_engine().speak("dragonfly alive")
-listener.add_rule(EnableDragonfly())
 listener.load()
+print "grammar loaded"
     
 # Unload function which will be called by natlink at unload time.
 def unload():

@@ -8,12 +8,12 @@
 # clear named strings           -- forgets all named strings
 
 from dragonfly import *
-import _BaseGrammars
+import BaseGrammars
 import pyHook # http://sourceforge.net/projects/pyhook/
 import inspect
-from _BaseRules import *
+from BaseRules import *
 
-grammar = _BaseGrammars.ContinuousGrammar("named strings grammar")
+grammar = BaseGrammars.ContinuousGrammar("named strings grammar")
 
 #decorator
 def GrammarRule(rule):

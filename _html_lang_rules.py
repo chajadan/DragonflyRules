@@ -8,12 +8,12 @@ print "import _html_lang_rules"
 # https://www.gnu.org/licenses/lgpl.html
 
 from dragonfly import *
-import _BaseGrammars
-import _BaseRules as br
-import _ruleExport as rex
+import BaseGrammars
+import BaseRules as br
+import ruleExport as rex
 import inspect
 
-grammar = _BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language html', disableCommand='unload language html', initiallyDisabled=True)
+grammar = BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language html', disableCommand='unload language html', initiallyDisabled=True)
 
 #decorator
 def GrammarRule(rule):

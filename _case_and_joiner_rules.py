@@ -1,10 +1,10 @@
 print "import _case_and_joiner_rules"
 from dragonfly import *
-import _BaseGrammars
-from _BaseRules import *
+import BaseGrammars
+from BaseRules import *
 import inspect
 
-grammar = _BaseGrammars.ContinuousGrammar("case and joiner rules")
+grammar = BaseGrammars.ContinuousGrammar("case and joiner rules")
 
 #decorator
 def GrammarRule(rule):
@@ -88,6 +88,7 @@ class CapitalCamelCaseRule(ContinuousRule):
     extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
         msg = extras["RunOn"].format()
+        msg = msg.lower()
         wrds = msg.split(" ")
         for i, word in enumerate(wrds):
             if len(word) > 1:

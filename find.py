@@ -1,5 +1,5 @@
 from dragonfly import *
-from _BaseRules import *
+from BaseRules import *
 
 grammar = Grammar("global")
 
