@@ -1,12 +1,14 @@
 Welcome to my dragonfly repository.
 
-I'm sharing this in case it is of use to you. This README is meant to get you acquainted with my setup.
+I'm sharing this in case it is of use to you. My original expectation was people might pluck out examples and pieces, but it's in the process of being fully loaded on the system of others. This README is meant to get you acquainted with my setup.
 
-All these files are expected to be deployed to your NatLink MacroSystem folder. I installed NatLink 4.1mike, using Python 2.7, from this location: http://qh.antenna.nl/unimacro/installation/installation.html  My installation issues were solved by using the exact versions provided by them in the zip.
+I assume you are familiar with NatLink and have it installed. I installed NatLink 4.1mike, using Python 2.7, from this location: http://qh.antenna.nl/unimacro/installation/installation.html  The installation issues I did run into were solved by using the exact versions provided by them in the zip.
 
-There are other dependencies. If you try to this run this whole system, I recommend just getting the import errors, then locating and installing those components, like pyhook, and wxPython. Also, I reference my general python library, which can be located here: https://bitbucket.org/chajadan/pychajlib
+The files provided in my repo are expected to be deployed to your NatLink MacroSystem folder.
 
-My files do contain parts that are specific to my system. For instance, the commands in _meta.py that restart and refresh dragonfly reference my Dragon profile names.
+There are other dependencies and changes that must take place however. If you try to this run this whole system, I recommend just getting the import errors, then locating and installing those components, like pyhook, and wxPython. Also, I reference my general python library, which can be located here: https://bitbucket.org/chajadan/pychajlib. Additionally, I made a couple tiny alterations to dragonfly itself to expose the Results object, which allows the "correction" command -- but that means you need my changes. I've pushed my customizations here: https://github.com/chajadan/dragonfly/tree/a19aea6edae5f90c9bfd8e2dd55f2915f2cb50bf or you can just incorporate the few changes from the commit diff: https://github.com/chajadan/dragonfly/commit/a19aea6edae5f90c9bfd8e2dd55f2915f2cb50bf
+
+My files do contain parts that are specific to my system. For instance, the commands in _meta.py that restart and refresh dragonfly reference my Dragon profile names, and the paths in _myLaunchFocus.py reference executables where they happen to be on my sysetm.
 
 Refer to templates.txt for a quick way to start a new grammar file. Note, I use the decorate @GrammarRule to instantiate classes and add them to the grammar, because I think it looks very clean -- but it's not obvious. If you change the name of the grammar from the default, add additional grammars to the file, or use certain types of rules, you made need to change the decorator, or just avoid it and use the normal add_rule method.
 
