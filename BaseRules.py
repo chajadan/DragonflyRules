@@ -96,12 +96,15 @@ class QuickChainedRules(BaseQuickRules):
 
     
 class QuickContinuousRule(ContinuousRule):
+    next_unique_id = 1
     def __init__(self, voicedAs, action, name=None, spec=None, extras=None, defaults=None, exported=None, context=None, intro=None, args=None):
         self.intro = first_not_none(intro, getattr(self, "intro", None))
         self.action = first_not_none(action, getattr(self, "action", None))
         self.args = first_not_none(args, getattr(self, "args", None), {}) 
-        name = first_not_none(name, getattr(self, "name", None), "quickContinuousRule_" + voicedAs + action.__str__())
-        ContinuousRule.__init__(self, name=name, spec=voicedAs, extras=extras, defaults=defaults)
+        name = first_not_none(name, getattr(self, "name", None), 
+            "quickContinuousRule_" + voicedAs + str(action) + "_id" + str(QuickContinuousRule.next_unique_id))
+        QuickContinuousRule.next_unique_id += 1
+        ContinuousRule.__init__(self, name=name, spec=voicedAs, extras=extras, defaults=defaults, context=context)
     def _process_recognition(self, node, extras):
         for name, value_callback in self.args.items():
             extras[name] = value_callback(extras)
@@ -109,7 +112,7 @@ class QuickContinuousRule(ContinuousRule):
 
 
 class QuickContinuousCall(QuickContinuousRule):
-    def __init__(self, voicedAs, callable, pass_runon_as=None, extras=None):
+    def __init__(self, voicedAs, callable, pass_runon_as=None, context=None, defaults=None, extras=None):
         if voicedAs.find("<RunOn>") != -1:
             if extras:
                 extras = [extra for extra in extras if extra.name != "RunOn"]
@@ -120,14 +123,19 @@ class QuickContinuousCall(QuickContinuousRule):
             args = {pass_runon_as: lambda extras: extras["RunOn"].format()}
         else:
             args = None
-        QuickContinuousRule.__init__(self, voicedAs, Function(callable), args=args, extras=extras, defaults=None)
+        QuickContinuousRule.__init__(self, voicedAs, Function(callable), args=args, extras=extras, defaults=defaults, context=context)
 
 
 class QuickContinuousCalls(BaseQuickRules):
     def __init__(self, grammar):
         BaseQuickRules.__init__(self, grammar)
         for entries in self.mapping:
-            self.add_rule(QuickContinuousCall(*entries))
+            if len(entries) == 2 and type(entries[1]) == dict and isinstance(entries[0], (list, tuple)):
+                args, kwargs = entries
+                self.add_rule(QuickContinuousCall(*args, **kwargs))
+            else:
+                args = entries
+                self.add_rule(QuickContinuousCall(*args))
 
 
 class QuickContinuousRules(BaseQuickRules):
