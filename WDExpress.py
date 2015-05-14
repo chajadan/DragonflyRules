@@ -32,6 +32,7 @@ def GrammarRule(rule):
 class ShortcutRules(QuickContinuousRules):
     mapping = {
         "build solution": Key("f7"),
+        "find all references": Mouse("left:1") + Key("c-k, c-r"),
         "comment selection": Key("c-e, c-c"),
         "uncomment selection": Key("c-e, c-u"),
         "go to definition": Key("f12"),
