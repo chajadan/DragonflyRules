@@ -24,6 +24,7 @@ class GitBashRules(Base.QuickContinuousRules):
         "go to dragonfly rules": Text("cd ~/git/DragonflyRules/DragonflyRules/src") + Key("enter"),
         "do git clean": Text("git clean") + Key("enter"),
         "do force git clean": Text("git clean -f") + Key("enter"),
+        "undo last commit": Text("git reset --soft HEAD~1") + Key("enter"),
     }
     extrasDict = {
         "text": Dictation("text"),
