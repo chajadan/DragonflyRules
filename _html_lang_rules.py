@@ -12,7 +12,7 @@ import BaseGrammars
 import BaseRules as br
 import inspect
 
-grammar = BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language html', disableCommand='unload language html', initiallyDisabled=True)
+grammar = BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language HTML', disableCommand='unload language HTML', initiallyDisabled=True)
 
 #decorator
 def GrammarRule(rule):
