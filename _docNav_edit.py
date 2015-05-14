@@ -18,6 +18,17 @@ def GrammarRule(rule):
 
 
 @GrammarRule
+class DocNavRules(QuickContinuousRules):
+    extrasDict = {
+    }
+    defaultsDict = {
+    }    
+    mapping = {
+        "(clap|capitalize hovered)": Mouse("left:2") + Function(docnav.capitalize_selection),
+    }
+
+
+@GrammarRule
 class ReplaceSurroundingCharacters(ContinuousRule_EatDictation):
     spec = "replace <direction> [<n> [times]] (character|characters)"
     introspec = "replace (left|right)"
