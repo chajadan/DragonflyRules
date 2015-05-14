@@ -14,6 +14,7 @@ executable_info_list = [
     ["chrome", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", None],
     ["compiler", None, "AciCompiler ~~"],
     ["eclipse", r"C:\Program Files\eclipse\eclipse.exe",  "- Eclipse"],
+    ["get bash", None, "MINGW32:/"],
     ["process Explorer", r"D:\Install Files\procexp.exe", "Process Explorer - Sysinternals"],
     ["sketch", None, "ACI Sketch"],
     ["Visual Studio", r"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe", None],
