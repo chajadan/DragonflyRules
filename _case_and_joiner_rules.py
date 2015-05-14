@@ -21,7 +21,6 @@ class CapFirstRule(ContinuousRule):
     spec = "capital <RunOn>" 
     extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
-        print extras 
         wordOrPhrase = extras["RunOn"].format().capitalize()
         Text(wordOrPhrase).execute()
 

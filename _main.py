@@ -63,7 +63,6 @@ class NumericDigitsRule(RegisteredRule):
     extras = (IntegerRef("n", 0, 9999999999), IntegerRef("part", 0, 999999999))
     n = 0
     def _process_recognition(self, node, extras):
-        print "here", self.n
         self.n += 1
         Text(str(extras["n"])).execute()
         if extras.has_key("part"):
@@ -104,7 +103,6 @@ class ShortTimeRule(ContinuousRule):
         minutes = extras["minutes"]
         minutes = str(minutes) if minutes >= 10 else "0" + str(minutes)
         heard = " ".join(node.words())
-        print "heard=", heard
         am_pm = "p"
         if heard.find("anti") != -1:
             am_pm = "a"
@@ -181,9 +179,7 @@ def check_for_correction_response():
     correction = "-1"
     try:
         correction = xmlrpclib.ServerProxy("http://127.0.0.1:" + str(1338)).get_message()
-        print "xmlprclib correction =", correction
     except:
-        print "xmlrpclib exception"
         TRIES+=1
         if TRIES>29:
             TRIES=0
@@ -279,39 +275,15 @@ class ReplaceAllInLineRule(RegisteredRule):
         toReplace = extras["toReplace"].format()
         replaceWith = extras["replaceWith"].format()
         Function(ReplaceAllInLine).execute({"toReplace": toReplace, "replaceWith": replaceWith})
-          
-def Respace(spaceCount):
-    kb.sendShiftHome()
-    kb.copy()
-    clip.copy_from_system(formats=Clipboard.format_text)
-    leftString = clip.get_text()
-    leftSpaceCount = len(leftString) - len(leftString.rstrip())
-    kb.sendRight()
-    kb.sendShiftEnd()
-    kb.copy()
-    clip.copy_from_system(formats=Clipboard.format_text)
-    rightString = clip.get_text()
-    rightSpaceCount = len(rightString) - len(rightString.lstrip())
-    kb.sendLeft()
-    for _ in range(leftSpaceCount):
-        kb.sendLeft()
-        print "left"
-    kb.shiftDown()
-    for _ in range(leftSpaceCount + rightSpaceCount):
-        kb.sendRight(True)
-        print "right"
-    kb.shiftUp()
-    (Text(" ") * Repeat(spaceCount)).execute()
+
 
 @GrammarRule
-class RespaceRule(ContinuingRule):
+class RespaceRule(ContinuousRule):
     spec = "[make] space count <n>"
-    intro = ["make space count", "space count"]
     extras = IntegerRef("n", 0, 200),
     def _process_recognition(self, node, extras):
         spaceCount = int(extras["n"])
-        print spaceCount
-        Function(Respace).execute({"spaceCount": spaceCount})
+        Function(docnav.respace_around_caret).execute({"count": spaceCount})
   
 def CapitalizeSelection():
     kb.copy()
