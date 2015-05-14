@@ -30,6 +30,11 @@ class AciCompilerShortcutsRule(Base.QuickContinuousRules):
         "(questions|comments)": Key("a-v, q"),
         "hours": Key("a-v, h"),
         "report": Key("a-v, d"),
+        "new file": Key("a-f, n"),
+        "save [file]": Key("a-f, s"),
+        "new file": Key("a-f, n"),
+        "exit": Key("a-f, x"),
+        "set name": Key("a-f, t"),
     }
 
 grammar.load()
