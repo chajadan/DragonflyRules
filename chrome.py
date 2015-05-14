@@ -51,8 +51,8 @@ class ChromeRules(QuickContinuousRules):
 		"zoom in": Key("c-plus"),
 		"zoom out": Key("c-minus"),
 		"zoom (default | normal)": Key("c-0"),
-		"go to gmail": Key("c-t") + Pause("20") + Text("gmail.com") + Key("enter"),
-		"go to PEGym": Key("c-t") + Pause("20") + Text("PEGym.com/forums/") + Key("enter"),      
+		"go to gmail": Key("c-t") + Pause("20") + Text("gmail.com") + Key("delete, enter"),       
+		"go to PEGym": Key("c-t") + Pause("20") + Text("PEGym.com/forums/") + Key("delete, enter"),      
 	}
     extrasDict = {
 		"n": IntegerRef("n", 1, 30),
@@ -61,6 +61,19 @@ class ChromeRules(QuickContinuousRules):
 		"n":1,
 	}
 
+def go_to_label(label_string):
+    formatted_label = "-".join(label_string.split())
+    action  = Key("escape:2, g/20, l/20") + Text(formatted_label) + Key("escape, enter")
+    action.execute()
+    
+
+@GrammarRule
+class GmailCalls(QuickContinuousCalls):
+    mapping = [
+        ["go to label", go_to_label, "label_string"],
+    ]
+    
+    
 @GrammarRule
 class GmailRules(QuickContinuousRules):
 	name="gmail_rule"
@@ -75,7 +88,6 @@ class GmailRules(QuickContinuousRules):
 		"main window": Key("s-escape"),
 		"inbox": Key("escape:2, g/20, i"),
         "sent box": Key("escape:2, g/20, t"),
-		"go to label <text>": Key("escape:2, g/20, l") + Pause("20") + Text("%(text)s") + Key("escape, enter"),
 		"select all": Key("asterisk/20, a"),
         "select read": Key("asterisk/20, r"),
         "select un read": Key("asterisk/20, u"),
