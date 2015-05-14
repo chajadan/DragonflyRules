@@ -285,22 +285,13 @@ class RespaceRule(ContinuousRule):
         spaceCount = int(extras["n"])
         Function(docnav.respace_around_caret).execute({"count": spaceCount})
   
-def CapitalizeSelection():
-    kb.copy()
-    clip.copy_from_system(formats = clip.format_text)
-    selection = clip.get_text()
-    length = len(selection)
-    if length > 0:
-        kb.sendLeft()
-        kb.sendShiftRight()
-        Text(selection[0].upper()).execute()
 
 @GrammarRule
 class CapitalizeHoveredRule(CorrectableRule):
     spec = "clap"
     def _process_recognition(self, node, extras):
         Mouse("left:2").execute()
-        Function(CapitalizeSelection).execute()
+        Function(docnav.capitalize_selection).execute()
 
 def LowercaseSelection():
     kb.copy()
