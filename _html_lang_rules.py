@@ -10,7 +10,6 @@ print "import _html_lang_rules"
 from dragonfly import *
 import BaseGrammars
 import BaseRules as br
-import ruleExport as rex
 import inspect
 
 grammar = BaseGrammars.ContinuousGrammar("html grammar", enableCommand='load language html', disableCommand='unload language html', initiallyDisabled=True)
