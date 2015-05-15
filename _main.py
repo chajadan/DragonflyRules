@@ -159,31 +159,6 @@ class ReplaceAllInLineRule(RegisteredRule):
         replaceWith = extras["replaceWith"].format()
         Function(ReplaceAllInLine).execute({"toReplace": toReplace, "replaceWith": replaceWith})
 
-        
-@GrammarRule
-class FullScreenToIrfanView(ContinuousRule):
-    spec = "screen to image"
-    def _process_recognition(self, node, extras):
-        kb.sendPrintScreen()
-        action = StartApp(paths.IRFANVIEW_PATH) + Pause("50") + Key("c-v")
-        action.execute()
-
-@GrammarRule
-class WindowToIrfanView(ContinuousRule):
-    spec = "window to image"
-    def _process_recognition(self, node, extras):
-        kb.sendAltPrintScreen()
-        action = StartApp(paths.IRFANVIEW_PATH) + Pause("50") + Key("c-v")
-        action.execute()
-
-
-@GrammarRule
-class ClipboardToIrfanView(ContinuousRule):
-    spec = "clipboard to image"
-    def _process_recognition(self, node, extras):
-        action = StartApp(paths.IRFANVIEW_PATH) + Pause("50") + Key("c-v")
-        action.execute()
-
 
 @GrammarRule
 class InterDocNavRules(QuickContinuousRules):
