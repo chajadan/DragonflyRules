@@ -2,7 +2,7 @@ from dragonfly import *
 import BaseGrammars
 from BaseRules import *
 
-grammar = BaseGrammars.ContinuousGrammar("cmd")
+grammar = BaseGrammars.ContinuousGrammar("cmd", AppContext(executable="cmd"))
 
 class CmdRules(QuickContinuousRules):
     mapping={
