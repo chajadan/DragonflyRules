@@ -20,8 +20,10 @@ def GrammarRule(rule):
 @GrammarRule
 class DocNavEditRules(QuickContinuousRules):
     extrasDict = {
+        "n": IntegerRef("n", 1, 1000),
     }
     defaultsDict = {
+        "n": 1,
     }    
     mapping = {
         "(clap|capitalize hovered)": Mouse("left:2") + Function(docnav.capitalize_first_word_of_selection),
