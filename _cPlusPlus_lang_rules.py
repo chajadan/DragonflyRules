@@ -67,6 +67,7 @@ for entry in keywords:
 @GrammarRule
 class OperatorRules(QuickContinuousRules):
     mapping = {
+        "address of": Text("& "), 
         "plus": Text(" + "),
         "minus": Text(" - "),
         "times": Text(" * "),
