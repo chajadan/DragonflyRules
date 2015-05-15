@@ -74,6 +74,7 @@ class OperatorRules(QuickContinuousRules):
         "[is] less than": Text(" < "),
         "[is] greater than": Text(" > "),               
         "compares": Text(" == "),
+        "reference": Text("& "),
         "resolve": Text("::"),
         "comment": Text("// "),
         "start comment": Text("/* "),
