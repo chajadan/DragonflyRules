@@ -132,10 +132,16 @@ class QuickContinuousCalls(BaseQuickRules):
         for entries in self.mapping:
             if len(entries) == 2 and type(entries[1]) == dict and isinstance(entries[0], (list, tuple)):
                 args, kwargs = entries
-                self.add_rule(QuickContinuousCall(*args, **kwargs))
             else:
                 args = entries
-                self.add_rule(QuickContinuousCall(*args))
+                kwargs = {}
+
+            self.extras = getattr(self, "extras", None)
+            if self.extras:
+                if len(args) < 6 and "extras" not in kwargs:
+                    kwargs["extras"] = self.extras
+            
+            self.add_rule(QuickContinuousCall(*args, **kwargs))
 
 
 class QuickContinuousRules(BaseQuickRules):
