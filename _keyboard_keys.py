@@ -148,7 +148,15 @@ class SpellByWordsRule(ContinuousRule):
 
 for keyName, graph, voicedAs in keyboard_keys:
     grammar.add_rule(KeypressRule(keyName, voicedAs))
-    
+
+
+@GrammarRule
+class QuickKeyRules(QuickContinuousRules):
+    mapping = {
+        "clear special keys": Key("alt:up, ctrl:up, shift:up"),
+    }    
+
+
 grammar.load()
 def unload():
     global grammar
