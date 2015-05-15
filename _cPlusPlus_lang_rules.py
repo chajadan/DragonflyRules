@@ -40,6 +40,7 @@ class KeywordRule(ContinuousRule):
         
 # keyword format: written form, spoken form, isAlwaysFollowed (and so necessarily a space afterwards), isAlwaysPreceded
 keywords = [
+    ["bool", "Boolean", True, False],
     ["case", "case", True, False],
     ["catch", "catch", True, False],
     ["class", "class", True, False],
