@@ -14,6 +14,7 @@ import win32gui
 CORRECTION_TRIES = 0
  
 grammar = BaseGrammars.ContinuousGrammar("meta grammar")
+listener = Grammar("wake up grammar")
  
 #decorator
 def GrammarRule(rule):
@@ -24,7 +25,23 @@ def GrammarRule(rule):
             grammar.add_rule(rule())
     else:
         grammar.add_rule(rule)
- 
+
+
+class EnableDragonfly(ContinuousRule):
+    spec = "(enable|load) dragonfly"
+    def _process_recognition(self, node, extras):
+        listener.set_exclusiveness(False)
+        get_engine().speak("dragonfly alive")
+listener.add_rule(EnableDragonfly())
+
+
+@GrammarRule
+class DisableDragonfly(ContinuousRule):
+    spec = "(disable|unload) dragonfly"
+    def _process_recognition(self, node, extras):
+        listener.set_exclusiveness(True)
+        get_engine().speak("dragonfly darts off")
+
 
 def ExitDragon():
     (Mimic("exit", "dragon") + Pause("100") + Key("enter")).execute()

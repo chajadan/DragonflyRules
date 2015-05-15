@@ -20,7 +20,7 @@ TIMER_MANAGER = _Timer(1)
 
 masterRunOn = BaseGrammars.ContinuousGrammar("master run on grammar")
 grammar = BaseGrammars.GlobalGrammar("master non run on grammar")
-listener = Grammar("wake up grammar")
+
 
 # history = RecognitionHistory()
 # history.register()
@@ -34,14 +34,6 @@ listener = Grammar("wake up grammar")
 #         print "on_failure"
 # rod = ROD()
 # rod.register()
-
-
-class EnableDragonfly(ContinuousRule):
-    spec = "(enable|load) dragonfly"
-    def _process_recognition(self, node, extras):
-        listener.set_exclusiveness(False)
-        get_engine().speak("dragonfly alive")
-listener.add_rule(EnableDragonfly())
 
 
 # Clipboard _support
@@ -71,14 +63,6 @@ def GrammarRule(rule):
 #     extras = (Dictation("RunOn"),)
 #     def _process_recognition(self, node, extras):
 #         Text(extras["RunOn"].format()).execute()
-
-
-@GrammarRule
-class DisableDragonfly(ContinuousRule):
-    spec = "(disable|unload) dragonfly"
-    def _process_recognition(self, node, extras):
-        listener.set_exclusiveness(True)
-        get_engine().speak("dragonfly darts off")
 
 
 @GrammarRule
@@ -273,7 +257,6 @@ class system_shortcuts_rule(QuickContinuousRules):
 
 grammar.load()
 masterRunOn.load()
-listener.load()
 print "grammar loaded"
     
 # Unload function which will be called by natlink at unload time.
