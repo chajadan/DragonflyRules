@@ -39,6 +39,40 @@ class NumbersRule(Base.ContinuousRule):
         Text("".join(digits)).execute()
 
 
+@GrammarRule
+class FullDateRule(Base.ContinuousRule):
+    spec = "full date <month> <day> <year>"
+    extras = (IntegerRef("month", 1, 12), IntegerRef("day", 1, 31), IntegerRef("year", 1, 9999))
+    def _process_recognition(self, node, extras):
+            month = extras["month"]
+            day = extras["day"]
+            year = extras["year"]
+            month = str(month) if month >= 10 else "0" + str(month)
+            day = str(day) if day >= 10 else "0" + str(day)
+            if year >= 100:
+                year = str(year)
+            elif year <= 10:
+                year = "200" + str(year)
+            else: 
+                year = "20" + str(year)
+            Text(month + "/" + day + "/" + year).execute()
+
+
+@GrammarRule                     
+class ShortTimeRule(Base.ContinuousRule):
+    spec = "short time <hour> <minutes> (anti|post)"
+    extras = (IntegerRef("hour", 1, 12), IntegerRef("minutes", 0, 59))
+    def _process_recognition(self, node, extras):
+        hour = str(extras["hour"])
+        minutes = extras["minutes"]
+        minutes = str(minutes) if minutes >= 10 else "0" + str(minutes)
+        heard = " ".join(node.words())
+        am_pm = "p"
+        if heard.find("anti") != -1:
+            am_pm = "a"
+        Text(hour + ":" + minutes + am_pm).execute()
+
+
 grammar.load()
 
 def unload():
