@@ -3,10 +3,15 @@ import BaseGrammars
 from BaseRules import *
 import inspect
 import time
+import _globals
 import _general as glib
+import xmlrpclib
+import natlink
 import os
 import win32ui
 import win32gui
+
+CORRECTION_TRIES = 0
  
 grammar = BaseGrammars.ContinuousGrammar("meta grammar")
  
@@ -62,6 +67,7 @@ def DeployDragonfly_Refresh():
     except:
         pass
 
+
 @GrammarRule
 class ListRegisteredCommands(ContinuousRule):
     spec = "list registered commands"
@@ -103,7 +109,52 @@ class DeployRefreshRule(RegisteredRule):
     spec = "refresh dragonfly"
     def _process_recognition(self, node, extras):
         Function(DeployDragonfly_Refresh).execute()        
-     
+
+
+def check_for_correction_response():
+    global CORRECTION_TRIES
+    correction = "-1"
+    try:
+        correction = xmlrpclib.ServerProxy("http://127.0.0.1:" + str(1338)).get_message()
+    except:
+        CORRECTION_TRIES += 1
+        if CORRECTION_TRIES > 29:
+            CORRECTION_TRIES = 0
+            #TIMER_MANAGER.remove_callback(check_for_correction_response)
+            natlink.setTimerCallback(None, 0)
+            return
+    
+    if correction == "-1":
+        return
+    
+    if hasattr(_globals, "lastSavedResults") and _globals.lastSavedResults is not None:
+        results = _globals.lastSavedResults
+        corrected_words = correction.split()
+        status = results.correction(corrected_words)
+        print "Correction status is", status
+        natlink.setTimerCallback(None, 0)        
+    else:
+        #TIMER_MANAGER.remove_callback(check_for_correction_response)
+        natlink.setTimerCallback(None, 0)
+        return   
+         
+def DisplayTextToCorrect():
+    if getattr(_globals, "lastSavedResults", None) is None:
+        print "No results to correct..."
+    if hasattr(_globals, "lastSavedResults") and _globals.lastSavedResults is not None:
+        results = _globals.lastSavedResults
+        words = results.getWords(0)
+        recognized_phrase = " ".join(words)
+        glib.LaunchExeAsyncWithArgList("C:\\Python27_32bit\\python.exe", ["C:\\NatLink\\NatLink\\MacroSystem\\DragonCorrectionDialog.py", recognized_phrase])
+        natlink.setTimerCallback(check_for_correction_response, 1000)
+
+@GrammarRule
+class CorrectionRule(RegisteredRule):
+    spec = "correction"
+    saveResults = False
+    def _process_recognition(self, node, extras):
+        Function(DisplayTextToCorrect).execute()
+
 
 grammar.load()
  
