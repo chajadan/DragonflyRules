@@ -43,6 +43,7 @@ class ShortcutRules(QuickContinuousRules):
         "build this project only": Key("a-b, j, b"),
         "rebuild this project only": Key("a-b, j, r"),
         "clean this project only": Key("a-b, j, c"),
+        "parameter info": Key("c-k, c-p"),
         "recent projects": Key("a-f, j"),
         "go to last project": Key("a-f, j, down, enter"),
     }
