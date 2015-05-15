@@ -19,6 +19,18 @@ def GrammarRule(rule):
 
 
 @GrammarRule
+class NumericDigitsRule(Base.RegisteredRule):
+    spec = "numeric <n> [decimal <part>]"
+    extras = (IntegerRef("n", 0, 9999999999), IntegerRef("part", 0, 999999999))
+    n = 0
+    def _process_recognition(self, node, extras):
+        self.n += 1
+        Text(str(extras["n"])).execute()
+        if extras.has_key("part"):
+            Text("." + str(extras["part"])).execute()
+
+
+@GrammarRule
 class NumbersRule(Base.ContinuousRule):
     spec = "digits <digits>"
     extras = (Repetition(Choice("digit", choices=conv._digits), name="digits", min=1, max=50),)

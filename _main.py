@@ -58,16 +58,6 @@ class DisableDragonfly(ContinuousRule):
 
 
 @GrammarRule
-class NumericDigitsRule(RegisteredRule):
-    spec = "numeric <n> [decimal <part>]"
-    extras = (IntegerRef("n", 0, 9999999999), IntegerRef("part", 0, 999999999))
-    n = 0
-    def _process_recognition(self, node, extras):
-        self.n += 1
-        Text(str(extras["n"])).execute()
-        if extras.has_key("part"):
-            Text("." + str(extras["part"])).execute()
-@GrammarRule
 class StreamWordsAtCursorRule(ContinuousRule):
     spec = "stream <RunOn>"
     extras = (Dictation("RunOn"), )
