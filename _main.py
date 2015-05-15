@@ -275,24 +275,7 @@ class ReplaceAllInLineRule(RegisteredRule):
         toReplace = extras["toReplace"].format()
         replaceWith = extras["replaceWith"].format()
         Function(ReplaceAllInLine).execute({"toReplace": toReplace, "replaceWith": replaceWith})
-  
 
-def LowercaseSelection():
-    kb.copy()
-    clip.copy_from_system(formats = clip.format_text)
-    selection = clip.get_text()
-    length = len(selection)
-    if length > 0:
-        kb.sendLeft()
-        kb.sendShiftRight()
-        Text(selection[0].lower()).execute()
-
-@GrammarRule
-class LowercaseHoveredRule(CorrectableRule):
-    spec = "clop"
-    def _process_recognition(self, node, extras):
-        Mouse("left:2").execute()
-        Function(LowercaseSelection).execute()
         
 @GrammarRule
 class FullScreenToIrfanView(ContinuousRule):

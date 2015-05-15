@@ -24,7 +24,8 @@ class DocNavRules(QuickContinuousRules):
     defaultsDict = {
     }    
     mapping = {
-        "(clap|capitalize hovered)": Mouse("left:2") + Function(docnav.capitalize_first_word_of_selection()),
+        "(clap|capitalize hovered)": Mouse("left:2") + Function(docnav.capitalize_first_word_of_selection),
+        "(clop|lowercase hovered)": Mouse("left:2") + Function(docnav.lowercase_first_word_of_selection),
     }
 
 
