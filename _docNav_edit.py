@@ -18,7 +18,7 @@ def GrammarRule(rule):
 
 
 @GrammarRule
-class DocNavRules(QuickContinuousRules):
+class DocNavEditRules(QuickContinuousRules):
     extrasDict = {
     }
     defaultsDict = {
@@ -26,6 +26,18 @@ class DocNavRules(QuickContinuousRules):
     mapping = {
         "(clap|capitalize hovered)": Mouse("left:2") + Function(docnav.capitalize_first_word_of_selection),
         "(clop|lowercase hovered)": Mouse("left:2") + Function(docnav.lowercase_first_word_of_selection),
+        "crater": Mouse("left:1") + Key("end, enter"),
+        "cut line": Key("end, s-home") + Mimic("cut"),
+        "delete last word [<n> [times]]": Key("end") + Key("c-left") * Repeat(extra="n") + Key("s-end, delete"),
+        "delete line": Key("end, s-home, s-home") + Mimic("delete"),
+        "inner wedge": Key("enter:2, up"),
+        "lineless [<n> [times]]": Key("end, s-home, s-home, delete, backspace") * Repeat(extra="n"),
+        "plaster": Key("c-v, enter"),
+        "renter [<n> [times]]": Key("end, enter") * Repeat(extra="n"),
+        "renter down [<n> [times]]": (Key("down") * Repeat(extra="n")) + Key("end, enter"),
+        "renter up [<n> [times]]": (Key("up") * Repeat(extra="n")) + Key("end, enter"),
+        "trim left": Key("s-home, delete"),
+        "trim right": Key("s-end, delete"),       
     }
 
 

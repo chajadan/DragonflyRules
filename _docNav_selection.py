@@ -30,15 +30,19 @@ class InterDocNavRules(QuickContinuousRules):
         "lineCount": 1,
         "n": 1,
     }    
-    mapping = {
-        "select all": Key("c-a"),
-        "select top": Key("cs-home"),
-        "copy top": Key("cs-home, c-c"),
-        "select bottom": Key("cs-end"),
+    mapping = {       
         "copy bottom": Key("cs-end, c-c"),
-        "select full left": Key("s-home, s-home"),
+        "copy full left": Key("s-home, s-home") + Mimic("copy"),
         "copy left": Key("s-home, c-c"),
+        "copy line": Key("end, s-home") + Mimic("copy"),
         "copy right": Key("s-end, c-c"),
+        "copy top": Key("cs-home, c-c"),       
+        "first character but <n>": Key("home") + (Key("right") * Repeat(extra="n")),       
+        "last character but <n>": Key("end") + (Key("left") * Repeat(extra="n")),
+        "select all": Key("c-a"),
+        "select top": Key("cs-home"),       
+        "select bottom": Key("cs-end"),
+        "select full left": Key("s-home, s-home"),
         "select line": Key("end, s-home"),
         "select full line": Key("end, s-home, s-home"),
         "select up [<lineCount> [times]]": Key("shift:down, up, shift:up") * Repeat(extra="lineCount"),
@@ -61,6 +65,10 @@ class InterDocNavRules(QuickContinuousRules):
             "action": Key("s-right") * Repeat(extra="keyCount"),
             "intro": ["scare right", "select character right"]},               
         "sword": Mouse("left:2") + Key("c-c"),
+        "word left [<n> [times]]": {
+            "action": Key("c-left") * Repeat(extra="n"),},
+        "word right [<n> [times]]": {
+            "action": Key("c-right") * Repeat(extra="n"),}, 
     }
 
 

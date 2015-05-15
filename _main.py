@@ -9,7 +9,7 @@ import inspect
 grammar = Base.ContinuousGrammar("_main grammar")
 
 
-#decorator
+# decorator
 def GrammarRule(rule):
     if inspect.isclass(rule):
         if issubclass(rule, Base.BaseQuickRules):
@@ -22,7 +22,7 @@ def GrammarRule(rule):
 
 @GrammarRule
 class SomeQuickRules(Base.QuickContinuousRules):
-    name="GlobalQuickRules"
+    name = "GlobalQuickRules"
     extrasDict = {
         "keyCount": IntegerRef("keyCount", 1, 1000),
         "n": IntegerRef("n", 1, 10000),
@@ -37,11 +37,11 @@ class SomeQuickRules(Base.QuickContinuousRules):
         "clickCount": 1,
         "lineCount": 1,
     }    
-    mapping= {      
+    mapping = {      
         "(click|mouse) [<clickCount> [times]]": Mouse("left:1") * Repeat(extra="clickCount"),
         "click paste": Mouse("left:1") + Key("c-v"),
         "control click [<clickCount> [times]]": (Key("ctrl:down") + Mouse("left:1") + Key("ctrl:up")) * Repeat(extra="clickCount"),
-        "right click [<clickCount> [times]]": Mouse("right:1") * Repeat(extra="clickCount"),            
+        "right click [<clickCount> [times]]": Mouse("right:1") * Repeat(extra="clickCount"),
         "middle click [<clickCount> [times]]": Mouse("middle:1") * Repeat(extra="clickCount"),
         "double click": Mouse("left:2"),
         "shift down": Key("shift:down"),
@@ -52,7 +52,7 @@ class SomeQuickRules(Base.QuickContinuousRules):
         "up click": Mouse("left:up"),
         "down right click": Mouse("right:down"),
         "up right click": Mouse("right:up"),
-        "[toggle] flux": Key("a-end"),         
+        "[toggle] flux": Key("a-end"),
     }
 
 
@@ -74,49 +74,13 @@ class QuickCRules(Base.QuickContinuousRules):
         "assign": Text(" = "),
         "dereference": Text("->"),
         "dot": Key("dot"),
-        "trim left": Key("s-home, delete"),
-        "trim right": Key("s-end, delete"),
     }
 
-
-@GrammarRule
-class InterDocNavRules(Base.QuickContinuousRules):
-    name="inter_doc_nav"
-    extrasDict = {
-        "keyCount": IntegerRef("keyCount", 1, 1000),
-        "n": IntegerRef("n", 1, 1000),
-        "text": Dictation("text"),
-    }
-    defaultsDict = {
-        "keyCount": 1,
-        "n": 1,
-    }    
-    mapping = {
-        "renter [<n> [times]]": Key("end, enter") * Repeat(extra="n"),
-        "renter down [<n> [times]]": (Key("down") * Repeat(extra="n")) + Key("end, enter"),
-        "renter up [<n> [times]]": (Key("up") * Repeat(extra="n")) + Key("end, enter"),
-        "crater": Mouse("left:1") + Key("end, enter"),
-        "last character but <n>": Key("end") + (Key("left") * Repeat(extra="n")),
-        "first character but <n>": Key("home") + (Key("right") * Repeat(extra="n")),             
-        "word left [<n> [times]]": {
-            "action": Key("c-left") * Repeat(extra="n"),},
-        "word right [<n> [times]]": {
-            "action": Key("c-right") * Repeat(extra="n"),},                
-        "inner wedge": Key("enter:2, up"),
-        "copy line": Key("end, s-home") + Mimic("copy"),
-        "cut line": Key("end, s-home") + Mimic("cut"),
-        "copy full left": Key("s-home, s-home") + Mimic("copy"),
-        "delete last word [<n> [times]]": Key("end") + Key("c-left") * Repeat(extra="n") + Key("s-end, delete"),
-        "delete line": Key("end, s-home, s-home") + Mimic("delete"),
-        "lineless [<n> [times]]": Key("end, s-home, s-home, delete, backspace") * Repeat(extra="n"),
-        "plaster": Key("c-v, enter"),
-    }
-    
 
 @GrammarRule
 class system_shortcuts_rule(Base.QuickContinuousRules):
-    name="system_shortcuts"
-    mapping={
+    name = "system_shortcuts"
+    mapping = {
              "save": Key("c-s"),
              "copy": Key("c-c"),
              "(paste|from clip|from clipboard)": Key("c-v"),
