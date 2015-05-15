@@ -31,6 +31,7 @@ def GrammarRule(rule):
 @GrammarRule
 class ShortcutRules(QuickContinuousRules):
     mapping = {
+        "add new item": Key("cs-a"),
         "build solution": Key("f7"),
         "find all references": Mouse("left:1") + Key("c-k, c-r"),
         "comment selection": Key("c-e, c-c"),
