@@ -78,23 +78,6 @@ class QuickCRules(Base.QuickContinuousRules):
         "trim right": Key("s-end, delete"),
     }
 
-          
-def ReplaceAllInSelection(toReplace, replaceWith):
-    clip = Clipboard()
-    toReplace = toReplace.lower()
-    kb.copy()
-    clip.copy_from_system(formats=Clipboard.format_text)
-    selection = clip.get_text().lower()
-    Text(selection.replace(toReplace, replaceWith)).execute()
-    
-@GrammarRule
-class ReplaceAllInSelectionRule(Base.RegisteredRule):
-    spec = "replace selection <toReplace> with <replaceWith>"
-    extras = (Dictation("toReplace"), Dictation("replaceWith"))
-    def _process_recognition(self, node, extras):
-        toReplace = extras["toReplace"].format()
-        replaceWith = extras["replaceWith"].format()
-        Function(ReplaceAllInSelection).execute({"toReplace": toReplace, "replaceWith": replaceWith})
  
 def ReplaceAllInLine(toReplace, replaceWith, sensitive = True):
     pass

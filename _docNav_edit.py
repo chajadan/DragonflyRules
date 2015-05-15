@@ -68,10 +68,14 @@ class DocNavEditCalls(QuickContinuousCalls):
         ["replace left <RunOn>", docnav.replace_left, "replacement"],
         ["replace right <RunOn>", docnav.replace_right, "replacement"],
         ["[make] space count <count>", docnav.respace_around_caret],
+        ["replace selection <to_replace> with <RunOn>",
+            docnav.replace_all_in_selection, "replacement"],
     ]
-    extras = (IntegerRef("count", 0, 1000),)
-
-
+    extras = (IntegerRef("count", 0, 1000),
+              Dictation("to_replace"),
+              )
+        
+        
 grammar.load()
 def unload():
     global grammar
