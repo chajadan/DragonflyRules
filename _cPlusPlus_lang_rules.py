@@ -103,6 +103,14 @@ class CodeTemplatesRules(QuickContinuousRules):
     }
 
 
+@GrammarRule
+class QuickEditRules(QuickContinuousRules):
+    mapping = {
+        "terminate": Key("end") + Text(";"),
+        "next statement": Key("end") + Text(";") + Key("enter"),
+    }
+
+
 grammar.load()
 listener = grammar.listener()
 listener.load()
