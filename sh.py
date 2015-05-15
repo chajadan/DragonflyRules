@@ -22,6 +22,7 @@ class GitBashRules(Base.QuickContinuousRules):
         "go to ACI Compiler": Text("cd ~/git/AciCompiler/AciCompiler/AciCompiler") + Key("enter"),
         "go to AciImporter": Text("cd ~/git/AciImporter") + Key("enter"),
         "go to dragonfly rules": Text("cd ~/git/DragonflyRules/DragonflyRules/src") + Key("enter"),
+        "go to pyChajLib": Text("cd ~/git/pyChajLib") + Key("enter"),
         "do git clean": Text("git clean") + Key("enter"),
         "do force git clean": Text("git clean -f") + Key("enter"),
         "undo last commit": Text("git reset --soft HEAD~1") + Key("enter"),
