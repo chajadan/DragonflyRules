@@ -1,10 +1,23 @@
 from dragonfly import *
 import Base
+import inspect
 
-grammar_context = AppContext(executable = "sh")
-grammar = Base.ContinuousGrammar("sh", context = grammar_context)
+grammar_context = AppContext(executable="sh")
+grammar = Base.ContinuousGrammar("sh", context=grammar_context)
 
 
+#decorator
+def GrammarRule(rule):
+    if inspect.isclass(rule):
+        if issubclass(rule, Base.BaseQuickRules):
+            rule(grammar)
+        else:
+            grammar.add_rule(rule())
+    else:
+        grammar.add_rule(rule) 
+
+
+@GrammarRule
 class GitBashRules(Base.QuickContinuousRules):
     context= AppContext(title = "MINGW32"),
     name="GitBashRules"
@@ -15,9 +28,6 @@ class GitBashRules(Base.QuickContinuousRules):
         "status": Text("git status") + Key("enter"),
         "diff": Text("git diff") + Key("enter"),
         "commit": Text("git commit"),
-        "commit [with] message <text>": {
-            "action": Text('git commit -m "%(text)s"'),
-            "intro": ["commit message", "commit with message"]},
         "push": Text("git push") + Key("enter"),
         "go to ACI Compiler": Text("cd ~/git/AciCompiler/AciCompiler/AciCompiler") + Key("enter"),
         "go to AciImporter": Text("cd ~/git/AciImporter") + Key("enter"),
@@ -31,7 +41,18 @@ class GitBashRules(Base.QuickContinuousRules):
         "text": Dictation("text"),
     }
 
-GitBashRules(grammar)
+
+@GrammarRule
+class GitCommitWithMessage(Base.ContinuousRule_EatDictation):
+    spec = "commit [with] message"
+    def _process_recognition(self, node, extras):
+        action = Text("git commit -m ''") + Key("left")
+        if "RunOn" in extras:
+            message = " ".join(extras["RunOn"].words)
+            action += Text(message)
+        action.execute()
+
+
 grammar.load()
 
 def unload():
