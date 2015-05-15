@@ -82,28 +82,6 @@ class DisableDragonfly(ContinuousRule):
 
 
 @GrammarRule
-class StreamWordsAtCursorRule(ContinuousRule):
-    spec = "(stream|fling) <RunOn>"
-    extras = (Dictation("RunOn"), )
-    def _process_recognition(self, node, extras):
-        Text(extras["RunOn"].format()).execute()
-
-@GrammarRule
-class PureWordsDictationRule(RegisteredRule):
-    spec = "words <RunOn>"
-    extras = (Dictation("RunOn"), )
-    def _process_recognition(self, node, extras):
-        Text(extras["RunOn"].format()).execute()
-        
-    
-@GrammarRule
-class PrependSpaceRule(ContinuousRule):
-    spec = "tack <RunOn>"
-    extras = (Dictation("RunOn"), )
-    def _process_recognition(self, node, extras):
-        Text(" " + extras["RunOn"].format()).execute()
-
-@GrammarRule
 class SomeQuickRules(QuickContinuousRules):
     name="GlobalQuickRules"
     extrasDict = {

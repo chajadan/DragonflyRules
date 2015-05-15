@@ -19,6 +19,32 @@ def GrammarRule(rule):
 
 
 @GrammarRule
+class StreamWordsAtCursorRule(Base.ContinuousRule):
+    spec = "(stream|fling) <RunOn>"
+    extras = (Dictation("RunOn"), )
+    def _process_recognition(self, node, extras):
+        Text(extras["RunOn"].format()).execute()
+
+@GrammarRule
+class PureWordsDictationRule(Base.RegisteredRule):
+    """
+    intended for long pure speech dictation where you don't want to worry about literalizing command words
+    """
+    spec = "words <RunOn>"
+    extras = (Dictation("RunOn"), )
+    def _process_recognition(self, node, extras):
+        Text(extras["RunOn"].format()).execute()
+        
+    
+@GrammarRule
+class PrependSpaceRule(Base.ContinuousRule):
+    spec = "tack <RunOn>"
+    extras = (Dictation("RunOn"), )
+    def _process_recognition(self, node, extras):
+        Text(" " + extras["RunOn"].format()).execute()
+
+
+@GrammarRule
 class NumericDigitsRule(Base.RegisteredRule):
     spec = "numeric <n> [decimal <part>]"
     extras = (IntegerRef("n", 0, 9999999999), IntegerRef("part", 0, 999999999))
