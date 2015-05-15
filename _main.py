@@ -38,7 +38,6 @@ class SomeQuickRules(Base.QuickContinuousRules):
     }    
     mapping = {      
         "(click|mouse) [<clickCount> [times]]": Mouse("left:1") * Repeat(extra="clickCount"),
-        "click paste": Mouse("left:1") + Key("c-v"),
         "control click [<clickCount> [times]]": (Key("ctrl:down") + Mouse("left:1") + Key("ctrl:up")) * Repeat(extra="clickCount"),
         "right click [<clickCount> [times]]": Mouse("right:1") * Repeat(extra="clickCount"),
         "middle click [<clickCount> [times]]": Mouse("middle:1") * Repeat(extra="clickCount"),
