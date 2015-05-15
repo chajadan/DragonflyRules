@@ -78,26 +78,6 @@ class QuickCRules(Base.QuickContinuousRules):
         "trim right": Key("s-end, delete"),
     }
 
- 
-def ReplaceAllInLine(toReplace, replaceWith, sensitive = True):
-    pass
-#     kb.sendHome()
-#     kb.sendEnd()
-#     kb.sendShiftHome()
-#     line = ReadSelection()
-#     if not sensitive:
-#         toReplace = toReplace.lower()
-#     Text(selection.replace(toReplace, replaceWith)).execute()
-
-@GrammarRule
-class ReplaceAllInLineRule(Base.RegisteredRule):
-    spec = "replace line <toReplace> with <replaceWith>"
-    extras = (Dictation("toReplace"), Dictation("replaceWith"))
-    def _process_recognition(self, node, extras):
-        toReplace = extras["toReplace"].format()
-        replaceWith = extras["replaceWith"].format()
-        Function(ReplaceAllInLine).execute({"toReplace": toReplace, "replaceWith": replaceWith})
-
 
 @GrammarRule
 class InterDocNavRules(Base.QuickContinuousRules):

@@ -70,6 +70,8 @@ class DocNavEditCalls(QuickContinuousCalls):
         ["[make] space count <count>", docnav.respace_around_caret],
         ["replace selection <to_replace> with <RunOn>",
             docnav.replace_all_in_selection, "replacement"],
+        ["replace line <to_replace> with <RunOn>",
+            docnav.replace_all_in_line, "replacement"],
     ]
     extras = (IntegerRef("count", 0, 1000),
               Dictation("to_replace"),
