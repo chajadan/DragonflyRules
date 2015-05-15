@@ -43,6 +43,7 @@ keywords = [
     ["case", "case", True, False],
     ["catch", "catch", True, False],
     ["class", "class", True, False],
+    ["const", "const", False, False],
     ["do", "do", True, False],
     ["double", "double", True, False],
     ["else", "else", True, False],
