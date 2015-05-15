@@ -21,7 +21,21 @@ TIMER_MANAGER = _Timer(1)
 masterRunOn = BaseGrammars.ContinuousGrammar("master run on grammar")
 grammar = BaseGrammars.GlobalGrammar("master non run on grammar")
 listener = Grammar("wake up grammar")
- 
+
+# history = RecognitionHistory()
+# history.register()
+# 
+# class ROD(RecognitionObserver):
+#     def on_begin(self):
+#         print "on_begin, history:", history
+#     def on_recognition(self, words):
+#         print "on_recognition:", words
+#     def on_failure(self):
+#         print "on_failure"
+# rod = ROD()
+# rod.register()
+
+
 class EnableDragonfly(ContinuousRule):
     spec = "(enable|load) dragonfly"
     def _process_recognition(self, node, extras):
@@ -49,6 +63,16 @@ def GrammarRule(rule):
     else:
         grammar.add_rule(rule)
 
+
+# @GrammarRule
+# class FreeFormSpeech(ContinuingRule):
+#     spec = "<RunOn>"
+#     intro = "~chajBlankchaj~"
+#     extras = (Dictation("RunOn"),)
+#     def _process_recognition(self, node, extras):
+#         Text(extras["RunOn"].format()).execute()
+
+
 @GrammarRule
 class DisableDragonfly(ContinuousRule):
     spec = "(disable|unload) dragonfly"
@@ -59,7 +83,7 @@ class DisableDragonfly(ContinuousRule):
 
 @GrammarRule
 class StreamWordsAtCursorRule(ContinuousRule):
-    spec = "stream <RunOn>"
+    spec = "(stream|fling) <RunOn>"
     extras = (Dictation("RunOn"), )
     def _process_recognition(self, node, extras):
         Text(extras["RunOn"].format()).execute()
@@ -81,7 +105,12 @@ class FullDateRule(ContinuousRule):
             year = extras["year"]
             month = str(month) if month >= 10 else "0" + str(month)
             day = str(day) if day >= 10 else "0" + str(day)
-            year = str(year) if year >= 1000 else "20" + str(year)
+            if year >= 100:
+                year = str(year)
+            elif year <= 10:
+                year = "200" + str(year)
+            else: 
+                year = "20" + str(year)
             Text(month + "/" + day + "/" + year).execute()
             
 @GrammarRule                     
