@@ -173,6 +173,20 @@ class CorrectionRule(RegisteredRule):
         Function(DisplayTextToCorrect).execute()
 
 
+# history = RecognitionHistory()
+# history.register()
+# 
+# class ROD(RecognitionObserver):
+#     def on_begin(self):
+#         print "on_begin, history:", history
+#     def on_recognition(self, words):
+#         print "on_recognition:", words
+#     def on_failure(self):
+#         print "on_failure"
+# rod = ROD()
+# rod.register()
+
+
 grammar.load()
  
 def unload():

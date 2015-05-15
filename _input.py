@@ -18,6 +18,15 @@ def GrammarRule(rule):
         grammar.add_rule(rule)
 
 
+# @GrammarRule
+# class FreeFormSpeech(ContinuingRule):
+#     spec = "<RunOn>"
+#     intro = "~chajBlankchaj~"
+#     extras = (Dictation("RunOn"),)
+#     def _process_recognition(self, node, extras):
+#         Text(extras["RunOn"].format()).execute()
+
+
 @GrammarRule
 class StreamWordsAtCursorRule(Base.ContinuousRule):
     spec = "(stream|fling) <RunOn>"

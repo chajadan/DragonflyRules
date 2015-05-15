@@ -9,23 +9,6 @@ import inspect
 grammar = Base.ContinuousGrammar("_main grammar")
 
 
-# history = RecognitionHistory()
-# history.register()
-# 
-# class ROD(RecognitionObserver):
-#     def on_begin(self):
-#         print "on_begin, history:", history
-#     def on_recognition(self, words):
-#         print "on_recognition:", words
-#     def on_failure(self):
-#         print "on_failure"
-# rod = ROD()
-# rod.register()
-
-
-# Clipboard _support
-clip = Clipboard()
-
 #decorator
 def GrammarRule(rule):
     if inspect.isclass(rule):
@@ -35,15 +18,6 @@ def GrammarRule(rule):
             grammar.add_rule(rule())
     else:
         grammar.add_rule(rule)
-
-
-# @GrammarRule
-# class FreeFormSpeech(ContinuingRule):
-#     spec = "<RunOn>"
-#     intro = "~chajBlankchaj~"
-#     extras = (Dictation("RunOn"),)
-#     def _process_recognition(self, node, extras):
-#         Text(extras["RunOn"].format()).execute()
 
 
 @GrammarRule
@@ -106,6 +80,7 @@ class QuickCRules(Base.QuickContinuousRules):
 
           
 def ReplaceAllInSelection(toReplace, replaceWith):
+    clip = Clipboard()
     toReplace = toReplace.lower()
     kb.copy()
     clip.copy_from_system(formats=Clipboard.format_text)
