@@ -85,7 +85,7 @@ keyboard_keys = [
     ['comma', ',', 'condor'],
     ['delete', None, 'delete'],
     ['dollar', '$', 'dollar'],
-    ['dot', '.', 'point'],
+    ['dot', '.', 'grain'],
     ['down', None, 'down'],
     ['dquote', '"', 'quote'],
     ['end', None, 'extreme'],
