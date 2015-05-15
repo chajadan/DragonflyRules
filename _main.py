@@ -3,7 +3,6 @@ print "import _main"
 
 from dragonfly import *
 import Base
-import _keyboard as kb
 import inspect
 
 grammar = Base.ContinuousGrammar("_main grammar")
