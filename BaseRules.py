@@ -1,3 +1,4 @@
+from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
 print "import _baseRules"
 from dragonfly import *
 import _decorators as dec
@@ -111,20 +112,28 @@ class QuickContinuousRule(ContinuousRule):
         self.action.execute(extras)
 
 
-class QuickContinuousCall(QuickContinuousRule):
+class QuickContinuousCall(ContinuousRule):
+    next_unique_id = 1
     def __init__(self, voicedAs, callable, pass_runon_as=None, context=None, defaults=None, extras=None):
+        self.pass_runon_as = first_not_none(pass_runon_as, getattr(self, "pass_runon_as", None))
         if voicedAs.find("<RunOn>") != -1:
             if extras:
                 extras = [extra for extra in extras if extra.name != "RunOn"]
             else:
                 extras = [] 
             extras.append(Dictation("RunOn"))
-        if pass_runon_as:
-            args = {pass_runon_as: lambda extras: extras["RunOn"].format()}
-        else:
-            args = None
-        QuickContinuousRule.__init__(self, voicedAs, Function(callable), args=args, extras=extras, defaults=defaults, context=context)
-
+        
+        self.action = Function(callable)
+        name = "QuickContinuousCall_" + voicedAs + str(self.action) + "_id" + str(QuickContinuousCall.next_unique_id)
+        QuickContinuousCall.next_unique_id += 1
+        ContinuousRule.__init__(self, name=name, spec=voicedAs, extras=extras, defaults=defaults, context=context)
+    def _process_recognition(self, node, extras):
+        if getattr(self, "pass_runon_as", None) and "RunOn" in extras:
+            extras[self.pass_runon_as] = extras["RunOn"].format()
+        for name, extra in extras.items():
+            if isinstance(extra, NatlinkDictationContainer):
+                extras[name] = extra.format()
+        self.action.execute(extras)
 
 class QuickContinuousCalls(BaseQuickRules):
     def __init__(self, grammar):
