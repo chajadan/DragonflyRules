@@ -275,15 +275,6 @@ class ReplaceAllInLineRule(RegisteredRule):
         toReplace = extras["toReplace"].format()
         replaceWith = extras["replaceWith"].format()
         Function(ReplaceAllInLine).execute({"toReplace": toReplace, "replaceWith": replaceWith})
-
-
-@GrammarRule
-class RespaceRule(ContinuousRule):
-    spec = "[make] space count <n>"
-    extras = IntegerRef("n", 0, 200),
-    def _process_recognition(self, node, extras):
-        spaceCount = int(extras["n"])
-        Function(docnav.respace_around_caret).execute({"count": spaceCount})
   
 
 def LowercaseSelection():
