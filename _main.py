@@ -87,7 +87,7 @@ class system_shortcuts_rule(Base.QuickContinuousRules):
              "bottom": Key("c-end"),
              "tab windows": Key("alt:down, tab:down"),
              "go to tab <n>": (Key("right") * Repeat(extra="n")) + Key("alt:up, tab:up"),
-             "last window": Key("a-tab"),
+             "last window": Key("alt:down, tab/5, alt:up"),
              "undo": Key("c-z"),
              "find": Key("c-f"),
              "desktop": Key("w-d"),
