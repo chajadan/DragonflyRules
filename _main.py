@@ -2,24 +2,11 @@
 print "import _main"
 
 from dragonfly import *
-from dragonfly.timer import _Timer
-import BaseGrammars
-from BaseRules import *
-import _general as glib
-import _decorators as dec
+import Base
 import _keyboard as kb
 import inspect
-import _globals
-import paths
-import sys
-sys.argv = [""]
-import subprocess
-import easygui
-import chajLib.ui.docnav as docnav
-TIMER_MANAGER = _Timer(1)
 
-masterRunOn = BaseGrammars.ContinuousGrammar("master run on grammar")
-grammar = BaseGrammars.GlobalGrammar("master non run on grammar")
+grammar = Base.ContinuousGrammar("_main grammar")
 
 
 # history = RecognitionHistory()
@@ -42,16 +29,10 @@ clip = Clipboard()
 #decorator
 def GrammarRule(rule):
     if inspect.isclass(rule):
-        if issubclass(rule, (QuickChainedRules, QuickRules)):
+        if issubclass(rule, Base.BaseQuickRules):
             rule(grammar)
-        elif issubclass(rule, (QuickContinuousRules)):
-            rule(masterRunOn)
-        elif issubclass(rule, ContinuousGrammarRule):
-            masterRunOn.add_rule(rule())
-        elif issubclass(rule, (Rule, MappingRule, CompoundRule)):
-            grammar.add_rule(rule())
         else:
-            raise TypeError("Unexpected rule type added to grammar: " + str(inspect.getmro(rule)))
+            grammar.add_rule(rule())
     else:
         grammar.add_rule(rule)
 
@@ -66,7 +47,7 @@ def GrammarRule(rule):
 
 
 @GrammarRule
-class SomeQuickRules(QuickContinuousRules):
+class SomeQuickRules(Base.QuickContinuousRules):
     name="GlobalQuickRules"
     extrasDict = {
         "keyCount": IntegerRef("keyCount", 1, 1000),
@@ -102,7 +83,7 @@ class SomeQuickRules(QuickContinuousRules):
 
 
 @GrammarRule
-class QuickCRules(QuickContinuousRules):
+class QuickCRules(Base.QuickContinuousRules):
     mapping = {
         "(in quotes|string it)": Text("\"\"") + Key("left"),
         "in brackets": Text("[]") + Key("left"),
@@ -132,7 +113,7 @@ def ReplaceAllInSelection(toReplace, replaceWith):
     Text(selection.replace(toReplace, replaceWith)).execute()
     
 @GrammarRule
-class ReplaceAllInSelectionRule(RegisteredRule):
+class ReplaceAllInSelectionRule(Base.RegisteredRule):
     spec = "replace selection <toReplace> with <replaceWith>"
     extras = (Dictation("toReplace"), Dictation("replaceWith"))
     def _process_recognition(self, node, extras):
@@ -151,7 +132,7 @@ def ReplaceAllInLine(toReplace, replaceWith, sensitive = True):
 #     Text(selection.replace(toReplace, replaceWith)).execute()
 
 @GrammarRule
-class ReplaceAllInLineRule(RegisteredRule):
+class ReplaceAllInLineRule(Base.RegisteredRule):
     spec = "replace line <toReplace> with <replaceWith>"
     extras = (Dictation("toReplace"), Dictation("replaceWith"))
     def _process_recognition(self, node, extras):
@@ -161,7 +142,7 @@ class ReplaceAllInLineRule(RegisteredRule):
 
 
 @GrammarRule
-class InterDocNavRules(QuickContinuousRules):
+class InterDocNavRules(Base.QuickContinuousRules):
     name="inter_doc_nav"
     extrasDict = {
         "keyCount": IntegerRef("keyCount", 1, 1000),
@@ -195,7 +176,7 @@ class InterDocNavRules(QuickContinuousRules):
     
 
 @GrammarRule
-class system_shortcuts_rule(QuickContinuousRules):
+class system_shortcuts_rule(Base.QuickContinuousRules):
     name="system_shortcuts"
     mapping={
              "save": Key("c-s"),
@@ -231,17 +212,9 @@ class system_shortcuts_rule(QuickContinuousRules):
     }
 
 grammar.load()
-masterRunOn.load()
-print "grammar loaded"
     
 # Unload function which will be called by natlink at unload time.
 def unload():
     global grammar
-    global listener
-    global masterRunOn
     if grammar: grammar.unload()
     grammar = None
-    if listener: listener.unload()
-    listener = None
-    if masterRunOn: masterRunOn.unload()
-    masterRunOn = None
