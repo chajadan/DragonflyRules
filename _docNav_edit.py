@@ -60,22 +60,15 @@ class ReplaceTrim(ContinuousRule_EatDictation):
 
 
 @GrammarRule
-class RespaceRule(ContinuousRule):
-    spec = "[make] space count <n>"
-    extras = IntegerRef("n", 0, 200),
-    def _process_recognition(self, node, extras):
-        spaceCount = int(extras["n"])
-        Function(docnav.respace_around_caret).execute({"count": spaceCount})
-
-
-@GrammarRule
 class DocNavEditCalls(QuickContinuousCalls):
     mapping = [
         ["paste left", docnav.replace_left_from_clipboard],
         ["paste right", docnav.replace_right_from_clipboard],
         ["replace left <RunOn>", docnav.replace_left, "replacement"],
         ["replace right <RunOn>", docnav.replace_right, "replacement"],
+        ["[make] space count <count>", docnav.respace_around_caret],
     ]
+    extras = (IntegerRef("count", 0, 1000),)
 
 
 grammar.load()
