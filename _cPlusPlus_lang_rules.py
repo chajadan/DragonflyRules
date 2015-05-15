@@ -82,7 +82,7 @@ class OperatorRules(QuickContinuousRules):
 @GrammarRule
 class PreprocessorRules(QuickContinuousRules):
     mapping = {
-        "include": Text("#include"),
+        "include": Text("#include "),
     }
 
 
