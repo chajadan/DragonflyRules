@@ -8,16 +8,17 @@ import inspect
 
 grammar = BaseGrammars.ContinuousGrammar("launch and focus grammar")
 
-executable_info_field_names = ["name", "path", "window_title"]
+executable_info_field_names = ["name", "path", "window_title", "launch_args"]
 executable_info_list = [
-    ["ACI", r"C:\Program Files (x86)\ACI32\Applications\Report32.exe", None],
-    ["chrome", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", None],
-    ["compiler", None, "AciCompiler ~~"],
-    ["eclipse", r"C:\Program Files\eclipse\eclipse.exe",  "- Eclipse"],
-    ["get bash", None, "MINGW32:/"],
-    ["process Explorer", r"D:\Install Files\procexp.exe", "Process Explorer - Sysinternals"],
-    ["sketch", None, "ACI Sketch"],
-    ["Visual Studio", r"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe", None],
+    ["ACI", r"C:\Program Files (x86)\ACI32\Applications\Report32.exe", None, None],
+    ["AciCompiler", None, "AciCompiler ~~", [r"C:\Python27_32bit\python.exe", r"C:\Users\chajadan\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
+    ["chrome", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", None, None],
+    ["compiler", None, "AciCompiler ~~", [r"C:\Python27_32bit\python.exe", r"C:\Users\chajadan\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
+    ["eclipse", r"C:\Program Files\eclipse\eclipse.exe",  "- Eclipse", None],
+    ["get bash", None, "MINGW32:/", [r"C:\Program Files (x86)\Git\bin\sh.exe", "--login", "-i"]],
+    ["process Explorer", r"D:\Install Files\procexp.exe", "Process Explorer - Sysinternals", None],
+    ["sketch", None, "ACI Sketch", None],
+    ["Visual Studio", r"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe", None, None],
     ]
 ExecutableInfo = collections.namedtuple("ExecutableInfo", executable_info_field_names)
 executable_info = [ExecutableInfo(*values) for values in executable_info_list]
@@ -35,10 +36,14 @@ def GrammarRule(rule):
 @GrammarRule
 class LaunchRule(ContinuousRule):
     spec = "launch <program>"
-    program_choices = {exe.name: exe.path for exe in executable_info if exe.path}
+    intro = ["launch " + exe.name for exe in executable_info if exe.path is not None]
+    program_choices = {exe.name: first_not_none(exe.path, exe.launch_args) for exe in executable_info if exe.path or exe.launch_args}
     extras = (Choice("program", program_choices),)
     def _process_recognition(self, node, extras):
-        StartApp(extras["program"]).execute()
+        if isinstance(extras["program"], (list,tuple)):
+            StartApp(*extras["program"]).execute()
+        else:
+            StartApp(extras["program"]).execute()
 
 
 @GrammarRule
