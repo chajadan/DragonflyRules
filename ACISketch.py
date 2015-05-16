@@ -51,12 +51,11 @@ class AddMultiLabel(RegisteredRule):
 @GrammarRule
 class AciSketchRules(QuickContinuousRules):
     mapping = {
+        "show labels": Key("alt, v, l"),
     }
     extrasDict = {
-        "n": IntegerRef("n", 1, 30),
     }
     defaultsDict = {
-        "n": 1,
     }
 
 grammar.load()
