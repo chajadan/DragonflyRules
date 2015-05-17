@@ -30,15 +30,8 @@ def AciImportPics():
 @GrammarRule
 class AciChainedRules(QuickContinuousRules):
     mapping = {
-        "save file as": Key("a-f, a, r"),
-    }
-
-
-@GrammarRule
-class AciChainedRules(QuickContinuousRules):
-    mapping = {
         "to do": Text("??"),
-        "next item": Key("enter") + Text("- "),
+        "next item": Key("end, enter") + Text("- "),
         "new item": Text("- "),
         "next page [<n> [times]]": Key("c-pgdown") * Repeat(extra="n"),
         "previous page [<n> [times]]": Key("c-pgup") * Repeat(extra="n"),
@@ -56,6 +49,7 @@ class AciChainedRules(QuickContinuousRules):
         "first pick": Key("down:5, tab"),
         "next pick": Key("home, left, down, right, up:10"),
         "go to plat map": Key("a-v, m, d, enter/20, c-pgdown/50, down:4"),
+        "save file as": Key("a-f, a, r"),
     }
     extrasDict = {
         "n": IntegerRef("n", 1, 30),
