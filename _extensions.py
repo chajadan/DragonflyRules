@@ -20,6 +20,8 @@ class PrefixedKeypressRule(ContinuousRule):
     extensions = {
         "Python": "py",
         "text": "txt",
+        "see plus plus": "cpp",
+        "header file": "h",
     }
     extras = (Choice("ext", {name: extension for name, extension in extensions.items()}),)
     def _process_recognition(self, node, extras):
