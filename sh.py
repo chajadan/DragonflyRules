@@ -31,6 +31,8 @@ class GitBashRules(Base.QuickContinuousRules):
         "commit amend": Text("git commit --amend"),
         "save commit message": Key("escape") + Text(":wq") + Key("enter"),
         "push": Text("git push") + Key("enter"),
+        "git add": Text("git add "),
+        "git diff": Text("git diff "),
         "go to ACI Compiler": Text("cd ~/git/AciCompiler/AciCompiler/AciCompiler") + Key("enter"),
         "go to AciImporter": Text("cd ~/git/AciImporter") + Key("enter"),
         "go to dragonfly rules": Text("cd ~/git/DragonflyRules/DragonflyRules/src") + Key("enter"),
