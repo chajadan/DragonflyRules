@@ -108,6 +108,15 @@ class ShortTimeRule(Base.ContinuousRule):
         Text(hour + ":" + minutes + am_pm).execute()
 
 
+@GrammarRule
+class SimpleStringRule(Base.RegisteredRule):
+    spec = "simple string <string>"
+    extras = (Dictation("string"), )
+    def _process_recognition(self, node, extras):
+        action = Text('""') + Key("left") + Text(extras["string"].format()) + Key("right")
+        action.execute()
+
+
 grammar.load()
 
 def unload():
