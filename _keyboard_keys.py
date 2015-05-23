@@ -133,10 +133,14 @@ all_keys = alpha_names + [[graph, voicedAs] for name, graph, voicedAs in keyboar
 
 @GrammarRule
 class PrefixedKeypressRule(ContinuousRule):
-    spec = "letter <Chr>"
-    extras = (Choice("Chr", {voicedAs: letter for letter, voicedAs in alpha_names}),)
+    spec = "letter <Chr> [<n> [(times|time)]]"
+    extras = (Choice("Chr", {voicedAs: letter for letter, voicedAs in alpha_names}),
+              IntegerRef("n", 1, 1000))
+    defaults = {"n": 1}
     def _process_recognition(self, node, extras):
-        Text(extras["Chr"]).execute()
+        print extras
+        action = Text(extras["Chr"]) * Repeat(extra="n")
+        action.execute(extras)
 
 @GrammarRule
 class SpellByWordsRule(ContinuousRule):
