@@ -257,6 +257,7 @@ class ContinuousGrammar(GlobalGrammar):
                     elif word in self._commandWords: # self here is this grammar
                         if i > 0:
                             extras["RunOn"] = NatlinkDictationContainer(self.translateLiterals(recognized_words[:i])) # limit run on to part before new command
+                            extras["RunOn_UnEscaped"] = NatlinkDictationContainer(recognized_words[:i])
                         else:
                             del extras["RunOn"]
                         _orig_process_recognition(node, extras)
@@ -271,6 +272,7 @@ class ContinuousGrammar(GlobalGrammar):
                             if running_match in self._commandWords:
                                 if i > 0:
                                     extras["RunOn"] = NatlinkDictationContainer(self.translateLiterals(recognized_words[:i])) # limit run on to part before new command
+                                    extras["RunOn_UnEscaped"] = NatlinkDictationContainer(recognized_words[:i])
                                 else:
                                     del extras["RunOn"]
                                 _orig_process_recognition(node, extras)
@@ -280,6 +282,7 @@ class ContinuousGrammar(GlobalGrammar):
                             else:
                                 j += 1
                 extras["RunOn"] = NatlinkDictationContainer(self.translateLiterals(recognized_words))
+                extras["RunOn_UnEscaped"] = NatlinkDictationContainer(recognized_words)
                 _orig_process_recognition(node, extras)
                            
         ruleInstance._process_recognition = _instance_process_recognition
