@@ -2,6 +2,7 @@ print "import cPlusPlus_lang_rules"
 from dragonfly import *
 import BaseGrammars
 from BaseRules import *
+from chajLib.ui import docnav
 
 grammar = BaseGrammars.ContinuousGrammar("c++ grammar", enableCommand='load language see plus plus', disableCommand='unload language see plus plus', initiallyDisabled=True)
 
@@ -110,6 +111,18 @@ class QuickEditRules(QuickContinuousRules):
         "terminate": Key("end") + Text(";"),
         "next statement": Key("end") + Text(";") + Key("enter"),
     }
+
+
+@GrammarRule
+class MultilineCommentSelection(ContinuousRule):
+    """
+    only different from "comment selection" in that it surrounds the selections
+    with spaces, and is always /* multiline */ style
+    """
+    spec = "format comment selection"
+    def _process_recognition(self, node, extras):
+        selection = docnav.read_selection()
+        Text("/* " + selection + " */").execute()
 
 
 grammar.load()
