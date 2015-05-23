@@ -83,7 +83,7 @@ class ClassicConstantVariableCaseRule(ContinuousRule):
 
 @GrammarRule
 class CapitalCamelCaseRule(ContinuousRule):
-    spec = "capital camel <RunOn>"
+    spec = "(capital camel|pillar) <RunOn>"
     extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
         msg = extras["RunOn"].format()
