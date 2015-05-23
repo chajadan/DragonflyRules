@@ -22,7 +22,7 @@ def GoToFirstPage():
     
 def AciImportPics():
     action = Key("a-t, i") + Pause("200") + Mouse("(22,101), left:1") + Pause("100")
-    action += Text("C:\\Program Files\\_imp home\\pics") + Key("enter")
+    action += Text(r"C:\Users\chajadan\git\AciCompiler\AciCompiler\AciCompiler\pics") + Key("enter")
     action += Pause("50") + Key("s-tab, c-a, enter") + Pause("400") + Key("w-up/50, a-v, 3")
     action.execute()
 
