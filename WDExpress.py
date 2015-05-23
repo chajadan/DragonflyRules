@@ -37,6 +37,7 @@ class ShortcutRules(QuickContinuousRules):
         "comment selection": Key("c-e, c-c"),
         "uncomment selection": Key("c-e, c-u"),
         "go to definition": Key("f12"),
+        "go to declaration": Key("ca-f12"),
         "toggle file": Key("c-k, c-o"), # swaps from cpp to h file, and vice versa
         "recent projects": Key("a-f, j"),
         "save all": Key("cs-s"),
