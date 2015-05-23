@@ -47,6 +47,7 @@ class CamelCaseRule(ContinuousRule):
     extras = Dictation("RunOn"),
     def _process_recognition(self, node, extras):
         msg = extras["RunOn"].format()
+        msg = msg.lower()
         wrds = msg.split(" ")
         for i, word in enumerate(wrds):
             if i > 0:
