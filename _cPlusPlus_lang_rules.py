@@ -64,6 +64,7 @@ keywords = [
     ["using", "using", True, False],
     ["void", "void", True, False],
     ["while", "while", True, False],
+    ["wstring", "wstring", True, False]
 ]
 
 for entry in keywords:
