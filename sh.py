@@ -21,24 +21,36 @@ def GrammarRule(rule):
 class GitBashRules(Base.QuickContinuousRules):
     context= AppContext(title = "MINGW32"),
     name="GitBashRules"
-    mapping = {
-        "add all": Text("git add .") + Key("enter"),
-        "add all with deletes": Text("git add -A") + Key("enter"),
-        "add updated": Text("git add -u") + Key("enter"),
-        "status": Text("git status") + Key("enter"),
-        "diff": Text("git diff") + Key("enter"),
-        "commit": Text("git commit"),
-        "commit amend": Text("git commit --amend"),
+    mapping = {        
         "save commit message": Key("escape") + Text(":wq") + Key("enter"),
-        "push": Text("git push") + Key("enter"),
-        "git add": Text("git add "),
-        "git diff": Text("git diff "),
+        
         "go to ACI Compiler": Text("cd ~/git/AciCompiler/AciCompiler/AciCompiler") + Key("enter"),
         "go to AciImporter": Text("cd ~/git/AciImporter") + Key("enter"),
+        "go to chajLib": Text("cd ~/git/chajLib") + Key("enter"),
         "go to dragonfly rules": Text("cd ~/git/DragonflyRules/DragonflyRules/src") + Key("enter"),
         "go to pyChajLib": Text("cd ~/git/pyChajLib") + Key("enter"),
-        "do git clean": Text("git clean") + Key("enter"),
-        "do force git clean": Text("git clean -f") + Key("enter"),
+        
+        "get add": Text("git add "),
+        "get commit": Text("git commit "),
+        "get commit amend": Text("git commit --amend "),
+        "get diff": Text("git diff "),
+        "get status": Text("git status "),
+        "[do] [get] add content": Text("git add .") + Key("enter"),
+        "[do] [get] add all changes": Text("git add -A") + Key("enter"),
+        "[do] [get] add updated": Text("git add -u") + Key("enter"),        
+        "do [get] clean": Text("git clean") + Key("enter"),
+        "do [get] commit": Text("git commit") + Key("enter"),
+        "do [get] commit amend": Text("git commit --amend ") + Key("enter"),
+        "[do [get]] diff": {
+            "action":Text("git diff") + Key("enter"),
+            "intro":["do get diff", "do diff", "diff"]},
+        "[do [get]] push": {
+            "action":Text("git push") + Key("enter"),
+            "intro":["do get push", "do push", "push"]},
+        "do [get] force clean": Text("git clean -f") + Key("enter"),
+        "[do [get]] status": {
+            "action":Text("git status") + Key("enter"),
+            "intro":["do get status", "do status", "status"]},
         "undo last commit": Text("git reset --soft HEAD~1") + Key("enter"),
     }
     extrasDict = {
