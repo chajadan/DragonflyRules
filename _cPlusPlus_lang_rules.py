@@ -39,13 +39,13 @@ class KeywordRule(ContinuousRule):
 #                 action += Mimic(*extras["code"].words)
         action.execute()
         
-# keyword format: written form, spoken form, isAlwaysFollowed (and so necessarily a space afterwards), isAlwaysPreceded
+# keyword format: written form, spoken form, isGenerallyFollowed (and so necessarily a space afterwards), isGenerallyPreceded
 keywords = [
     ["bool", "Boolean", True, False],
     ["case", "case", True, False],
     ["catch", "catch", True, False],
     ["class", "class", True, False],
-    ["const", "const", False, False],
+    ["const", "const", True, False],
     ["do", "do", True, False],
     ["double", "double", True, False],
     ["else", "else", True, False],
@@ -105,7 +105,7 @@ class CommonNamesRules(QuickContinuousRules):
 @GrammarRule
 class CodeTemplatesRules(QuickContinuousRules):
     mapping = {
-        "new block": Text(" {}") + Key("left, enter:2, up, tab"),
+        "new block": Text(" {}") + Key("left, enter:2, up, tab"),       
     }
 
 
