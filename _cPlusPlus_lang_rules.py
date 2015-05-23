@@ -105,7 +105,8 @@ class CommonNamesRules(QuickContinuousRules):
 @GrammarRule
 class CodeTemplatesRules(QuickContinuousRules):
     mapping = {
-        "new block": Text(" {}") + Key("left, enter:2, up, tab"),       
+        "new block": Text(" {}") + Key("left, enter:2, up, tab"),    
+        "wide literal": Text('L""') + Key("left"),
     }
 
 
