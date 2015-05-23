@@ -50,7 +50,7 @@ class SomeQuickRules(Base.QuickContinuousRules):
         "up click": Mouse("left:up"),
         "down right click": Mouse("right:down"),
         "up right click": Mouse("right:up"),
-        "[toggle] flux": Key("a-end"),
+        "toggle flux": Key("a-end"),
     }
 
 
