@@ -73,7 +73,7 @@ keyboard_keys = [
     ['apostrophe', "'", 'posh'],
     ['alt', None, 'alter'],
     ['apps', None, 'application key'],
-    ['asterisk', '*', 'astroid'],
+    ['asterisk', '*', 'asteroid'],
     ['at', '@', 'splat'],
     ['backslash', '\\', 'brash'],
     ['backspace', None, 'back'],
