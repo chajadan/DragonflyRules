@@ -79,7 +79,7 @@ class SelectPhraseLeft(ContinuousRule_EatDictation):
         if not extras.has_key("RunOn"):
             Key("s-home").execute()
         else:
-            words = "before left".split() + extras["RunOn"].words
+            words = "before left".split() + extras["RunOn_UnEscaped"].words
             Mimic(*words).execute()
             kb.shiftDown()
             for _ in range(len(extras["RunOn"].format())):
