@@ -1,5 +1,8 @@
 print "import _input"
 from dragonfly import *
+from keyboard_keys import printable_keys_as_text
+from keyboard_keys import all_keys_by_keyname
+from chajLib.ui import docnav
 import input_conversion as conv
 import Base
 import inspect
@@ -114,8 +117,29 @@ class SimpleStringRule(Base.RegisteredRule):
     extras = (Dictation("string"), )
     def _process_recognition(self, node, extras):
         action = Text('""') + Key("left") + Text(extras["string"].format()) + Key("right")
-        action.execute()
+        action.execute()    
 
+
+class KeypressRule(Base.ContinuousRule): 
+    extras = (IntegerRef("keyCount", 0, 1000),)
+    defaults = {"keyCount": 1}
+    def __init__(self, keyName, voicedAs):
+        self.intro = voicedAs
+        Base.ContinuousRule.__init__(self, name = "keypress_rule_" + keyName + "_" + voicedAs, spec = voicedAs + " [<keyCount> [times]]", )          
+        self.keyName = keyName
+    def _process_recognition(self, node, extras):          
+        (Key(self.keyName) * Repeat(extras["keyCount"])).execute()
+
+
+for keyName, voicedAs in all_keys_by_keyname:
+    grammar.add_rule(KeypressRule(keyName, voicedAs))
+
+
+@GrammarRule
+class QuickKeyRules(Base.QuickContinuousRules):
+    mapping = {
+        "clear special keys": Key("alt:up, ctrl:up, shift:up"),
+    }
 
 grammar.load()
 
