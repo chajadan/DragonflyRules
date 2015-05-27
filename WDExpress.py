@@ -69,13 +69,10 @@ class RulesWithArguments(QuickContinuousRules):
 @GrammarRule
 class ContextSpecificRules(QuickContinuousRules):
     extrasDict = {
-        "n": IntegerRef("n", 1, 1000),
     }
     defaultsDict = {
-        "n": 1,
     }    
-    mapping = {
-        "lineless [<n> [times]]": Key("home, end, s-home:2, backspace:2") * Repeat(extra="n"),      
+    mapping = {      
     }
 
 
