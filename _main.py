@@ -69,9 +69,7 @@ class QuickCRules(Base.QuickContinuousRules):
         "call": Text("()"),
         "spinster": Text("()") + Key("enter"),
         "item": Text(", "),
-        "assign": Text(" = "),
-        "dereference": Text("->"),
-        "dot": Key("dot"),
+        "assignment": Text(" = "),
     }
 
 
