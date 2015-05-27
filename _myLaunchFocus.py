@@ -19,7 +19,7 @@ executable_info_list = [
     ["pdfsam", r"C:\Program Files (x86)\PDF Split And Merge Basic\pdfsam-starter.exe", "PDF Split and Merge basic", None],
     ["process Explorer", r"D:\Install Files\procexp.exe", "Process Explorer - Sysinternals", None],
     ["sketch", None, "ACI Sketch", None],
-    ["Visual Studio", r"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe", None, None],
+    ["Visual Studio", r"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe", None, None],
     ]
 ExecutableInfo = collections.namedtuple("ExecutableInfo", executable_info_field_names)
 executable_info = [ExecutableInfo(*values) for values in executable_info_list]
