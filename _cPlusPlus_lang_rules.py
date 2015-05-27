@@ -42,6 +42,7 @@ class KeywordRule(ContinuousRule):
 # keyword format: written form, spoken form, isGenerallyFollowed (and so necessarily a space afterwards), isGenerallyPreceded
 keywords = [
     ["bool", "Boolean", True, False],
+    ["break", "break", False, False],
     ["case", "case", True, False],
     ["catch", "catch", True, False],
     ["class", "class", True, False],
@@ -73,7 +74,8 @@ for entry in keywords:
 @GrammarRule
 class OperatorRules(QuickContinuousRules):
     mapping = {
-        "address of": Text("& "), 
+        "address of": Text("& "),
+        "arrow": Text("->"), 
         "plus": Text(" + "),
         "minus": Text(" - "),
         "times": Text(" * "),
