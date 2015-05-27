@@ -158,11 +158,14 @@ class QuickContinuousRules(BaseQuickRules):
         BaseQuickRules.__init__(self, grammar)
         for voicedAs, attributes in self.mapping.items():
             intro = None
+            context = None
             args = {}
             if type(attributes) == dict:
                 action = attributes["action"]
                 if "intro" in attributes:
                     intro = attributes["intro"]
+                if "context" in attributes:
+                    context = attributes["context"]
                 args = attributes.get("args", {})
             else:
                 action = attributes
@@ -177,7 +180,7 @@ class QuickContinuousRules(BaseQuickRules):
                 extras += (self.extrasDict[extraName],)
                 if hasattr(self, "defaultsDict") and extraName in self.defaultsDict:
                     defaults[extraName] = self.defaultsDict[extraName]
-            self.add_rule(QuickContinuousRule(voicedAs, action, extras=extras, defaults=defaults, intro=intro, args=args))
+            self.add_rule(QuickContinuousRule(voicedAs, action, extras=extras, defaults=defaults, context=context, intro=intro, args=args))
 
 class QuickRule(CorrectableRule):
     def __init__(self, voicedAs, action, extras = None, defaults = None, intro = None, context = None):
