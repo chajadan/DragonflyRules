@@ -28,7 +28,7 @@ lower_alpha_names = [
 ]
 
 number_names = [
-    ['0', ''],
+    ['0', 'zipper'],
     ['1', 'wonder'],
     ['2', 'Tootsie'],
     ['3', 'tree'],
@@ -38,6 +38,20 @@ number_names = [
     ['7', 'sever'],
     ['8', 'hater'],
     ['9', 'Niner'],
+]
+
+# names used when commands listen for digits
+number_names_proper = [
+    ['0', 'zero'],
+    ['1', 'ace'], # using alternate name to avoid Dragon's 'one/number' interpretation
+    ['2', 'two'],
+    ['3', 'three'],
+    ['4', 'four'],
+    ['5', 'five'],
+    ['6', 'six'],
+    ['7', 'seven'],
+    ['8', 'eight'],
+    ['9', 'nine'],
 ]
 
 keyboard_keys = [
