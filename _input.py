@@ -1,9 +1,7 @@
 print "import _input"
 from dragonfly import *
-from keyboard_keys import printable_keys_as_text
 from keyboard_keys import all_keys_by_keyname
-from chajLib.ui import docnav
-import input_conversion as conv
+from keyboard_keys import number_names_proper
 import Base
 import inspect
 
@@ -71,7 +69,7 @@ class NumericDigitsRule(Base.RegisteredRule):
 @GrammarRule
 class NumbersRule(Base.ContinuousRule):
     spec = "digits <digits>"
-    extras = (Repetition(Choice("digit", choices=conv._digits), name="digits", min=1, max=50),)
+    extras = (Repetition(Choice("digit", choices={voicedAs: digit for digit, voicedAs in number_names_proper}), name="digits", min=1, max=50),)
     def _process_recognition(self, node, extras):
         digits = map(str, extras["digits"])
         Text("".join(digits)).execute()
