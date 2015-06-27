@@ -27,11 +27,9 @@ class AddSingleLabel(RegisteredRule):
     def _process_recognition(self, node, extras):
         AciAware.AciSketch_AddLabelAtMouseHover.argtypes = [ctypes.c_wchar_p]
         words = extras["RunOn"].words
-        print words
         for i, word in enumerate(words):
             words[i] = word.capitalize()
         label = " ".join(words)
-        print label
         AciAware.AciSketch_AddLabelAtMouseHover(label)
         
 @GrammarRule
@@ -41,11 +39,9 @@ class AddMultiLabel(RegisteredRule):
     def _process_recognition(self, node, extras):
         AciAware.AciSketch_AddMultiLabelAtMouseHover.argtypes = [ctypes.c_wchar_p]
         words = extras["RunOn"].words
-        print words
         for i, word in enumerate(words):
             words[i] = word.capitalize()
         label = " ".join(words)
-        print label
         AciAware.AciSketch_AddMultiLabelAtMouseHover(label)        
 
 @GrammarRule
