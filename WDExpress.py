@@ -13,9 +13,7 @@ def GrammarRule(rule):
             rule(grammar)
         elif issubclass(rule, ContinuousGrammarRule):
             grammar.add_rule(rule())
-            print "cgr", rule.__name__
         elif issubclass(rule, (Rule, MappingRule, CompoundRule)):
-            print "rmc", rule.__name__
             grammar.add_rule(rule())
         else:
             raise TypeError("Unexpected rule type added to grammar: " + str(inspect.getmro(rule)))
