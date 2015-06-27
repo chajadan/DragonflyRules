@@ -1,15 +1,13 @@
 from dragonfly import *
 import BaseGrammars
 from BaseRules import *
-import inspect
 import time
 import _globals
-import _general as glib
 import xmlrpclib
 import natlink
 import os
-import win32ui
 import win32gui
+import config
 
 CORRECTION_TRIES = 0
  
@@ -53,14 +51,14 @@ def DragonMicrophoneOn():
     get_engine().natlink.setMicState('on')    
      
 def CopyMacroFiles():
-    os.system(r"C:\Users\chajadan\git\DragonflyRules\DragonflyRules\src\deploy.bat")
+    os.system(config.macroSourceFolder + r"\deploy.bat")
     time.sleep(2)
      
 def LaunchDragon():
     pass  
      
 def LaunchDragonAsync(profile):
-    glib.LaunchExeAsyncWithArgList(r"C:\Program Files (x86)\Nuance\NaturallySpeaking13\Program\natspeak.exe", ["/user", profile])
+    glib.LaunchExeAsyncWithArgList(config.dragonNatSpeakPath, ["/user", profile])
               
 def DeployDragonfly_Restart():
     ExitDragon()
@@ -162,7 +160,7 @@ def DisplayTextToCorrect():
         results = _globals.lastSavedResults
         words = results.getWords(0)
         recognized_phrase = " ".join(words)
-        glib.LaunchExeAsyncWithArgList("C:\\Python27_32bit\\python.exe", ["C:\\NatLink\\NatLink\\MacroSystem\\DragonCorrectionDialog.py", recognized_phrase])
+        glib.LaunchExeAsyncWithArgList(config.pythonPath, [config.macroHomeFolder + r"\DragonCorrectionDialog.py", recognized_phrase])
         natlink.setTimerCallback(check_for_correction_response, 1000)
 
 @GrammarRule
