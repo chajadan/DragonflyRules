@@ -11,10 +11,10 @@ grammar = BaseGrammars.ContinuousGrammar("launch and focus grammar")
 executable_info_field_names = ["name", "path", "window_title", "launch_args"]
 executable_info_list = [
     ["ACI", r"C:\Program Files (x86)\ACI32\Applications\Report32.exe", None, None],
-    ["AciCompiler", None, "AciCompiler ~~", [r"C:\Python27_32bit\python.exe", r"C:\Users\chajadan\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
+    ["AciCompiler", None, "AciCompiler ~~", [r"C:\Python27_10_32bit\python.exe", r"D:\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
     ["chrome", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", None, None],
-    ["compiler", None, "AciCompiler ~~", [r"C:\Python27_32bit\python.exe", r"C:\Users\chajadan\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
-    ["eclipse", r"C:\Program Files\eclipse\eclipse.exe",  "- Eclipse", None],
+    ["compiler", None, "AciCompiler ~~", [r"C:\Python27_10_32bit\python.exe", r"D:\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
+    ["eclipse", r"D:\eclipse\eclipse.exe",  "- Eclipse", None],
     ["get bash", None, "MINGW32:/", [r"C:\Program Files (x86)\Git\bin\sh.exe", "--login", "-i"]],
     ["pdfsam", r"C:\Program Files (x86)\PDF Split And Merge Basic\pdfsam-starter.exe", "PDF Split and Merge basic", None],
     ["process Explorer", r"D:\Install Files\procexp.exe", "Process Explorer - Sysinternals", None],
