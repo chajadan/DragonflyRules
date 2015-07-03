@@ -5,6 +5,8 @@ import inspect
 grammar_context = AppContext(executable="sh")
 grammar = Base.ContinuousGrammar("sh", context=grammar_context)
 
+gitRepositoriesPath = "/d/git/"
+changeDirIntro = "cd " + gitRepositoriesPath
 
 #decorator
 def GrammarRule(rule):
@@ -24,11 +26,11 @@ class GitBashRules(Base.QuickContinuousRules):
     mapping = {        
         "save commit message": Key("escape") + Text(":wq") + Key("enter"),
         
-        "go to ACI Compiler": Text("cd ~/git/AciCompiler/AciCompiler/AciCompiler") + Key("enter"),
-        "go to AciImporter": Text("cd ~/git/AciImporter") + Key("enter"),
-        "go to chajLib": Text("cd ~/git/chajLib") + Key("enter"),
-        "go to dragonfly rules": Text("cd ~/git/DragonflyRules/DragonflyRules/src") + Key("enter"),
-        "go to pyChajLib": Text("cd ~/git/pyChajLib") + Key("enter"),
+        "go to ACI Compiler": Text(changeDirIntro + "AciCompiler/AciCompiler/AciCompiler") + Key("enter"),
+        "go to AciImporter": Text(changeDirIntro + "AciImporter") + Key("enter"),
+        "go to chajLib": Text(changeDirIntro + "chajLib") + Key("enter"),
+        "go to dragonfly rules": Text(changeDirIntro + "DragonflyRules/DragonflyRules/src") + Key("enter"),
+        "go to pyChajLib": Text(changeDirIntro + "pyChajLib") + Key("enter"),
         
         "get add": Text("git add "),
         "get commit": Text("git commit "),
