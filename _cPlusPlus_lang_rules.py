@@ -65,11 +65,17 @@ keywords = [
     ["using", "using", True, False],
     ["void", "void", True, False],
     ["while", "while", True, False],
-    ["wstring", "wstring", True, False]
 ]
-
 for entry in keywords:
     grammar.add_rule(KeywordRule(entry[0], entry[1], alwaysFollowed = entry[2]))
+    
+types = [
+    ["vector", "vector"],
+    ["wstring", "wstring"],
+]
+for entry in types:
+    grammar.add_rule(KeywordRule(entry[0], entry[1], alwaysFollowed = True))
+
 
 @GrammarRule
 class OperatorRules(QuickContinuousRules):
@@ -79,9 +85,9 @@ class OperatorRules(QuickContinuousRules):
         "plus": Text(" + "),
         "minus": Text(" - "),
         "times": Text(" * "),
-        "not equal": Text(" != "),
-        "[is] less than": Text(" < "),
-        "[is] greater than": Text(" > "),               
+        "[(do|does)] not equal": Text(" != "),
+        "[(is|was|are|were)] less than": Text(" < "),
+        "[(is|was|are|were)] greater than": Text(" > "),               
         "compares": Text(" == "),
         "reference": Text("& "),
         "resolve": Text("::"),
