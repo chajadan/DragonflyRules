@@ -1,6 +1,5 @@
 import SimpleXMLRPCServer
 from SimpleXMLRPCServer import *
-import easygui
 import sys
 import signal
 import wx
