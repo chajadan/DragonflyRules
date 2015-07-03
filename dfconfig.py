@@ -10,3 +10,7 @@ pythonPath = r"C:\Python27_6_32bit\python.exe"
 # Users that deploy updated rules using deploy.bat should supply these values
 computerName = "CHAJADAN-PC" # used in the safeguards of deploy.bat
 macroSourceFolder = r"D:\git\DragonflyRules\DragonflyRules\src" # deploy.bat pulls from here
+
+# Report32.py uses these values
+aciAwareDllPath = r"D:\git\AciImporter\Release\AciAware.dll"
+aciPicPath = r"D:\git\AciCompiler\AciCompiler\AciCompiler\pics"

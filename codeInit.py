@@ -1,8 +1,8 @@
 """
-Executing this script directly will instantiate code based off the config file.
+Executing this script directly will instantiate code based off the dfconfig file.
 """
 
-from config import *
+from dfconfig import *
 
 deployBatContent = r"""REM the following line is a safeguard to protect others from accidental directory content deletion
 
