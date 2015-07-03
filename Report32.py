@@ -1,16 +1,17 @@
 from dragonfly import *
-from BaseRules import *
-import BaseGrammars
-import inspect
+import Base
 import ctypes
-AciAware = ctypes.cdll.LoadLibrary(r"C:\Users\chajadan\git\AciImporter\Release\AciAware.dll");
+import inspect
+import dfconfig
+
+AciAware = ctypes.cdll.LoadLibrary(dfconfig.aciAwareDllPath);
 grammar_context = AppContext(executable="Report32")
-grammar = BaseGrammars.GlobalGrammar("ACI", context=grammar_context)
+grammar = Base.GlobalGrammar("ACI", context=grammar_context)
 
 # decorator
 def GrammarRule(Rule):
     if inspect.isclass(Rule):
-        if issubclass(Rule, BaseQuickRules):
+        if issubclass(Rule, Base.BaseQuickRules):
             Rule(grammar)
         else:
             grammar.add_rule(Rule())
@@ -22,13 +23,13 @@ def GoToFirstPage():
     
 def AciImportPics():
     action = Key("a-t, i") + Pause("200") + Mouse("(22,101), left:1") + Pause("100")
-    action += Text(r"C:\Users\chajadan\git\AciCompiler\AciCompiler\AciCompiler\pics") + Key("enter")
+    action += Text(dfconfig.aciPicPath) + Key("enter")
     action += Pause("50") + Key("s-tab, c-a, enter") + Pause("400") + Key("w-up/50, a-v, 3")
     action.execute()
 
 
 @GrammarRule
-class AciChainedRules(QuickContinuousRules):
+class AciChainedRules(Base.QuickContinuousRules):
     mapping = {
         "to do": Text("??"),
         "next item": Key("end, enter") + Text("- "),

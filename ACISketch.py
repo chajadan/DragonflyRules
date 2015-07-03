@@ -1,16 +1,16 @@
 from dragonfly import *
-from BaseRules import *
-import BaseGrammars
+import Base
 import inspect
 import ctypes
-AciAware = ctypes.cdll.LoadLibrary(r"C:\Users\chajadan\git\AciImporter\Release\AciAware.dll");
+import dfconfig
+AciAware = ctypes.cdll.LoadLibrary(dfconfig.aciAwareDllPath);
 grammar_context = AppContext(executable="ACISketch")
-grammar = BaseGrammars.GlobalGrammar("ACISketch", context=grammar_context)
+grammar = Base.GlobalGrammar("ACISketch", context=grammar_context)
 
 # decorator
 def GrammarRule(Rule):
     if inspect.isclass(Rule):
-        if issubclass(Rule, BaseQuickRules):
+        if issubclass(Rule, Base.BaseQuickRules):
             Rule(grammar)
         else:
             grammar.add_rule(Rule())
@@ -21,7 +21,7 @@ def GoToFirstPage():
     AciAware.GoToFirstPage()
 
 @GrammarRule
-class AddSingleLabel(RegisteredRule):
+class AddSingleLabel(Base.RegisteredRule):
     spec = "label <RunOn>"
     extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
@@ -33,7 +33,7 @@ class AddSingleLabel(RegisteredRule):
         AciAware.AciSketch_AddLabelAtMouseHover(label)
         
 @GrammarRule
-class AddMultiLabel(RegisteredRule):
+class AddMultiLabel(Base.RegisteredRule):
     spec = "multi label <RunOn>"
     extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
@@ -45,7 +45,7 @@ class AddMultiLabel(RegisteredRule):
         AciAware.AciSketch_AddMultiLabelAtMouseHover(label)        
 
 @GrammarRule
-class AciSketchRules(QuickContinuousRules):
+class AciSketchRules(Base.QuickContinuousRules):
     mapping = {
         "show labels": Key("alt, v, l"),
     }
