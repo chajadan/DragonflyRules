@@ -1,8 +1,9 @@
 from dragonfly import *
-import BaseGrammars
-from BaseRules import *
+import Base
+import inspect
 import time
 import _globals
+import _general as glib
 import xmlrpclib
 import natlink
 import os
@@ -11,13 +12,13 @@ import dfconfig
 
 CORRECTION_TRIES = 0
  
-grammar = BaseGrammars.ContinuousGrammar("meta grammar")
+grammar = Base.ContinuousGrammar("meta grammar")
 listener = Grammar("wake up grammar")
  
 #decorator
 def GrammarRule(rule):
     if inspect.isclass(rule):
-        if issubclass(rule, BaseQuickRules):
+        if issubclass(rule, Base.BaseQuickRules):
             rule(grammar)
         else:
             grammar.add_rule(rule())
@@ -25,7 +26,7 @@ def GrammarRule(rule):
         grammar.add_rule(rule)
 
 
-class EnableDragonfly(ContinuousRule):
+class EnableDragonfly(Base.ContinuousRule):
     spec = "(enable|load) dragonfly"
     def _process_recognition(self, node, extras):
         listener.set_exclusiveness(False)
@@ -34,7 +35,7 @@ listener.add_rule(EnableDragonfly())
 
 
 @GrammarRule
-class DisableDragonfly(ContinuousRule):
+class DisableDragonfly(Base.ContinuousRule):
     spec = "(disable|unload) dragonfly"
     def _process_recognition(self, node, extras):
         listener.set_exclusiveness(True)
@@ -84,43 +85,43 @@ def DeployDragonfly_Refresh():
 
 
 @GrammarRule
-class ListRegisteredCommands(ContinuousRule):
+class ListRegisteredCommands(Base.ContinuousRule):
     spec = "list registered commands"
     def _process_recognition(self, node, extras):
-        commands = list(BaseGrammars.GlobalGrammar._commandWords)
+        commands = list(Base.GlobalGrammar._commandWords)
         commands.sort()
         print commands
 
         
 @GrammarRule
-class ListRegisteredCommandIntros(ContinuousRule):
+class ListRegisteredCommandIntros(Base.ContinuousRule):
     spec = "list registered partials"
     def _process_recognition(self, node, extras):
-        partials = list(BaseGrammars.GlobalGrammar._commandWordPartials)
+        partials = list(Base.GlobalGrammar._commandWordPartials)
         partials.sort()
         print partials
 
     
 @GrammarRule
-class CloseDragonRule(RegisteredRule):
+class CloseDragonRule(Base.RegisteredRule):
     spec = "close dragon"
     def _process_recognition(self, node, extras):
         Function(ExitDragon).execute()
 
 @GrammarRule    
-class DeployRestartHeadSetRule(RegisteredRule):
+class DeployRestartHeadSetRule(Base.RegisteredRule):
     spec = "restart head set"
     def _process_recognition(self, node, extras):
         Function(DeployDragonfly_RestartHeadset).execute()
         
 @GrammarRule    
-class DeployRestartArrayRule(RegisteredRule):
+class DeployRestartArrayRule(Base.RegisteredRule):
     spec = "restart array"
     def _process_recognition(self, node, extras):
         Function(DeployDragonfly_RestartArray).execute()
     
 @GrammarRule     
-class DeployRefreshRule(RegisteredRule):
+class DeployRefreshRule(Base.RegisteredRule):
     spec = "refresh dragonfly"
     def _process_recognition(self, node, extras):
         Function(DeployDragonfly_Refresh).execute()        
@@ -164,7 +165,7 @@ def DisplayTextToCorrect():
         natlink.setTimerCallback(check_for_correction_response, 1000)
 
 @GrammarRule
-class CorrectionRule(RegisteredRule):
+class CorrectionRule(Base.RegisteredRule):
     spec = "correction"
     saveResults = False
     def _process_recognition(self, node, extras):
