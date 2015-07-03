@@ -33,15 +33,10 @@ def Mro_Contains_Class_By_Name(cls, class_name):
 
 def LaunchExeAsyncWithArgList(exePath, argList):
     from subprocess import Popen
-    import sys
     DETACHED_PROCESS = 0x00000008
-    cmd = [
-        # sys.executable,
-        exePath
-    ]
-    cmd += argList
-    p = Popen(cmd, shell=False, stdin=None, stdout=None, stderr=None,
-              close_fds=True, creationflags=DETACHED_PROCESS)
+    cmd = [exePath] + argList
+    Popen(cmd, shell=False, stdin=None, stdout=None, stderr=None,
+          close_fds=True, creationflags=DETACHED_PROCESS)
 
 
 def RunBatchFile(filename, fileDirectory):
