@@ -1,7 +1,7 @@
 import SimpleXMLRPCServer
-from SimpleXMLRPCServer import *
 import sys
 import signal
+import os
 import wx
 from threading import Timer
 
@@ -13,7 +13,7 @@ from threading import Timer
 LISTENING_PORT = 1338
 DIALOG_TITLE = "Correction Dialog"
 def communicate():
-    return xmlrpclib.ServerProxy("http://127.0.0.1:" + str(LISTENING_PORT))
+    return SimpleXMLRPCServer.xmlrpclib.ServerProxy("http://127.0.0.1:" + str(LISTENING_PORT))
 
 class DragonCorrectionDialog():
     def __init__(self, heard):
