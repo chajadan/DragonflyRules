@@ -29,8 +29,8 @@ class ShortcutRules(Base.QuickContinuousRules):
         "toggle file": Key("c-k, c-o"), # swaps from cpp to h file, and vice versa
         "recent projects": Key("a-f, j"),
         "save all": Key("cs-s"),
-        "build this project only": Key("a-b, j, b"),
-        "rebuild this project only": Key("a-b, j, r"),
+        "build [this] project only": Key("a-b, j, b"),
+        "rebuild [this] project only": Key("a-b, j, r"),
         "clean this project only": Key("a-b, j, c"),
         "parameter info": Key("cs-space"),
         "go to last project": Key("a-f, j, down, enter"),
