@@ -30,8 +30,17 @@ class LowerCaseFirstRule(ContinuousRule):
     extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
         wordOrPhrase = extras["RunOn"].format()
-        if len(wordOrPhrase) > 0:
+        if wordOrPhrase:
             wordOrPhrase = wordOrPhrase[0].lower() + wordOrPhrase[1:]
+            Text(wordOrPhrase).execute()
+
+@GrammarRule
+class AllLowerCaseRule(ContinuousRule):
+    spec = "all low case <RunOn>" 
+    extras = (Dictation("RunOn"),)
+    def _process_recognition(self, node, extras):
+        wordOrPhrase = extras["RunOn"].format().lower()
+        if wordOrPhrase:
             Text(wordOrPhrase).execute()
 
 @GrammarRule
