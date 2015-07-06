@@ -1,7 +1,6 @@
-from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
-print "import _baseRules"
+print "import BaseRules"
 from dragonfly import *
-import _decorators as dec
+from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
 import inspect
 import _general as glib
 import _globals
@@ -79,21 +78,21 @@ class BaseQuickRules():
         self._rules.append(rule)
         self.grammer.add_rule(rule)
 
-@dec.ChainedRule
-class QuickChainedRule(CorrectableRule):
-    spec = " "
-    extras = ()
-    def __init__(self, voicedAs, action):
-        CompoundRule.__init__(self, name = "qcr_" + voicedAs + action.__str__(), spec = voicedAs + self.spec)
-        self.action = action
-    def _process_recognition(self, node, extras):
-        self.action.execute()
-        
-class QuickChainedRules(BaseQuickRules):
-    def __init__(self, grammar):
-        BaseQuickRules.__init__(self, grammar)
-        for voicedAs, action in self.mapping.items():
-            self.add_rule(QuickChainedRule(voicedAs, action))
+# @dec.ChainedRule
+# class QuickChainedRule(CorrectableRule):
+#     spec = " "
+#     extras = ()
+#     def __init__(self, voicedAs, action):
+#         CompoundRule.__init__(self, name = "qcr_" + voicedAs + action.__str__(), spec = voicedAs + self.spec)
+#         self.action = action
+#     def _process_recognition(self, node, extras):
+#         self.action.execute()
+#         
+# class QuickChainedRules(BaseQuickRules):
+#     def __init__(self, grammar):
+#         BaseQuickRules.__init__(self, grammar)
+#         for voicedAs, action in self.mapping.items():
+#             self.add_rule(QuickChainedRule(voicedAs, action))
 
     
 class QuickContinuousRule(ContinuousRule):
@@ -215,6 +214,3 @@ class QuickRules(BaseQuickRules):
                 if self.defaultsDict.has_key(extraName):
                     defaults[extraName] = self.defaultsDict[extraName]
             self.add_rule(QuickRule(voicedAs, action, extras = extras, defaults = defaults, intro = intro))
-            
-# class TRule():
-#     def __init__(self,):
