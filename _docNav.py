@@ -37,7 +37,7 @@ class SelectCalls(Base.QuickContinuousCalls):
 
 @GrammarRule
 class AfterLeftCharacter(Base.ContinuousRule):
-    spec = "after last <characters>"
+    spec = "after left <characters>"
     extras = (Repetition(Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}), name="characters", min=1, max=20),)
     def _process_recognition(self, node, extras):
         letters = extras["characters"]
