@@ -1,13 +1,13 @@
 from dragonfly import *
-import BaseGrammars
-from BaseRules import *
+import Base
+import inspect
 
-grammar = BaseGrammars.ContinuousGrammar("file extensions grammar")
+grammar = Base.ContinuousGrammar("file extensions grammar")
 
 #decorator
 def GrammarRule(rule):
     if inspect.isclass(rule):
-        if issubclass(rule, BaseQuickRules):
+        if issubclass(rule, Base.BaseQuickRules):
             rule(grammar)
         else:
             grammar.add_rule(rule())
@@ -15,7 +15,7 @@ def GrammarRule(rule):
         grammar.add_rule(rule)
                
 @GrammarRule
-class PrefixedKeypressRule(ContinuousRule):
+class PrefixedKeypressRule(Base.ContinuousRule):
     spec = "extension <ext>"
     extensions = {
         "Python": "py",
@@ -25,7 +25,7 @@ class PrefixedKeypressRule(ContinuousRule):
     }
     extras = (Choice("ext", {name: extension for name, extension in extensions.items()}),)
     def _process_recognition(self, node, extras):
-        Text(extras["ext"]).execute()
+        Text("." + extras["ext"]).execute()
 
 grammar.load()
 def unload():
