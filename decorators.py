@@ -1,13 +1,22 @@
-print "import _decorators"
-#decorator
-#def GrammarRule(RuleClass):
-#    ??.add_rule(RuleClass())
-
+print "import decorators"
 from dragonfly import *
+import Base
 import inspect
 from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
 
-#decorator
+
+def ActiveGrammarRule(grammar):
+    def AddToGrammar(grammar_rule_class_or_instance):
+        if inspect.isclass(grammar_rule_class_or_instance):
+            if issubclass(grammar_rule_class_or_instance, Base.BaseQuickRules):
+                grammar_rule_class_or_instance(grammar)
+            else:
+                grammar.add_rule(grammar_rule_class_or_instance())
+        else:
+            grammar.add_rule(grammar_rule_class_or_instance)
+    return AddToGrammar
+
+
 def BombRule(CompoundRuleClass):
     _orig_process_recognition = CompoundRuleClass._process_recognition
     def _new_process_recognition(self, node, extras):
@@ -36,22 +45,25 @@ def BombRule(CompoundRuleClass):
     CompoundRuleClass._process_recognition = _new_process_recognition
     return CompoundRuleClass
 
+
 def OptionalBombRule(CompoundRuleClass):
     orig_spec = CompoundRuleClass.spec
     CompoundRuleClass = BombRule(CompoundRuleClass)
     CompoundRuleClass.spec = orig_spec + " [[bomb] [<chain>]]"
     return CompoundRuleClass
 
-def ChainedRule(CompoundRuleClass):
-    CompoundRuleClass.spec += " [<chain>]"
-    CompoundRuleClass.extras += (Dictation("chain"),)
-    _orig_process_recognition = CompoundRuleClass._process_recognition
-    def _new_process_recognition(self, node, extras):
-        _orig_process_recognition(self, node, extras)
-        if extras.has_key("chain"):
-            Mimic(*extras["chain"].words).execute()
-    CompoundRuleClass._process_recognition = _new_process_recognition
-    return CompoundRuleClass
+
+# def ChainedRule(CompoundRuleClass):
+#     CompoundRuleClass.spec += " [<chain>]"
+#     CompoundRuleClass.extras += (Dictation("chain"),)
+#     _orig_process_recognition = CompoundRuleClass._process_recognition
+#     def _new_process_recognition(self, node, extras):
+#         _orig_process_recognition(self, node, extras)
+#         if extras.has_key("chain"):
+#             Mimic(*extras["chain"].words).execute()
+#     CompoundRuleClass._process_recognition = _new_process_recognition
+#     return CompoundRuleClass
+
 
 def BombChain(CompoundRuleClass):
     CompoundRuleClass = BombRule(CompoundRuleClass)
@@ -63,6 +75,7 @@ def BombChain(CompoundRuleClass):
         _orig_process_recognition(self, node, extras)
     CompoundRuleClass._process_recognition = _new_process_recognition
     return CompoundRuleClass
+
 
 def CallInPlace(function):
     function()
