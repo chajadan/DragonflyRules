@@ -6,9 +6,9 @@ import _general as glib # general library
 from collections import Counter
 import inspect
 import itertools
-#from bs4 import BeautifulSoup as bsoup
 from xml.dom import minidom
 from chajLib import cstring as strfuncs
+from chajLib import ops
 import _globals
 from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
 
@@ -63,46 +63,6 @@ class XmlSpec(XmlSpecNode):
     def __init__(self, spec):
         self.soup = minidom.parseString(xmlize_spec(spec))
 
-# class SpecSoupNode:
-#     def __init__(self, soup):
-#         self.soup = soup
-# 
-#     def get_intros(self):
-#         intros = [""]
-#         for child in self.soup:
-#             tag = child.name
-#             if not tag:
-#                 new_intros = [child.string]
-#             elif tag == "alternatives":
-#                 new_intros = AlternativesNode(child).get_intros()
-#             elif tag == "optional":
-#                 new_intros = [""] + SpecSoupNode(child).get_intros()                        
-#             else:
-#                 new_intros = SpecSoupNode(child).get_intros()
-#             new_intros = itertools.product(intros, new_intros)
-#             # replace intros with a cartesian product by new_intros
-#             intros = [" ".join(parts) for parts in new_intros]
-#         intros = map(strfuncs.rstrip_from, intros, "{" * len(intros))
-#         intros = map(lambda x: x.strip(), intros)
-#         intros = map(strfuncs.reduce_spaces, intros) # only single spaces
-#         intros = filter(None, intros) # remove empty intros
-#         return intros
-# 
-# class AlternativesNode(SpecSoupNode):
-#     def get_intros(self):
-#         intros = []
-#         for child in self.soup:
-#             assert child.name == "alternative" # will only have <alternative> children
-#             intros += SpecSoupNode(child).get_intros()
-#         return intros
-# 
-# class SpecSoup(SpecSoupNode):
-#     def __init__(self, spec):
-#         import sys
-#         print sys.version
-#         import lxml
-#         print lxml
-#         self.soup = bsoup(xmlize_spec(spec), "lxml-xml")
 
 class GlobalGrammar(Grammar):
     _commandWords = Counter()           # represents the active commands of all "in force" continuous grammars
@@ -235,12 +195,6 @@ class GlobalGrammar(Grammar):
             intro_spec = rule.intro_spec
         elif getattr(rule, "_spec", None):
             intro_spec = rule._spec
-
-# comment out because xmlspec needs the whole spec, and strips from <extra> on at the end
-#         if intro_spec and intro_spec.find("<")  != -1:
-#             intro_spec = intro_spec[:intro_spec.find("<")]
-#         if intro_spec and intro_spec[-1] == "[":
-#             intro_spec = intro_spec[:-1]
         return intro_spec
         
     @staticmethod
@@ -251,26 +205,6 @@ class GlobalGrammar(Grammar):
             if GlobalGrammar._specHasOptional(item):
                 return True
         return False
-    
-    @staticmethod
-    def _parseSpecString1(spec):   
-        spec = spec.strip()
-        introSet = set([spec])
-        while GlobalGrammar._introSetNeedsParsing(introSet):
-            localSet = set()
-            for intro in introSet:
-                alts = GlobalGrammar._reduceAlternatives(intro)
-                if alts is not None:
-                    localSet.update(alts)
-                opts = GlobalGrammar._reduceOptionals(intro)
-                if opts is not None:
-                    localSet.update(opts)
-            introSet = localSet
-        return list(introSet)
-
-#     @staticmethod
-#     def _parseSpecString2(spec):
-#         return SpecSoup(spec).get_intros()
     
     @staticmethod
     def _parseSpecString(spec):
@@ -284,19 +218,21 @@ class GlobalGrammar(Grammar):
     @staticmethod
     def DetermineRuleIntros(rule):
         """
-        Can handle any number of optionals or alternatives, so long as an optional doesn't not contain optionals within it,
-        and likewise for alternatives.
-        This is fine: "a ([really] big|short) command (I use|to use) [a lot]"
-        This is not fine: "do that [[right] now]"
+        Expected to be able to parse any spec as long as it is well-formed::
+        - balanced parentheses and brackets
+        - outside of <extra> references,contains no < or > characters
         """
         intros = getattr(rule, "intro", None)
-        if intros is None:
-            spec_intro = GlobalGrammar._baseIntro(rule)
-            if spec_intro is None:
-                return spec_intro
-            return GlobalGrammar._parseSpecString(spec_intro)
-        if type(intros) != list:
-            intros = [intros]
+        if intros:            
+            # user explicitly supplied intro(s), go with that
+            if type(intros) != list:
+                intros = [intros]            
+        else:
+            intro_spec = ops.first_not_none(getattr(rule, "intro_spec", None), getattr(rule, "_spec", None))
+            if not intro_spec:
+                return intro_spec
+            intros = GlobalGrammar._parseSpecString(intro_spec)
+        assert type(intros) == list
         return intros
     
     @staticmethod
