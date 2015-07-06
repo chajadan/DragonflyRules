@@ -17,10 +17,17 @@ def GrammarRule(rule):
 
 ### Your Rules Go Here
 # @GrammarRule
-# def ExampleRule(Base.ContinuousRule):
+# class ExampleRule(Base.ContinuousRule):
 #    spec = "example rule"
 #    def _process_recognition(self, node, extras):
 #    pass
+#
+# @GrammarRule
+# class QuickRules(Base.QuickContinuousRules):
+#     mapping = {
+#         "control sea": Key("c-c"),
+#         "control bee": Key("c-b"),
+#     }
 
 grammar.load()
 
