@@ -3,6 +3,7 @@ import BaseGrammars
 from BaseRules import *
 import chajLib.ui.docnav as docnav
 import chajLib.ui.keyboard as kb
+from keyboard_keys import printable_keys_as_text
 
 grammar = BaseGrammars.ContinuousGrammar("document navigation - selection grammar")
 
@@ -73,6 +74,28 @@ class InterDocNavRules(QuickContinuousRules):
 
 
 @GrammarRule
+class SelectLetterLeft(ContinuousRule_EatDictation):
+    spec = "select left <characters>"
+    extras = (Repetition(Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}), name="characters", min=1, max=20),)
+    def _process_recognition(self, node, extras):
+        letters = extras["characters"]
+        target = "".join(letters)
+        docnav.caret_before_left(target)
+        kb.sendShiftRight(times=len(target), delay=0)
+
+
+@GrammarRule
+class SelectLetterRight(ContinuousRule_EatDictation):
+    spec = "select right <characters>"
+    extras = (Repetition(Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}), name="characters", min=1, max=20),)
+    def _process_recognition(self, node, extras):
+        letters = extras["characters"]
+        target = "".join(letters)
+        docnav.caret_before_right(target)
+        kb.sendShiftRight(times=len(target), delay=0)
+
+
+@GrammarRule
 class SelectPhraseLeft(ContinuousRule_EatDictation):
     spec = "select left"
     def _process_recognition(self, node, extras):
@@ -85,6 +108,7 @@ class SelectPhraseLeft(ContinuousRule_EatDictation):
             for _ in range(len(extras["RunOn"].format())):
                 kb.sendRight(extended = True, delay = 0)
             kb.shiftUp()
+
 
 @GrammarRule
 class SelectPhraseRight(ContinuousRule_EatDictation):
