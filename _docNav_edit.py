@@ -36,6 +36,7 @@ class DocNavEditRules(QuickContinuousRules):
         "lineless [<n> [times]]": Key("home, end, s-home:2, delete, backspace") * Repeat(extra="n"),
         "lineless down [<n> [times]]": Key("down, home, end, s-home:2, delete, backspace") * Repeat(extra="n"),
         "plaster": Key("c-v, enter"),
+        "printer [<n> [times]]": Key("end, enter") * Repeat(extra="n") + Key("c-v"),
         "renter [<n> [times]]": Key("end, enter") * Repeat(extra="n"),
         "renter down [<n> [times]]": (Key("down") * Repeat(extra="n")) + Key("end, enter"),
         "renter up [<n> [times]]": (Key("up") * Repeat(extra="n")) + Key("end, enter"),
