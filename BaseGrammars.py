@@ -5,8 +5,104 @@ import BaseRules as br
 import _general as glib # general library
 from collections import Counter
 import inspect
+import itertools
+#from bs4 import BeautifulSoup as bsoup
+from xml.dom import minidom
+from chajLib import cstring as strfuncs
 import _globals
 from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
+
+def xmlize_spec(spec):
+    # "escape" angle brackets
+    spec = spec.replace("<", "{")
+    spec = spec.replace(">", "}")
+    spec = spec.replace("[", "<optional>(")
+    spec = spec.replace("]", ")</optional>")    
+    spec = spec.replace("(", "<alternatives><alternative>")
+    spec = spec.replace(")", "</alternative></alternatives>")
+    spec = spec.replace("|", "</alternative><alternative>")
+    # wrap as alternatives in case of embedded top-level option, e.g. "command one | command two"
+    spec = "<alternatives><alternative>" + spec + "</alternative></alternatives>"    
+    return spec
+
+class XmlSpecNode:
+    TEXT_NODE = 3
+    def __init__(self, soup):
+        self.soup = minidom.parseString(soup)
+
+    def get_intros(self):
+        intros = [""]
+        for child in self.soup.firstChild.childNodes:
+            tag = child.nodeName
+            if child.nodeType == XmlSpecNode.TEXT_NODE:
+                new_intros = [child.nodeValue]
+            elif tag == "alternatives":
+                new_intros = xAlternativesNode(child.toxml()).get_intros()
+            elif tag == "optional":
+                new_intros = [""] + XmlSpecNode(child.toxml()).get_intros()                        
+            else:
+                new_intros = XmlSpecNode(child.toxml()).get_intros()
+            new_intros = itertools.product(intros, new_intros)
+            # replace intros with a cartesian product by new_intros
+            intros = [" ".join(parts) for parts in new_intros]
+        intros = map(strfuncs.rstrip_from, intros, "{" * len(intros))
+        intros = map(lambda x: x.strip(), intros)
+        intros = map(strfuncs.reduce_spaces, intros) # only single spaces
+        intros = filter(None, intros) # remove empty intros
+        return intros
+
+class xAlternativesNode(XmlSpecNode):
+    def get_intros(self):
+        intros = []
+        for child in self.soup.firstChild.childNodes:
+            assert child.nodeName == "alternative" # will only have <alternative> children
+            intros += XmlSpecNode(child.toxml()).get_intros()
+        return intros
+
+class XmlSpec(XmlSpecNode):
+    def __init__(self, spec):
+        self.soup = minidom.parseString(xmlize_spec(spec))
+
+# class SpecSoupNode:
+#     def __init__(self, soup):
+#         self.soup = soup
+# 
+#     def get_intros(self):
+#         intros = [""]
+#         for child in self.soup:
+#             tag = child.name
+#             if not tag:
+#                 new_intros = [child.string]
+#             elif tag == "alternatives":
+#                 new_intros = AlternativesNode(child).get_intros()
+#             elif tag == "optional":
+#                 new_intros = [""] + SpecSoupNode(child).get_intros()                        
+#             else:
+#                 new_intros = SpecSoupNode(child).get_intros()
+#             new_intros = itertools.product(intros, new_intros)
+#             # replace intros with a cartesian product by new_intros
+#             intros = [" ".join(parts) for parts in new_intros]
+#         intros = map(strfuncs.rstrip_from, intros, "{" * len(intros))
+#         intros = map(lambda x: x.strip(), intros)
+#         intros = map(strfuncs.reduce_spaces, intros) # only single spaces
+#         intros = filter(None, intros) # remove empty intros
+#         return intros
+# 
+# class AlternativesNode(SpecSoupNode):
+#     def get_intros(self):
+#         intros = []
+#         for child in self.soup:
+#             assert child.name == "alternative" # will only have <alternative> children
+#             intros += SpecSoupNode(child).get_intros()
+#         return intros
+# 
+# class SpecSoup(SpecSoupNode):
+#     def __init__(self, spec):
+#         import sys
+#         print sys.version
+#         import lxml
+#         print lxml
+#         self.soup = bsoup(xmlize_spec(spec), "lxml-xml")
 
 class GlobalGrammar(Grammar):
     _commandWords = Counter()           # represents the active commands of all "in force" continuous grammars
@@ -139,11 +235,12 @@ class GlobalGrammar(Grammar):
             intro_spec = rule.intro_spec
         elif getattr(rule, "_spec", None):
             intro_spec = rule._spec
-        
-        if intro_spec and intro_spec.find("<")  != -1:
-            intro_spec = intro_spec[:intro_spec.find("<")]
-        if intro_spec and intro_spec[-1] == "[":
-            intro_spec = intro_spec[:-1]
+
+# comment out because xmlspec needs the whole spec, and strips from <extra> on at the end
+#         if intro_spec and intro_spec.find("<")  != -1:
+#             intro_spec = intro_spec[:intro_spec.find("<")]
+#         if intro_spec and intro_spec[-1] == "[":
+#             intro_spec = intro_spec[:-1]
         return intro_spec
         
     @staticmethod
@@ -156,7 +253,7 @@ class GlobalGrammar(Grammar):
         return False
     
     @staticmethod
-    def _parseSpecString(spec):   
+    def _parseSpecString1(spec):   
         spec = spec.strip()
         introSet = set([spec])
         while GlobalGrammar._introSetNeedsParsing(introSet):
@@ -170,6 +267,19 @@ class GlobalGrammar(Grammar):
                     localSet.update(opts)
             introSet = localSet
         return list(introSet)
+
+#     @staticmethod
+#     def _parseSpecString2(spec):
+#         return SpecSoup(spec).get_intros()
+    
+    @staticmethod
+    def _parseSpecString(spec):
+        try:
+            intros = XmlSpec(spec).get_intros()
+            return intros
+        except:
+            print "Could not parse intros of spec:", spec
+            print "Spec xmlized as:", xmlize_spec(spec)
     
     @staticmethod
     def DetermineRuleIntros(rule):
