@@ -8,7 +8,7 @@ import inspect
 grammar = Base.ContinuousGrammar("input elements and sequences grammar")
 
 
-#decorator
+# decorator
 def GrammarRule(rule):
     if inspect.isclass(rule):
         if issubclass(rule, Base.BaseQuickRules):
@@ -31,7 +31,7 @@ def GrammarRule(rule):
 @GrammarRule
 class StreamWordsAtCursorRule(Base.ContinuousRule):
     spec = "(stream|fling) <RunOn>"
-    extras = (Dictation("RunOn"), )
+    extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
         Text(extras["RunOn"].format()).execute()
 
@@ -41,7 +41,7 @@ class PureWordsDictationRule(Base.RegisteredRule):
     intended for long pure speech dictation where you don't want to worry about literalizing command words
     """
     spec = "words <RunOn>"
-    extras = (Dictation("RunOn"), )
+    extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
         Text(extras["RunOn"].format()).execute()
         
@@ -49,7 +49,7 @@ class PureWordsDictationRule(Base.RegisteredRule):
 @GrammarRule
 class PrependSpaceRule(Base.ContinuousRule):
     spec = "tack <RunOn>"
-    extras = (Dictation("RunOn"), )
+    extras = (Dictation("RunOn"),)
     def _process_recognition(self, node, extras):
         Text(" " + extras["RunOn"].format()).execute()
 
@@ -112,7 +112,7 @@ class ShortTimeRule(Base.ContinuousRule):
 @GrammarRule
 class SimpleStringRule(Base.RegisteredRule):
     spec = "simple string <string>"
-    extras = (Dictation("string"), )
+    extras = (Dictation("string"),)
     def _process_recognition(self, node, extras):
         action = Text('""') + Key("left") + Text(extras["string"].format()) + Key("right")
         action.execute()    
@@ -123,7 +123,7 @@ class KeypressRule(Base.ContinuousRule):
     defaults = {"keyCount": 1}
     def __init__(self, keyName, voicedAs):
         self.intro = voicedAs
-        Base.ContinuousRule.__init__(self, name = "keypress_rule_" + keyName + "_" + voicedAs, spec = voicedAs + " [<keyCount> [times]]", )          
+        Base.ContinuousRule.__init__(self, name="keypress_rule_" + keyName + "_" + voicedAs, spec=voicedAs + " [<keyCount> [times]]",)          
         self.keyName = keyName
     def _process_recognition(self, node, extras):          
         (Key(self.keyName) * Repeat(extras["keyCount"])).execute()
