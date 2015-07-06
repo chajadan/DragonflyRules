@@ -129,8 +129,13 @@ class python_ops_rule(QuickContinuousRules):
         "plus": Text(" + "),
         "minus": Text(" - "),
         "times": Text(" * "),
-        "not equal": Text(" != "),
-        "[is] less than": Text(" < "),
+        "[(do|does)] not equal": Text(" != "),
+        "[(is|was|are|were)] less than": Text(" < "),
+        "[(is|was|are|were)] less than [or] equal": Text(" <= "),
+        "leak": Text(" <= "),
+        "[(is|was|are|were)] greater than": Text(" > "),
+        "[(is|was|are|were)] greater than [or] equal": Text(" >= "),
+        "Greek": Text(" >= "),                
         "compares": Text(" == "),
     }
 
@@ -138,10 +143,32 @@ class python_ops_rule(QuickContinuousRules):
 @GrammarRule
 class CodeTemplatesRules(QuickContinuousRules):
     mapping = {
+        "call": Text("()"),
+        "empty dictionary": Text("{}"),
+        "empty list": Text("[]"),
         "slice": Text("[:]") + Key("left:2"),
     }
 
-  
+@GrammarRule
+class MemberOperator(ContinuousRule_EatDictation):
+    spec = "member"
+    def _process_recognition(self, node, extras):
+        action = Text(".")
+        if "RunOn" in extras:
+            member = extras["RunOn"].format()
+            action += Text(member)
+        action.execute()
+
+@GrammarRule
+class CallWithRule(ContinuousRule_EatDictation):
+    spec = "call with"
+    def _process_recognition(self, node, extras):
+        action = Text("()") + Key("left")
+        if "RunOn" in extras:
+            call_with = extras["RunOn"].format()
+            action += Text(call_with)
+        action.execute()
+
 @GrammarRule
 class BuiltInFunctionRules(QuickContinuousRules):
     name = "built in function rules"

@@ -65,8 +65,6 @@ class QuickCRules(Base.QuickContinuousRules):
         "parentheses": Text("()"),
         "in curly brackets": Text("{}") + Key("left"),
         "in angle brackets": Text("<>") + Key("left"),
-        "call with": Text("()") + Key("left"),
-        "call": Text("()"),
         "spinster": Text("()") + Key("enter"),
         "item": Text(", "),
         "assignment": Text(" = "),
