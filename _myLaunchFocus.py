@@ -13,11 +13,12 @@ executable_info_list = [
     ["ACI", r"C:\Program Files (x86)\ACI32\Applications\Report32.exe", None, None],
     ["AciCompiler", None, "AciCompiler ~~", [r"C:\Python27_10_32bit\python.exe", r"D:\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
     ["chrome", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", None, None],
+    ["command window", r"C:\Windows\System32\cmd.exe", "Windows Command Processor", None],
     ["compiler", None, "AciCompiler ~~", [r"C:\Python27_10_32bit\python.exe", r"D:\git\AciCompiler\AciCompiler\AciCompiler\AciCompiler.py"]],
     ["eclipse", r"D:\eclipse\eclipse.exe",  "- Eclipse", None],
     ["get bash", None, "MINGW32:/", [r"C:\Program Files (x86)\Git\bin\sh.exe", "--login", "-i"]],
     ["pdfsam", r"C:\Program Files (x86)\PDF Split And Merge Basic\pdfsam-starter.exe", "PDF Split and Merge basic", None],
-    ["process Explorer", r"D:\Install Files\procexp.exe", "Process Explorer - Sysinternals", None],
+    ["process Explorer", r"F:\Install Files\procexp.exe", "Process Explorer - Sysinternals", None],
     ["sketch", None, "ACI Sketch", None],
     ["Visual Studio", r"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe", None, None],
     ]
