@@ -79,6 +79,8 @@ def DeployDragonfly_Refresh():
     DragonMicrophoneOn()
     try:
         res = win32gui.FindWindow(None, "Messages from NatLink - built 01/01/2014")
+        import win32con
+        win32gui.ShowWindow(res, win32con.SW_SHOW)
         win32gui.SetForegroundWindow(res)
     except:
         pass
