@@ -48,6 +48,7 @@ class AddMultiLabel(Base.RegisteredRule):
 @GrammarRule
 class AciSketchRules(Base.QuickContinuousRules):
     mapping = {
+        "show label font": Mouse("right") + Key("l/10, f/10"),
         "show labels": Key("alt, v, l"),
     }
     extrasDict = {
