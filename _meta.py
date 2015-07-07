@@ -89,7 +89,7 @@ def DeployDragonfly_Refresh():
 
 @GrammarRule
 class ListRegisteredCommands(Base.ContinuousRule):
-    spec = "list registered commands"
+    spec = "(list|show) registered commands"
     def _process_recognition(self, node, extras):
         commands = list(Base.GlobalGrammar._commandWords)
         commands.sort()
@@ -98,7 +98,7 @@ class ListRegisteredCommands(Base.ContinuousRule):
         
 @GrammarRule
 class ListRegisteredCommandIntros(Base.ContinuousRule):
-    spec = "list registered partials"
+    spec = "(list|show) registered partials"
     def _process_recognition(self, node, extras):
         partials = list(Base.GlobalGrammar._commandWordPartials)
         partials.sort()
