@@ -285,11 +285,11 @@ class ContinuousGrammar(GlobalGrammar):
 
         def _instance_process_recognition(node, extras):
             if not extras.has_key("RunOn"):
-                _orig_process_recognition(node, extras)              
+                _orig_process_recognition(node, extras)
             elif ruleInstance.runOnAdded and not getattr(ruleInstance, "eatDictation", False):
                 _orig_process_recognition(node, extras)
                 _globals.saveResults = False
-                Mimic(*extras["RunOn"].words).execute()                  
+                Mimic(*extras["RunOn"].words).execute()
             else: # RunOn may need to be split
                 original_extras = {key: item for key, item in extras.items()}
                 extras["_original_extras"] = original_extras
