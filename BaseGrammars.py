@@ -279,6 +279,53 @@ class ContinuousGrammar(GlobalGrammar):
             ruleInstance = self._makeRuleContinuing(ruleInstance)
         GlobalGrammar.add_rule(self, ruleInstance)
     
+    def get_words_from_runon(self, RunOn):
+        if type(RunOn) == NatlinkDictationContainer:
+            return RunOn.words
+        elif issubclass(type(RunOn), basestring):
+            return RunOn.split()
+        else:
+            return None
+
+    def determine_command_index(self, RunOn):
+        recognized_words = self.get_words_from_runon(RunOn)
+        if recognized_words is None:
+            return None
+
+        inLiteralContext = False
+        for i, word in enumerate(recognized_words):
+            if inLiteralContext:
+                inLiteralContext = False # literal context lasts for one word only
+                continue # skip current word, force status as non command word
+            elif word in self.literalTags:
+                inLiteralContext = True
+                continue
+            elif word in self._commandWords:
+                return i # even if a longer command starts here, we just mimic the whole remainder and let the engine determine that
+            elif word in self._commandWordPartials:
+                # look ahead and figure out if a full command starts here or not
+                running_match = word # running_match accrues words to seek a full command
+                offset_index = 1 # used to index past the index of 'word'
+                while i + offset_index < len(recognized_words):
+                    running_match += " " + recognized_words[i + offset_index]
+                    if running_match in self._commandWords:
+                        return i
+                    else:
+                        offset_index +=1
+        # no embedded registered command
+        return len(recognized_words) # should be able to slice recognized_words into non-command/command parts in all cases 
+
+    def split_runon(self, RunOn):
+        recognized_words = self.get_words_from_runon(RunOn)
+        if recognized_words is None:
+            return None, None
+        
+        split_index = self.determine_command_index(RunOn)
+        if split_index is None:
+            return None, None
+        else:
+            return recognized_words[:split_index], recognized_words[split_index:]
+    
     def _makeRuleContinuing(self, ruleInstance):
 
         _orig_process_recognition = ruleInstance._process_recognition
@@ -287,49 +334,26 @@ class ContinuousGrammar(GlobalGrammar):
             if not extras.has_key("RunOn"):
                 _orig_process_recognition(node, extras)
             elif ruleInstance.runOnAdded and not getattr(ruleInstance, "eatDictation", False):
+                # RunOn added means the original rule isn't requesting access to part of that result
+                # unless eatDictation is enabled, in which case it's optional but not required
                 _orig_process_recognition(node, extras)
-                _globals.saveResults = False
+                _globals.saveResults = False # we are repeating part of the last utterance, so don't partially overwrite the last saved result
                 Mimic(*extras["RunOn"].words).execute()
             else: # RunOn may need to be split
-                original_extras = {key: item for key, item in extras.items()}
-                extras["_original_extras"] = original_extras
-                recognized_words = extras["RunOn"].words
-                inLiteralContext = False
-                for i, word in enumerate(recognized_words):
-                    if inLiteralContext:
-                        inLiteralContext = False
-                    elif word in self.literalTags:
-                        inLiteralContext = True
-                    elif word in self._commandWords: # self here is this grammar
-                        if i > 0:
-                            extras["RunOn"] = NatlinkDictationContainer(self.translateLiterals(recognized_words[:i])) # limit run on to part before new command
-                            extras["RunOn_UnEscaped"] = NatlinkDictationContainer(recognized_words[:i])
-                        else:
-                            del extras["RunOn"]
-                        _orig_process_recognition(node, extras)
-                        _globals.saveResults = False
-                        Mimic(*recognized_words[i:]).execute()
-                        return
-                    elif word in self._commandWordPartials:
-                        j = i + 1
-                        running_match = word
-                        while j < len(recognized_words):
-                            running_match += " " + recognized_words[j]
-                            if running_match in self._commandWords:
-                                if i > 0:
-                                    extras["RunOn"] = NatlinkDictationContainer(self.translateLiterals(recognized_words[:i])) # limit run on to part before new command
-                                    extras["RunOn_UnEscaped"] = NatlinkDictationContainer(recognized_words[:i])
-                                else:
-                                    del extras["RunOn"]
-                                _orig_process_recognition(node, extras)
-                                _globals.saveResults = False
-                                Mimic(*recognized_words[i:]).execute()
-                                return
-                            else:
-                                j += 1
-                extras["RunOn"] = NatlinkDictationContainer(self.translateLiterals(recognized_words))
-                extras["RunOn_UnEscaped"] = NatlinkDictationContainer(recognized_words)
-                _orig_process_recognition(node, extras)
-                           
+                extras["_original_extras"] = {key: item for key, item in extras.items()}
+                keep_on, pass_on = self.split_runon(extras["RunOn"])
+
+                # set value return to processing rule
+                if not keep_on:
+                    del extras["RunOn"]
+                else:
+                    extras["RunOn"] = NatlinkDictationContainer(self.translateLiterals(keep_on))
+                    extras["RunOn_UnEscaped"] = NatlinkDictationContainer(keep_on)
+
+                _orig_process_recognition(node, extras) # call rule processing
+                _globals.saveResults = False # we're about to parrot part of a command
+                if pass_on:
+                    Mimic(*pass_on).execute()                
+
         ruleInstance._process_recognition = _instance_process_recognition
         return ruleInstance
