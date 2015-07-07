@@ -93,7 +93,7 @@ class GmailRules(QuickContinuousRules):
         "(select none|un select all)": Key("asterisk/20, n"),
 		"select read": Key("asterisk/20, r"),
 		"select unread": Key("asterisk/20, u"),
-		"(toggle [selection|mark]|mark|un mark)": Key("x"),
+		"(toggle [selection|mark]|mark|unmark)": Key("x"),
 		"search [box]": Text("/"),
 		"(compose|new) message": Text("c"),
         "trash it": Key("s-3"),
