@@ -1,25 +1,16 @@
 print "importing " + __file__
 from dragonfly import *
-import BaseGrammars
-from BaseRules import *
+import Base
+from decorators import ActiveGrammarRule
 import chajLib.ui.docnav as docnav
 import chajLib.ui.keyboard as kb
 from keyboard_keys import printable_keys_as_text
 
-grammar = BaseGrammars.ContinuousGrammar("document navigation - selection grammar")
+grammar = Base.ContinuousGrammar("document navigation - selection grammar")
 
-#decorator
-def GrammarRule(rule):
-    if inspect.isclass(rule):
-        if issubclass(rule, BaseQuickRules):
-            rule(grammar)
-        else:
-            grammar.add_rule(rule())
-    else:
-        grammar.add_rule(rule)
 
-@GrammarRule
-class InterDocNavRules(QuickContinuousRules):
+@ActiveGrammarRule(grammar)
+class InterDocNavRules(Base.QuickContinuousRules):
     name="inter_doc_nav"
     extrasDict = {
         "keyCount": IntegerRef("keyCount", 1, 1000),
@@ -64,8 +55,8 @@ class InterDocNavRules(QuickContinuousRules):
     }
 
 
-@GrammarRule
-class SelectLetterLeft(ContinuousRule_EatDictation):
+@ActiveGrammarRule(grammar)
+class SelectLetterLeft(Base.ContinuousRule_EatDictation):
     spec = "select left <characters>"
     extras = (Repetition(Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}), name="characters", min=1, max=20),)
     def _process_recognition(self, node, extras):
@@ -75,8 +66,8 @@ class SelectLetterLeft(ContinuousRule_EatDictation):
         kb.sendShiftRight(times=len(target), delay=0)
 
 
-@GrammarRule
-class SelectLetterRight(ContinuousRule_EatDictation):
+@ActiveGrammarRule(grammar)
+class SelectLetterRight(Base.ContinuousRule_EatDictation):
     spec = "select right <characters>"
     extras = (Repetition(Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}), name="characters", min=1, max=20),)
     def _process_recognition(self, node, extras):
@@ -86,8 +77,8 @@ class SelectLetterRight(ContinuousRule_EatDictation):
         kb.sendShiftRight(times=len(target), delay=0)
 
 
-@GrammarRule
-class SelectPhraseLeft(ContinuousRule_EatDictation):
+@ActiveGrammarRule(grammar)
+class SelectPhraseLeft(Base.ContinuousRule_EatDictation):
     spec = "select left"
     def _process_recognition(self, node, extras):
         if not extras.has_key("RunOn"):
@@ -101,8 +92,8 @@ class SelectPhraseLeft(ContinuousRule_EatDictation):
             kb.shiftUp()
 
 
-@GrammarRule
-class SelectPhraseRight(ContinuousRule_EatDictation):
+@ActiveGrammarRule(grammar)
+class SelectPhraseRight(Base.ContinuousRule_EatDictation):
     spec = "select right"
     def _process_recognition(self, node, extras):
         if not extras.has_key("RunOn"):
