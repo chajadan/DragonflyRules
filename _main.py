@@ -1,5 +1,5 @@
 ﻿  # -*- coding: utf-8 -*-
-print "import _main"
+print "importing " + __file__
 
 from dragonfly import *
 import Base

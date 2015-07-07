@@ -1,3 +1,4 @@
+print "importing " + __file__
 from dragonfly import *
 import inspect
 import BaseGrammars

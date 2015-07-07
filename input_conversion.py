@@ -1,4 +1,6 @@
+print "importing " + __file__
 import re
+
 _digits = {
     'zero': 0,
     'one': 1,

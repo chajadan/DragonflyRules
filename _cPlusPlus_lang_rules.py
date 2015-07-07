@@ -1,4 +1,4 @@
-print "import cPlusPlus_lang_rules"
+print "importing " + __file__
 from dragonfly import *
 import BaseGrammars
 from BaseRules import *

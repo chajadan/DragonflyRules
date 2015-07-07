@@ -1,6 +1,7 @@
 """
 This file contains variables that differ from system to system.
 """
+print "importing " + __file__
 
 # All users should supply these values
 dragonNatSpeakPath = r"C:\Program Files (x86)\Nuance\NaturallySpeaking13\Program\natspeak.exe"

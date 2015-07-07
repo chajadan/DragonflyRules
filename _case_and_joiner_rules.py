@@ -1,4 +1,4 @@
-print "import _case_and_joiner_rules"
+print "importing " + __file__
 from dragonfly import *
 import BaseGrammars
 from BaseRules import *

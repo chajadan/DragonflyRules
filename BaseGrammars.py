@@ -1,5 +1,5 @@
 # the file for all context that is global to any specific grammar
-
+print "importing " + __file__
 from dragonfly import *
 import BaseRules as br
 import _general as glib # general library

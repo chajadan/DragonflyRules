@@ -1,3 +1,4 @@
+print "importing " + __file__
 import _general as glib
 
 heard = "just a test"

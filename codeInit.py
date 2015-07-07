@@ -1,7 +1,7 @@
 """
 Executing this script directly will instantiate code based off the dfconfig file.
 """
-
+print "importing " + __file__
 from dfconfig import *
 
 deployBatContent = r"""REM the following line is a safeguard to protect others from accidental directory content deletion

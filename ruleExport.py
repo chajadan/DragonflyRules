@@ -1,4 +1,4 @@
-print "import _ruleExport"
+print "importing " + __file__
 from BaseRules import *
 import inspect
 

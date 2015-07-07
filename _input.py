@@ -1,4 +1,4 @@
-print "import _input"
+print "importing " + __file__
 from dragonfly import *
 from keyboard_keys import all_keys_by_keyname
 from keyboard_keys import number_names_proper

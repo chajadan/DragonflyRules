@@ -1,4 +1,3 @@
-print "import _html_lang_rules"
 # The bulk of this file was obtained from here: https://github.com/dictation-toolbox/dragonfly-scripts/tree/master/dynamics
 # it was the starting point
 # several edits have been made
@@ -6,7 +5,7 @@ print "import _html_lang_rules"
 # that means this file and all edits within it are available to all
 # and any executable that includes it must be open source as well (as far as I understand the license)
 # https://www.gnu.org/licenses/lgpl.html
-
+print "importing " + __file__
 from dragonfly import *
 import BaseGrammars
 import BaseRules as br

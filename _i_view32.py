@@ -2,7 +2,7 @@
 Rules only active when IrfanView is the foreground window should be placed in a file named i_view32.py.
 This is for rules that use IrfanView at other times, such as when IrfanView is not open at all.
 """
-
+print "importing " + __file__
 from dragonfly import *
 import Base
 import inspect

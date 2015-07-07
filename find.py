@@ -1,3 +1,4 @@
+print "importing " + __file__
 from dragonfly import *
 from BaseRules import *
 

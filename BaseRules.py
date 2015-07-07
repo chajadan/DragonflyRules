@@ -1,4 +1,4 @@
-print "import BaseRules"
+print "importing " + __file__
 from dragonfly import *
 from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
 import inspect

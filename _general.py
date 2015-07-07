@@ -1,7 +1,6 @@
 # this file is only to contain code that would be appropriate to my general
 # purpose library and so at some point should be transferred there
-
-print "import _general"
+print "importing " + __file__
 import inspect
 
 

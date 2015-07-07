@@ -1,7 +1,7 @@
 """
 Alternative ways to issue commands
 """
-print "import _altCommands"
+print "importing " + __file__
 from dragonfly import *
 import Base
 from decorators import ActiveGrammarRule

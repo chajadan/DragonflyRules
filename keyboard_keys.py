@@ -1,3 +1,5 @@
+print "importing " + __file__
+
 lower_alpha_names = [
     ['a', 'acre'],
     ['b', 'beaver'],

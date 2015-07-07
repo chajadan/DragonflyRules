@@ -1,5 +1,5 @@
+print "importing " + __file__
 import BaseGrammars
-print "import _myLaunchFocus"
 from dragonfly import *
 from BaseRules import *
 import os

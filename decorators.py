@@ -1,4 +1,4 @@
-print "import decorators"
+print "importing " + __file__
 from dragonfly import *
 import Base
 import inspect
