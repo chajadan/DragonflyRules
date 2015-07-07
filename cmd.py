@@ -1,18 +1,19 @@
+print "importing " + __file__
 from dragonfly import *
-import BaseGrammars
-from BaseRules import *
+import Base
+from decorators import ActiveGrammarRule
 
-grammar = BaseGrammars.ContinuousGrammar("cmd", AppContext(executable="cmd"))
+grammar = Base.ContinuousGrammar("cmd", AppContext(executable="cmd"))
 
-class CmdRules(QuickContinuousRules):
-    mapping={
+@ActiveGrammarRule(grammar)
+class CmdRules(Base.QuickContinuousRules):
+    mapping = {
         "paste": Key("a-space, e, p"),
         "repeat last": Key("up, enter"),
         "interrupt": Key("c-c"),
         "change directory": Text("cd "),
         "list": Text("dir") + Key("enter"),
     }
-CmdRules(grammar)
 grammar.load()
 
 def unload():
