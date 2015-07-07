@@ -1,42 +1,38 @@
-
-# Implements the ability to capture a simple string by name, supporting lower- and uppercase letters.
-
-# commands are:
-
-# remember string [as] <name>   -- then type in the string, followed by the return key
-# by name <name>                -- types out the named string
-# clear named strings           -- forgets all named strings
-
+"""
+Alternative ways to issue commands
+"""
+print "import _altCommands"
 from dragonfly import *
-import BaseGrammars
+import Base
+from decorators import ActiveGrammarRule
 import pyHook # http://sourceforge.net/projects/pyhook/
-import inspect
-from BaseRules import *
-
-grammar = BaseGrammars.ContinuousGrammar("named strings grammar")
-
-#decorator
-def GrammarRule(rule):
-    if inspect.isclass(rule):
-        if issubclass(rule, BaseQuickRules):
-            rule(grammar)
-        else:
-            grammar.add_rule(rule())
-    else:
-        grammar.add_rule(rule)
-
+ 
+grammar = Base.ContinuousGrammar("alternate commands grammar")
+ 
+ 
+pyHookManager = pyHook.HookManager()
+byKeysCommandBuffer = ""
 NamedStrings = {}
 namedStringBuffer = ""
 currentStringName = ""
 isShifted = False
-pyHookManager = pyHook.HookManager()
+ 
+ 
+def OnKeyDown_ByKeys(event):
+    global byKeysCommandBuffer
+    if len(event.Key) == 1:
+        byKeysCommandBuffer += event.Key
+    elif event.Key == "Space":
+        byKeysCommandBuffer += " "
+    elif event.Key == "Return":
+        pyHookManager.UnhookKeyboard()
+        words = byKeysCommandBuffer.lower().split()
+        byKeysCommandBuffer = ""
+        Mimic(*words).execute()
+    return False
 
-def startNamedStringsHook(stringName):
-    global currentStringName
-    currentStringName = stringName
-    pyHookManager.HookKeyboard()
-
-def OnKeyDown(event):
+ 
+def OnKeyDown_NamedString(event):
     global namedStringBuffer
     global currentStringName
     global isShifted
@@ -51,33 +47,54 @@ def OnKeyDown(event):
         isShifted = True
     elif event.Key == "Return":
         pyHookManager.UnhookKeyboard()
+        pyHookManager.KeyDown = None
+        pyHookManager.KeyUp = None
         NamedStrings[currentStringName] = namedStringBuffer
         # set clean initial state 
         isShifted = False 
         currentStringName = ""
         namedStringBuffer = ""
     return False
-
-def OnKeyUp(event):
+ 
+ 
+def OnKeyUp_NamedString(event):
     global isShifted
     if event.Key in ["Lshift", "Rshift"]:
         isShifted = False
     return False
-
-pyHookManager.SubscribeKeyDown(OnKeyDown)
-pyHookManager.SubscribeKeyUp(OnKeyUp)
-
-@GrammarRule
-class CreateNamedString(CorrectableRule):
+ 
+ 
+def startByKeysCommandHook():
+    pyHookManager.KeyDown = OnKeyDown_ByKeys
+    pyHookManager.Keyup = None
+    pyHookManager.HookKeyboard()
+ 
+     
+def startNamedStringsHook(stringName):
+    global currentStringName
+    currentStringName = stringName
+    pyHookManager.KeyDown = OnKeyDown_NamedString
+    pyHookManager.Keyup = OnKeyUp_NamedString
+    pyHookManager.HookKeyboard()
+ 
+ 
+@ActiveGrammarRule(grammar)
+class ByKeysRule(Base.ContinuousRule):
+    spec = "by keys"
+    def _process_recognition(self, node, extras):
+        Function(startByKeysCommandHook).execute()
+ 
+ 
+@ActiveGrammarRule(grammar)
+class CreateNamedString(Base.CorrectableRule):
     spec = "remember string [as] <NamedString>"
-    intro = ["remember string", "remember string as"]
     extras = Dictation("NamedString"),
     def _process_recognition(self, node, extras):
         stringName = " ".join(extras["NamedString"].words)
         Function(startNamedStringsHook).execute({"stringName": stringName})
-        
-@GrammarRule
-class RetrieveNamedString(CorrectableRule):
+         
+@ActiveGrammarRule(grammar)
+class RetrieveNamedString(Base.CorrectableRule):
     spec = "by name <NamedString>"
     extras = Dictation("NamedString"),
     def _process_recognition(self, node, extras):
@@ -86,15 +103,17 @@ class RetrieveNamedString(CorrectableRule):
             Text(NamedStrings[stringName]).execute()
         except:
             print "No string named " + stringName
-            
-@GrammarRule
-class ClearNamedString(CorrectableRule):
+             
+@ActiveGrammarRule(grammar)
+class ClearNamedString(Base.CorrectableRule):
     spec = "clear named strings"
     def _process_recognition(self, node, extras):
         NamedStrings = {}
-        
+ 
 grammar.load()
+ 
 def unload():
     global grammar
-    if grammar: grammar.unload()
+    if grammar:
+        grammar.unload()
     grammar = None
