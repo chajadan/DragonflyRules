@@ -115,7 +115,7 @@ class SimpleStringRule(Base.RegisteredRule):
     extras = (Dictation("string"),)
     def _process_recognition(self, node, extras):
         action = Text('""') + Key("left") + Text(extras["string"].format()) + Key("right")
-        action.execute()    
+        action.execute()
 
 
 class KeypressRule(Base.ContinuousRule): 
