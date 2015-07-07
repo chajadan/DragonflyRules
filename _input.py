@@ -122,8 +122,9 @@ class KeypressRule(Base.ContinuousRule):
     extras = (IntegerRef("keyCount", 0, 1000),)
     defaults = {"keyCount": 1}
     def __init__(self, keyName, voicedAs):
-        self.intro = voicedAs
-        Base.ContinuousRule.__init__(self, name="keypress_rule_" + keyName + "_" + voicedAs, spec=voicedAs + " [<keyCount> [times]]",)          
+        Base.ContinuousRule.__init__(self,
+            name="keypress_rule_" + keyName + "_" + voicedAs,
+            spec=voicedAs + " [<keyCount> [times]]")          
         self.keyName = keyName
     def _process_recognition(self, node, extras):          
         (Key(self.keyName) * Repeat(extras["keyCount"])).execute()

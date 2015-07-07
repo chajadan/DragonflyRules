@@ -29,9 +29,7 @@ class ChromeRules(QuickContinuousRules):
     mapping = {
 		"next tab [<n> [times]]": Key("c-tab") * Repeat(extra="n"),
 		"previous tab [<n> [times]]": Key("cs-tab") * Repeat(extra="n"),
-		"close (tab | pop up)": {
-			"action": Key("c-w"),
-			"intro": ["close tab", "close pop up"]},
+		"close (tab | pop up)": Key("c-w"),
 		"new tab": Key("c-t"),
 		"new window": Key("c-n"),
 		"incognito window": Key("cs-n"),
@@ -95,9 +93,7 @@ class GmailRules(QuickContinuousRules):
         "(select none|un select all)": Key("asterisk/20, n"),
 		"select read": Key("asterisk/20, r"),
 		"select unread": Key("asterisk/20, u"),
-		"(toggle [selection|mark]|mark|un mark)": {
-			"action": Key("x"),
-			"intro": ["mark", "un mark", "toggle", "toggle selection", "toggle mark"]},
+		"(toggle [selection|mark]|mark|un mark)": Key("x"),
 		"search [box]": Text("/"),
 		"(compose|new) message": Text("c"),
         "trash it": Key("s-3"),

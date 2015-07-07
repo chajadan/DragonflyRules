@@ -296,12 +296,8 @@ def attribute_with_content(attribute, text):
 class rules(br.QuickContinuousRules):
     mapping={
         # Commands and keywords.
-        "[start] tag": {
-            "action": Text("<>") + Key("left"),
-            "intro": ["tag", "start tag"]},
-        "[start] tag <element>": {
-            "action": Function(start_tag),
-            "intro": ["tag", "start tag"]},
+        "[start] tag": Text("<>") + Key("left"),
+        "[start] tag <element>": Function(start_tag),
         "tags <element>": Function(tags),
         "end tag": Text("</>") + Key("left"),
         "end tag <element>": Function(end_tag),
@@ -310,24 +306,14 @@ class rules(br.QuickContinuousRules):
         # Comments.
         "comment": Text("<!--  -->") + Key("left:4"),
         "comment <text>": SCText("<!-- %(text)s -->") + Key("left:4"),
-        "(open|left) comment": {
-            "action": Text("<!-- "),
-            "intro": ["open comment", "left comment"]},
-        "(open|left) comment <text>": {
-            "action": SCText("<!-- %(text)s"),
-            "intro": ["open comment", "left comment"]},
-        "(close|right) comment": {
-            "action": Text(" -->"),
-            "intro": ["close comment", "right comment"]},
+        "(open|left) comment": Text("<!-- "),
+        "(open|left) comment <text>": SCText("<!-- %(text)s"),
+        "(close|right) comment": Text(" -->"),
         # Doctypes.
         "doctype 5": Text("<!DOCTYPE html>"),
-        "doctype 4 [transitional]": {
-            "action": Text('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'),  # @IgnorePep8
-            "intro": ["doctype 4", "doctype 4 transitional"]},
+        "doctype 4 [transitional]": Text('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'),  # @IgnorePep8
         "doctype 4 strict": Text('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'),  # @IgnorePep8
-        "doctype X [transitional]": {
-            "action": Text('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'),  # @IgnorePep8
-            "intro": ["doctype X", "doctype X transitional"]},
+        "doctype X [transitional]": Text('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'),  # @IgnorePep8
         "doctype X strict": Text('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'),  # @IgnorePep8
         # if conditions.
     }

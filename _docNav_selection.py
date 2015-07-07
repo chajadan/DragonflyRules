@@ -53,24 +53,14 @@ class InterDocNavRules(QuickContinuousRules):
         "select lines down <n>": Key("end, s-home") + Key("s-down") * Repeat(count=-1, extra="n"),
         "select final word [<n> [times]]": Key("end") + Key("sc-left") * Repeat(extra="n"),
         "select first word [<n> [times]]": Key("home") + Key("sc-right") * Repeat(extra="n"),        
-        "(sword|select word) left [<n> [times]]": {
-            "action": Key("cs-left") * Repeat(extra="n"),
-            "intro": ["sword left", "select word left"]},
-        "(sword|select word) right [<n> [times]]": {
-            "action": Key("cs-right") * Repeat(extra="n"),
-            "intro": ["sword right", "select word right"]},
+        "(sword|select word) left [<n> [times]]": Key("cs-left") * Repeat(extra="n"),
+        "(sword|select word) right [<n> [times]]": Key("cs-right") * Repeat(extra="n"),
         "select just word right": Key("cs-right, s-left"),
-        "(scare|select character) left [<keyCount> [times]]": {
-            "action": Key("s-left") * Repeat(extra="keyCount"),
-            "intro": ["scare left", "select character left"]},
-        "(scare|select character) right [<keyCount> [times]]": {
-            "action": Key("s-right") * Repeat(extra="keyCount"),
-            "intro": ["scare right", "select character right"]},               
+        "(scare|select character) left [<keyCount> [times]]": Key("s-left") * Repeat(extra="keyCount"),
+        "(scare|select character) right [<keyCount> [times]]": Key("s-right") * Repeat(extra="keyCount"),               
         "sword": Mouse("left:2") + Key("c-c"),
-        "word left [<n> [times]]": {
-            "action": Key("c-left") * Repeat(extra="n"),},
-        "word right [<n> [times]]": {
-            "action": Key("c-right") * Repeat(extra="n"),}, 
+        "word left [<n> [times]]": Key("c-left") * Repeat(extra="n"),
+        "word right [<n> [times]]": Key("c-right") * Repeat(extra="n"), 
     }
 
 

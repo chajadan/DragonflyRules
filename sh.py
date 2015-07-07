@@ -44,18 +44,12 @@ class GitBashRules(Base.QuickContinuousRules):
         "do [get] clean": Text("git clean") + Key("enter"),
         "do [get] commit": Text("git commit") + Key("enter"),
         "do [get] commit amend": Text("git commit --amend ") + Key("enter"),
-        "[do [get]] diff": {
-            "action":Text("git diff") + Key("enter"),
-            "intro":["do get diff", "do diff", "diff"]},
-        "[do [get]] push": {
-            "action":Text("git push") + Key("enter"),
-            "intro":["do get push", "do push", "push"]},
+        "[do [get]] diff": Text("git diff") + Key("enter"),
+        "[do [get]] push": Text("git push") + Key("enter"),
         "do [get] force clean": Text("git clean -f") + Key("enter"),
         "do [get] stash clear": Text("git stash clear") + Key("enter"),
         "do [get] stash list": Text("git stash list") + Key("enter"),
-        "[do [get]] status": {
-            "action":Text("git status") + Key("enter"),
-            "intro":["do get status", "do status", "status"]},
+        "[do [get]] status": Text("git status") + Key("enter"),
         "undo last commit": Text("git reset --soft HEAD~1") + Key("enter"),
     }
     extrasDict = {

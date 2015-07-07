@@ -91,9 +91,7 @@ class system_shortcuts_rule(Base.QuickContinuousRules):
              "dock left twice": Key("w-left") * Repeat(2),
              "dock right": Key("w-right"),
              "dock right twice": Key("w-right") * Repeat(2),
-             "hide [(others | other windows)]": {
-                "action": Key("w-home"),
-                "intro": ["hide", "hide others", "hide other windows"]},
+             "hide [(others | other windows)]": Key("w-home"),
              "minimize": Key("w-down") * Repeat(2),
              "maximize": Key("w-up"),
              "close window": Key("a-f4"),
