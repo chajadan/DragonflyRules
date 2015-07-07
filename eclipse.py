@@ -1,23 +1,15 @@
+print "importing " + __file__
 from dragonfly import *
-import BaseGrammars
-from BaseRules import *
+import Base
+from decorators import ActiveGrammarRule
+import inspect
 
-eclipse_context = AppContext(executable = "eclipse", title = "Eclipse")
-grammar = BaseGrammars.ContinuousGrammar("eclipse grammar", context = eclipse_context)
-
-#decorator
-def GrammarRule(rule):
-    if inspect.isclass(rule):
-        if issubclass(rule, BaseQuickRules):
-            rule(grammar)
-        else:
-            grammar.add_rule(rule())
-    else:
-        grammar.add_rule(rule)
+eclipse_context = AppContext(executable = "javaw", title = "Eclipse")
+grammar = Base.ContinuousGrammar("eclipse grammar", context = eclipse_context)
 
 
-@GrammarRule
-class EclipseShortcuts(QuickContinuousRules):
+@ActiveGrammarRule(grammar)
+class EclipseShortcuts(Base.QuickContinuousRules):
     mapping = {
         "global find": Key("c-h"),
         "new file": Key("a-f, n, down:6"),
@@ -32,8 +24,8 @@ class EclipseShortcuts(QuickContinuousRules):
     defaultsDict = {"n": 1}
 
 
-@GrammarRule
-class EclipseRules(QuickContinuousRules):
+@ActiveGrammarRule(grammar)
+class EclipseRules(Base.QuickContinuousRules):
     mapping = {
         "go to line <n>": Key("c-l") + Text("%(n)s") + Key("enter"),
     }
