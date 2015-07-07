@@ -1,14 +1,10 @@
+print "importing " + __file__
 import SimpleXMLRPCServer
 import sys
 import signal
 import os
 import wx
 from threading import Timer
-
-#     # this file may be executed externally to Dragon
-#     BASE_PATH = "C:/NatLink/NatLink/MacroSystem"
-#     if BASE_PATH not in sys.path:
-#         sys.path.append(BASE_PATH)
         
 LISTENING_PORT = 1338
 DIALOG_TITLE = "Correction Dialog"
@@ -34,7 +30,7 @@ class DragonCorrectionDialog():
     
     def setup_XMLRPC_server(self): 
         self.server_quit = 0
-        self.server = SimpleXMLRPCServer(("127.0.0.1", LISTENING_PORT), allow_none=True)
+        self.server = SimpleXMLRPCServer.SimpleXMLRPCServer(("127.0.0.1", LISTENING_PORT), allow_none=True)
         self.server.register_function(self.xmlrpc_get_message, "get_message")
         self.server.register_function(self.xmlrpc_kill, "kill")
     
