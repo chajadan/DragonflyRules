@@ -34,6 +34,7 @@ class GitBashRules(Base.QuickContinuousRules):
         "go to pyChajLib": Text(changeDirIntro + "pyChajLib") + Key("enter"),
         
         "get add": Text("git add "),
+        "get check out": Text("git checkout "),
         "get commit": Text("git commit "),
         "get commit amend": Text("git commit --amend "),
         "get diff": Text("git diff "),
