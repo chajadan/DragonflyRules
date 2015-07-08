@@ -48,6 +48,7 @@ class GitBashRules(Base.QuickContinuousRules):
         "[do [get]] diff": Text("git diff") + Key("enter"),
         "[do [get]] push": Text("git push") + Key("enter"),
         "do [get] force clean": Text("git clean -f") + Key("enter"),
+        "do [get] log": Text("git log") + Key("enter"),
         "do [get] stash clear": Text("git stash clear") + Key("enter"),
         "do [get] stash list": Text("git stash list") + Key("enter"),
         "[do [get]] status": Text("git status") + Key("enter"),
