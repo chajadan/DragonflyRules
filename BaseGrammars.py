@@ -346,7 +346,7 @@ class ContinuousGrammar(GlobalGrammar):
 
             if not extras.has_key("RunOn"):
                 pass_on = None
-            elif ruleInstance.runOnAdded and not getattr(ruleInstance, "eatDictation", False): # no need to split RunOn
+            elif ruleInstance.runOnAdded and not getattr(ruleInstance, "optionalRunOn", False): # no need to split RunOn
                 pass_on = extras["RunOn"].words
             else: # RunOn may need to be split
                 extras["_original_extras"] = {key: item for key, item in extras.items()}

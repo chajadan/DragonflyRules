@@ -60,7 +60,7 @@ class GitBashRules(Base.QuickContinuousRules):
 
 
 @GrammarRule
-class GitCommitWithMessage(Base.ContinuousRule_EatDictation):
+class GitCommitWithMessage(Base.ContinuousRule_OptionalRunOn):
     spec = "commit [with] message"
     def _process_recognition(self, node, extras):
         action = Text("git commit -m ''") + Key("left")

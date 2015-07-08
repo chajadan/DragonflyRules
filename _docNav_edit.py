@@ -48,7 +48,7 @@ class DocNavEditRules(QuickContinuousRules):
 
 
 @GrammarRule
-class ReplaceSurroundingCharacters(ContinuousRule_EatDictation):
+class ReplaceSurroundingCharacters(ContinuousRule_OptionalRunOn):
     spec = "replace <direction> [<n> [times]] (character|characters)"
     intro_spec = "replace (left|right)"
     extras = (IntegerRef("n", 1, 200), Choice("direction", {"left":"left", "right":"right"}))
@@ -64,7 +64,7 @@ class ReplaceSurroundingCharacters(ContinuousRule_EatDictation):
 
 
 @GrammarRule
-class ReplaceTrim(ContinuousRule_EatDictation):
+class ReplaceTrim(ContinuousRule_OptionalRunOn):
     spec = "replace <direction>"
     intro_spec = "replace (left|right)"
     extras = (Choice("direction", {"left":"home", "right":"end"}),)

@@ -56,7 +56,7 @@ class InterDocNavRules(Base.QuickContinuousRules):
 
 
 @ActiveGrammarRule(grammar)
-class SelectLetterLeft(Base.ContinuousRule_EatDictation):
+class SelectLetterLeft(Base.ContinuousRule_OptionalRunOn):
     spec = "select left <characters>"
     extras = (Repetition(Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}), name="characters", min=1, max=20),)
     def _process_recognition(self, node, extras):
@@ -67,7 +67,7 @@ class SelectLetterLeft(Base.ContinuousRule_EatDictation):
 
 
 @ActiveGrammarRule(grammar)
-class SelectLetterRight(Base.ContinuousRule_EatDictation):
+class SelectLetterRight(Base.ContinuousRule_OptionalRunOn):
     spec = "select right <characters>"
     extras = (Repetition(Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}), name="characters", min=1, max=20),)
     def _process_recognition(self, node, extras):
@@ -78,7 +78,7 @@ class SelectLetterRight(Base.ContinuousRule_EatDictation):
 
 
 @ActiveGrammarRule(grammar)
-class SelectPhraseLeft(Base.ContinuousRule_EatDictation):
+class SelectPhraseLeft(Base.ContinuousRule_OptionalRunOn):
     spec = "select left"
     def _process_recognition(self, node, extras):
         if not extras.has_key("RunOn"):
@@ -93,7 +93,7 @@ class SelectPhraseLeft(Base.ContinuousRule_EatDictation):
 
 
 @ActiveGrammarRule(grammar)
-class SelectPhraseRight(Base.ContinuousRule_EatDictation):
+class SelectPhraseRight(Base.ContinuousRule_OptionalRunOn):
     spec = "select right"
     def _process_recognition(self, node, extras):
         if not extras.has_key("RunOn"):

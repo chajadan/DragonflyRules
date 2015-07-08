@@ -151,7 +151,7 @@ class CodeTemplatesRules(QuickContinuousRules):
     }
 
 @GrammarRule
-class MemberOperator(ContinuousRule_EatDictation):
+class MemberOperator(ContinuousRule_OptionalRunOn):
     spec = "member"
     def _process_recognition(self, node, extras):
         action = Text(".")
@@ -161,7 +161,7 @@ class MemberOperator(ContinuousRule_EatDictation):
         action.execute()
 
 @GrammarRule
-class CallWithRule(ContinuousRule_EatDictation):
+class CallWithRule(ContinuousRule_OptionalRunOn):
     spec = "call with"
     def _process_recognition(self, node, extras):
         action = Text("()") + Key("left")

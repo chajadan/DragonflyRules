@@ -61,14 +61,14 @@ class ContinuousRule(RegisteredRule, ContinuingRule):
         ContinuingRule.__init__(self, name = name, spec = spec, extras = extras, defaults = defaults, exported = exported, context = context)
 
 
-class ContinuousRule_EatDictation(ContinuousRule):
+class ContinuousRule_OptionalRunOn(ContinuousRule):
     """
     Perhaps better called ContinuousRule_OptionalRunOn.
     This rule's spec shall not define a <RunOn> element or expect a "RunOn" extra.
     However, any initial non-command dictation that occurs as RunOn will be
     passed back as a "RunOn" extra.
     """
-    eatDictation = True
+    optionalRunOn = True
     """
     All the handling is carried out by ContinuousGrammar's decorating of
     _process_recognition.
