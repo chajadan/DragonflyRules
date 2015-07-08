@@ -59,15 +59,20 @@ class ContinuousRule(RegisteredRule, ContinuingRule):
         #super(ContinuingRule, self).__init__(name = name, spec = spec, extras = extras, defaults = defaults, exported = exported, context = context)
         RegisteredRule.__init__(self, name = name, spec = spec, extras = extras, defaults = defaults, exported = exported, context = context, intro = intro)
         ContinuingRule.__init__(self, name = name, spec = spec, extras = extras, defaults = defaults, exported = exported, context = context)
-        
+
+
 class ContinuousRule_EatDictation(ContinuousRule):
     """
-    Passes an extra 'RunOn' dictation of any following non-command dictation.
-    This allows the rule spec to leave out <RunOn> and process rules without dictation if no non-command dictation is not present.
+    Perhaps better called ContinuousRule_OptionalRunOn.
+    This rule's spec shall not define a <RunOn> element or expect a "RunOn" extra.
+    However, any initial non-command dictation that occurs as RunOn will be
+    passed back as a "RunOn" extra.
     """
     eatDictation = True
-    def __init__(self, name = None, spec = None, extras = None, defaults = None, exported = None, context = None, intro = None):
-        ContinuousRule.__init__(self, name = name, spec = spec, extras = extras, defaults = defaults, exported = exported, context = context, intro = intro)
+    """
+    All the handling is carried out by ContinuousGrammar's decorating of
+    _process_recognition.
+    """    
 
 
 class ContinuousRule_EatCommands(ContinuousRule):
