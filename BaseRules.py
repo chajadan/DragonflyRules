@@ -70,6 +70,19 @@ class ContinuousRule_EatDictation(ContinuousRule):
         ContinuousRule.__init__(self, name = name, spec = spec, extras = extras, defaults = defaults, exported = exported, context = context, intro = intro)
 
 
+class ContinuousRule_EatCommands(ContinuousRule):
+    """
+    Similar to ContinuousRule, except the RunOn command is returned to the
+    rule processing as the extra "PassOn" to allow the rule to decide how/when
+    to use it. The rule is expected to define <RunOn> in its spec.
+    """
+    eatCommands = True
+    """
+    All the handling is carried out by ContinuousGrammar's decorating of
+    _process_recognition.
+    """
+
+
 class BaseQuickRules():
     def __init__(self, grammar):
         self.grammer = grammar
