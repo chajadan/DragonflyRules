@@ -1,5 +1,6 @@
 print "importing " + __file__
 from dragonfly import *
+from dragonfly.engines.backend_natlink.dictation import NatlinkDictationContainer
 import Base
 from decorators import ActiveGrammarRule
 from chajLib.ui import docnav
@@ -15,14 +16,6 @@ class CaretCalls(Base.QuickContinuousCalls):
         ["after right <RunOn>", docnav.caret_after_right, "target"],
         ["before left <RunOn>", docnav.caret_before_left, "target"],
         ["before right <RunOn>", docnav.caret_before_right, "target"],
-    ]
-
-
-@ActiveGrammarRule(grammar)
-class SelectCalls(Base.QuickContinuousCalls):
-    mapping = [
-        ["select left through <RunOn>", docnav.select_through_left, "target"],
-        ["select right through <RunOn>", docnav.select_through_right, "target"],
     ]
 
 
@@ -65,6 +58,39 @@ class BeforeRightCharacter(Base.ContinuousRule):
         target = "".join(letters)
         docnav.caret_before_right(target, True)
 
+
+TextTarget = Alternative(name="RunOn", children=[
+                Sequence([
+                    Repetition(
+                        Choice("character", {voicedAs: letter for letter, voicedAs in printable_keys_as_text}),
+                        name="characters", min=1, max=20),
+                    Optional(Dictation("RunOn"))
+                ]),
+                Dictation("RunOn")
+            ])
+
+Direction = Choice("direction", {"left":"left", "right":"right"})
+
+
+@ActiveGrammarRule(grammar)
+class SelectThroughTarget(Base.ContinuousRule):
+    spec = "select <direction> through <RunOn>"
+    intro_spec = "select (right|left) through <RunOn>"
+    extras = (Direction, TextTarget)
+
+    def _process_extras(self, extras):
+        if type(extras["RunOn"]) == NatlinkDictationContainer:
+            extras["letters"] = ""
+        else:
+            extras["letters"] = "".join(extras["RunOn"][0]) # spelled by user
+            extras["RunOn"] = extras["RunOn"][1]
+
+    def _process_recognition(self, node, extras):
+        target = extras["letters"]
+        if "RunOn" in extras:
+            target += extras["RunOn"].format()
+        
+        docnav.select_through(extras["direction"], target)
 
 grammar.load()
 
