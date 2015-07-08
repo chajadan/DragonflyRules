@@ -331,6 +331,8 @@ class ContinuousGrammar(GlobalGrammar):
         _orig_process_recognition = ruleInstance._process_recognition
 
         def _instance_process_recognition(node, extras):
+            if getattr(extras["_rule"], "_process_extras", None):
+                extras["_rule"]._process_extras(extras)
             if not extras.has_key("RunOn"):
                 _orig_process_recognition(node, extras)
             elif ruleInstance.runOnAdded and not getattr(ruleInstance, "eatDictation", False):
