@@ -38,6 +38,7 @@ class DocNavEditRules(QuickContinuousRules):
         "lineless down [<n> [times]]": Key("down, home, end, s-home:2, delete, backspace") * Repeat(extra="n"),
         "plaster": Key("c-v, enter"),
         "printer [<n> [times]]": Key("end, enter") * Repeat(extra="n") + Key("c-v"),
+        "quote selection": Key("c-x, dquote, c-v, dquote"),
         "renter [<n> [times]]": Key("end, enter") * Repeat(extra="n"),
         "renter down [<n> [times]]": (Key("down") * Repeat(extra="n")) + Key("end, enter"),
         "renter up [<n> [times]]": (Key("up") * Repeat(extra="n")) + Key("end, enter"),
@@ -49,7 +50,7 @@ class DocNavEditRules(QuickContinuousRules):
 @GrammarRule
 class ReplaceSurroundingCharacters(ContinuousRule_EatDictation):
     spec = "replace <direction> [<n> [times]] (character|characters)"
-    introspec = "replace (left|right)"
+    intro_spec = "replace (left|right)"
     extras = (IntegerRef("n", 1, 200), Choice("direction", {"left":"left", "right":"right"}))
     defaults = { "n": 1}
     def _process_recognition(self, node, extras):
@@ -65,7 +66,7 @@ class ReplaceSurroundingCharacters(ContinuousRule_EatDictation):
 @GrammarRule
 class ReplaceTrim(ContinuousRule_EatDictation):
     spec = "replace <direction>"
-    introspec = "replace (left|right)"
+    intro_spec = "replace (left|right)"
     extras = (Choice("direction", {"left":"home", "right":"end"}),)
     def _process_recognition(self, node, extras):
         action = Key("s-" + extras["direction"])
