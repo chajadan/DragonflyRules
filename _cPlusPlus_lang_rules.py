@@ -49,6 +49,7 @@ keywords = [
     ["const", "const", True, False],
     ["do", "do", True, False],
     ["double", "double", True, False],
+    ["extern", "external", True, False],
     ["else", "else", True, False],
     ["false", "false", False, True],
     ["float", "float", True, False],
@@ -100,6 +101,7 @@ class OperatorRules(QuickContinuousRules):
 class PreprocessorRules(QuickContinuousRules):
     mapping = {
         "include": Text("#include "),
+        "define": Text("#define "),
     }
 
 
@@ -113,6 +115,7 @@ class CommonNamesRules(QuickContinuousRules):
 @GrammarRule
 class CodeTemplatesRules(QuickContinuousRules):
     mapping = {
+        "call": Text("()"),
         "new block": Text(" {}") + Key("left, enter:2, up, tab"),    
         "wide literal": Text('L""') + Key("left"),
     }
@@ -136,6 +139,17 @@ class MultilineCommentSelection(ContinuousRule):
     def _process_recognition(self, node, extras):
         selection = docnav.read_selection()
         Text("/* " + selection + " */").execute()
+
+
+@GrammarRule
+class CallWithRule(ContinuousRule_OptionalRunOn):
+    spec = "call with"
+    def _process_recognition(self, node, extras):
+        action = Text("()") + Key("left")
+        if "RunOn" in extras:
+            call_with = extras["RunOn"].format()
+            action += Text(call_with)
+        action.execute()
 
 
 grammar.load()
