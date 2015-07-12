@@ -7,7 +7,7 @@ lower_alpha_names = [
     ['d', 'deny'],
     ['e', 'easy'],
     ['f', 'effort'],
-    ['g', 'jeans'],
+    ['g', 'genius'],
     ['h', 'huge'],
     ['i', 'island'],
     ['j', 'jail'],
