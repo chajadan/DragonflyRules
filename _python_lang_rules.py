@@ -73,8 +73,9 @@ for entry in keywords:
 @GrammarRule            
 class python_keywords_rule(QuickContinuousRules):
     mapping = {
-        "pass": Text("pass") + Key("enter"),
+        "break": Text("break") + Key("enter"),
         "else": Text("else:") + Key("enter"),
+        "pass": Text("pass") + Key("enter"),
         "try": Text("try:") + Key("enter"),
     }
     extrasDict = {}
@@ -174,8 +175,9 @@ class CallWithRule(ContinuousRule_OptionalRunOn):
 class BuiltInFunctionRules(QuickContinuousRules):
     name = "built in function rules"
     mapping = {
-        "print": Text("print"),
         "length": Text("len"),
+        "print": Text("print"),
+        "super": Text("super"),
     }
   
 @GrammarRule
