@@ -20,6 +20,14 @@ def GrammarRule(rule):
 
 
 @GrammarRule
+class CatchAll(Base.ContinuingRule):
+    spec = "<RunOn>"
+    extras = (Dictation("RunOn"), )
+    def _process_recognition(self, node, extras):
+        Text(extras["RunOn"].format()).execute()
+
+
+@GrammarRule
 class SomeQuickRules(Base.QuickContinuousRules):
     name = "GlobalQuickRules"
     extrasDict = {
