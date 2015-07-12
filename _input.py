@@ -118,6 +118,39 @@ class SimpleStringRule(Base.RegisteredRule):
         action.execute()
 
 
+@GrammarRule
+class ComplexStringRule(Base.ContinuousRule_EatCommands):
+    spec = "string <RunOn>"
+    extras = (Dictation("RunOn"), )
+    def _process_recognition(self, node, extras):
+        RunOn = extras.get("RunOn")
+        if RunOn:
+            RunOn = RunOn.format()
+        PassOn = extras.get("PassOn")
+        KeepOn = None
+        if PassOn:
+            if "chain" in PassOn:
+                chain_index = PassOn.index("chain")
+                KeepOn = PassOn[:chain_index]
+                if len(PassOn) > chain_index+1:
+                    PassOn = PassOn[chain_index+1:]
+                else:
+                    PassOn = None
+            else:
+                KeepOn = PassOn
+                PassOn = None
+
+        action = Text('"')
+        if RunOn:
+            action += Text(RunOn)
+        if KeepOn:
+            action += Mimic(*KeepOn)
+        action += Text('"')
+        if PassOn:
+            action += Mimic(*PassOn)
+        action.execute()
+
+
 class KeypressRule(Base.ContinuousRule): 
     extras = (IntegerRef("keyCount", 0, 1000),)
     defaults = {"keyCount": 1}
