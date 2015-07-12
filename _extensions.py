@@ -13,6 +13,7 @@ class PrefixedKeypressRule(Base.QuickContinuousRules):
         "text": "txt",
         "see plus plus": "cpp",
         "header file": "h",
+        "wave": "wav",
     }    
     mapping = {
         "[with|give] extension <extension>": Text(".%(extension)s"),
