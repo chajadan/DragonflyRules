@@ -52,6 +52,8 @@ class AciChainedRules(Base.QuickContinuousRules):
         "next pick": Key("home, left, down, right, up:10"),
         "go to plat map": Key("a-v, m, d, enter/20, c-pgdown/50, down:4"),
         "save file as": Key("a-f, a, r"),
+        "show font": Key("cs-f"),
+        "reduce font": Key("cs-f, tab, tab, up, enter"),
     }
     extrasDict = {
         "n": IntegerRef("n", 1, 30),
